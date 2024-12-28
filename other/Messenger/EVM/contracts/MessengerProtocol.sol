@@ -3,9 +3,9 @@ pragma solidity ^0.8.24;
 
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {Initializable, AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {IProposer, AgentParams} from "./interfaces/IProposer.sol";
+import {IProposer, AgentParams} from "@entangle-labs/uip-contracts/contracts/interfaces/IProposer.sol";
+import {MessageReceiver} from "@entangle-labs/uip-contracts/contracts/MessageReceiver.sol";
 import {SelectorLib} from "./lib/SelectorLib.sol";
-import {MessageReceiver} from "./MessageReceiver.sol";
 
 contract MessengerProtocol is
     Initializable,
