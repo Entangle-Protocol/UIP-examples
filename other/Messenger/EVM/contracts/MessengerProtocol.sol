@@ -68,12 +68,14 @@ contract MessengerProtocol is
             waitForBlocks,
             customGasLimit
         );
+        bytes memory encodedParams = abi.encodePacked(agentParams.waitForBlocks, agentParams.customGasLimit);
+        
         IProposer(endPoint).propose{value: msg.value}(
             chainID,
             SelectorLib.encodeDefaultSelector(
                 DEFAULT_SELECTOR
             ),
-            agentParams,
+            encodedParams,
             destAddress,
             abi.encode(abi.encode(_msg), abi.encode(_msgSender()))
         );

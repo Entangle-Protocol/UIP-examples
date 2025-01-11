@@ -3,73 +3,64 @@ import {
     EndPoint,
     EndPoint__factory,
     MessengerProtocol,
+    WNative,
 } from "../typechain-types";
 import { expect } from "chai";
+import { DEFAULT_CONSENSUS_RATE } from "../utils/constants";
+import fs from "fs"
+import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
 
-async function deployMessengerProtocol() {
+async function deployEndpoint() {
+    const [owner] = await ethers.getSigners()
+    const args = [[owner.address], DEFAULT_CONSENSUS_RATE]
+    
+    const factory = await ethers.getContractFactory("EndPoint")
+    const endpoint = await upgrades.deployProxy(factory, args, {
+        kind: "uups"
+    })
+    await endpoint.waitForDeployment()
+
+    console.log("endpoint deployed on address ", await endpoint.getAddress())
+    return endpoint
+}
+
+async function deployMessengerProtocol(owner:string, endpoint:string) {
     const factory = await ethers.getContractFactory("MessengerProtocol");
-    const [owner, otherAccount] = await ethers.getSigners();
-    const args = [owner.address, otherAccount.address];
+    const args = [owner, endpoint];
+
     const messengerProtocol = await upgrades.deployProxy(factory, args, {
         kind: "uups",
     });
+    await messengerProtocol.waitForDeployment()
 
-    return { messengerProtocol, owner, otherAccount };
+    console.log("messenger deployed on address ", await messengerProtocol.getAddress())
+    return messengerProtocol;
 }
 
-async function deployEndPoint() {
-    const signers = await ethers.getSigners();
-    const EndPointFactory: EndPoint__factory =
-        await ethers.getContractFactory("EndPoint");
-    const [owner, otherAccount] = await ethers.getSigners();
-    const defaultConsensus = 50 * 100;
-    // console.log(owner);
-    const args: any = [[owner.address], defaultConsensus];
-    const endpoint = await upgrades.deployProxy(EndPointFactory, args, {
-        kind: "uups",
-    });
-    await endpoint.waitForDeployment();
+async function deployWNative() {
+    const factory = await ethers.getContractFactory("WNative")
+    const native = await factory.deploy()
 
-    await endpoint.registerOrExcludeBatch(signers, true, true);
-    await endpoint.setConsensusTargetRate(5000); // 50%
-
-    return endpoint as unknown as EndPoint;
+    console.log("native deployed on address ", await native.getAddress())    
+    return native
 }
-
-// async function hexToString(hex: string) {
-//     // Delete 0x prefix
-//     hex = hex.replace(/^0x/, "");
-
-//     let bytes = [];
-//     for (let i = 0; i < hex.length; i += 2) {
-//         bytes.push(String.fromCharCode(parseInt(hex.substr(i, 2), 16)));
-//     }
-
-//     return bytes.join("");
-// }
 
 describe("Messenger", function () {
+    let owner: HardhatEthersSigner;
+    let connector: HardhatEthersSigner;
     let messengerProtocol: MessengerProtocol;
+    let endpoint: EndPoint;
+    let native: WNative;
     let coder = ethers.AbiCoder.defaultAbiCoder();
 
-    it("Should propose and recieve operation in messenger protocol", async function () {
-        const agentParamsLibF = await ethers.getContractFactory("AgentParamsLib")
-        const agentParamsLib = await agentParamsLibF.deploy()
+    it("Should propose and receive operation in messenger protocol", async function () {
+        [owner, connector] = await ethers.getSigners()
+        endpoint = await deployEndpoint()
+        messengerProtocol = await deployMessengerProtocol(owner.address, await endpoint.getAddress());
+        native = await deployWNative()
 
-        const encoderF = await ethers.getContractFactory("AgentParamsEncoderMock", {
-            libraries: {
-                AgentParamsLib: await agentParamsLib.getAddress()
-            }
-        })
-        const agentParamsEncoderMock = await encoderF.deploy()
-
-
-        const endpoint = await deployEndPoint();
-        const { messengerProtocol, owner, otherAccount } =
-            await deployMessengerProtocol();
-
-        // endpoint on "source" chain
-        await messengerProtocol.changeEndpoint(await endpoint.getAddress());
+        await endpoint.setNative(await native.getAddress())
+        await endpoint.setConnector(await connector.getAddress())
 
         // data
         const randomSolidityAddress = await messengerProtocol.getAddress();
@@ -79,16 +70,15 @@ describe("Messenger", function () {
         );
         const msg = "My msg";
         const destChainId = 1;
-        const agentParams = {
-            waitForBlocks: 3,
-            customGasLimit: 0
-        }
-        const encodedAgentParams = await agentParamsEncoderMock.encode(agentParams.waitForBlocks, agentParams.customGasLimit)
+        const waitForBlocks = 3
+        const customGasLimit = 0
 
+        // send
         await messengerProtocol.sendMessage(
             destChainId,
-            randomSolidityAddress,
-            encodedAgentParams,
+            waitForBlocks,
+            customGasLimit,
+            randomSolidityAddress_bytes,
             msg,
             { value: 1 }
         );
