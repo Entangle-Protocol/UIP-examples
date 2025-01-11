@@ -22,16 +22,23 @@ task("sendMessage", "Proposes an operation")
     .addParam("message", "The message to send")
     .addParam("deployAddress", "Address of deployed messenger")
     .setAction(async (taskArgs, {network, ethers}) => {
-
+        const coder = ethers.AbiCoder.defaultAbiCoder();
+        
         const [signer] = await ethers.getSigners();
         console.log("signer: ", signer.address);
-        
+
+        const destAddress_bytes = coder.encode(
+            ["address"],
+            [taskArgs.destAddress]
+        );
+
+
         const instance = await ethers.getContractAt("MessengerProtocol", taskArgs.deployAddress, signer);
         const tx = await instance.sendMessage(
             taskArgs.destChainId,
             3,
             0,
-            taskArgs.destAddress,
+            destAddress_bytes,
             taskArgs.message,
             {value: 100000}
         )
