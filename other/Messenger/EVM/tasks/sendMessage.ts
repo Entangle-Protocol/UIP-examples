@@ -17,10 +17,10 @@ async function hexToString(hex: any) {
 }
 
 task("sendMessage", "Proposes an operation")
-    .addParam("destChainId", "The destination chain ID")
-    .addParam("destAddress", "The destination address")
+    .addParam("dest_chain_id", "The destination chain ID")
+    .addParam("dest_address", "The destination address")
     .addParam("message", "The message to send")
-    .addParam("deployAddress", "Address of deployed messenger")
+    .addParam("deploy_address", "Address of deployed messenger")
     .setAction(async (taskArgs, {network, ethers}) => {
         const coder = ethers.AbiCoder.defaultAbiCoder();
         
