@@ -1,7 +1,11 @@
-import { ethers, upgrades } from "hardhat";
+import hre, { ethers, upgrades } from "hardhat";
+import { task } from "hardhat/config";
+import fs from "fs";
+import { SEPARATOR } from "../utils/constants";
+import { BytesLike } from "ethers";
 
-async function deployMessenger(netname:string) {
-    const endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${netname}/Endpoint.json`)
+async function deployMessenger() {
+    const endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${hre.network.name}/Endpoint.json`)
 
     const [signer] = await ethers.getSigners() 
     const args = [await signer.getAddress(), endpoint.address]
@@ -13,4 +17,5 @@ async function deployMessenger(netname:string) {
     await instance.waitForDeployment()
 }
 
-deployMessenger("netname")
+
+deployMessenger()
