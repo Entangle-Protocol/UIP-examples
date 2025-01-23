@@ -19,8 +19,4 @@ Entangle’s Universal Interoperability Protocol (UIP) revolutionizes Web3 by en
 
 
 ## License 
-<<<<<<< HEAD
-This project is licensed under the [MIT License](LICENSE) (License was changed from BSL 1.1)
-=======
-This project is licensed under the [MIT License](LICENSE)
->>>>>>> origin
+This project is licensed under the [MIT License](./LICENCE)
