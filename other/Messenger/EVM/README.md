@@ -10,10 +10,10 @@ This is an example of deploying and connecting a custom protocol on EVM-based ch
 
 - [Build and install](#build-and-install)
     - [Compiling project contracts](#building-the-project)
-    - [Deployments](#protocol-contracts--deployments)
+    - [Deployments](#deployments)
 - [Testing](#testing)
     - [Local tests](#local-testing)
-    - [Testnet and mainnet testing](#testnet--mainnet-testing)
+    - [Testnet and mainnet testing](#testnet-and-mainnet-testing)
 - [License](#license)
 
 
