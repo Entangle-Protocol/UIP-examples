@@ -35,7 +35,7 @@ npx hardhat compile
 
 
 
-### protocol-contracts--deployments
+### Deployments
 
 To deploy messenger protocol use:
 ```bash
@@ -50,7 +50,7 @@ Deployed contract address you can find in ./addresses/ folder
 
 ## Testing
 
-### local-testing
+### Local tests
 
 To test the deploying to hardhat network run this command:
 ```shell
@@ -60,7 +60,7 @@ npx hardhat test test/messenger.test.ts
 
 
 
-### testnet--mainnet-testing
+### Testnet and mainnet testing
 
 If you deployed contract into some testnet / mainnet, you can send custom message and get the last one using these commands:
 ```shell
