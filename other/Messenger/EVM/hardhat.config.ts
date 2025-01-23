@@ -1,6 +1,7 @@
 import { HardhatUserConfig, task } from "hardhat/config";
 import '@openzeppelin/hardhat-upgrades';
 import "@nomicfoundation/hardhat-toolbox";
+import "./tasks/sendMessage"
 
 const config: HardhatUserConfig = {
   solidity: {

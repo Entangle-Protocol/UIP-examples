@@ -109,7 +109,7 @@ describe("Messenger", function () {
         const received_msg_bytes =
             await messengerProtocol.getLastMessageByAddress(owner.address);
 
-        console.log(`Recieved message: ${received_msg_bytes}`);
+        console.log(`Received message: ${received_msg_bytes}`);
 
         // fail execute
         const msgError = "error";
