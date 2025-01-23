@@ -1,5 +1,12 @@
 <div align="center">
+    <a href="https://entangle.fi/">
+        <img src="https://docs.entangle.fi/~gitbook/image?url=https%3A%2F%2F4040807501-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252F5AajewgFWO9EkufRORqL%252Fuploads%252FDfRGGJJASR0PFitX6rbx%252FTwitter%2520%281%29.png%3Falt%3Dmedia%26token%3D09e49fe6-1b92-4bed-82e6-730ba785afaf&width=1248&dpr=2&quality=100&sign=5fbbb9f4&sv=1" alt="Entangle" style="width:100%;"/>
+  </a>
+
+
   <h1>Simple Messenger Protocol</h1>
+
+
 </div>
 
 This is an example of deploying and connecting a custom protocol on EVM-based chains.
@@ -12,7 +19,8 @@ This is an example of deploying and connecting a custom protocol on EVM-based ch
 - [Testing](#testing)
     - [Local tests](#local-testing)
     - [Testnet and mainnet testing](#testnet--mainnet-testing)
-- [License](LICENSE)
+- [License](#license)
+
 
 
 ## Build and Install
@@ -24,7 +32,10 @@ To compile the project contracts use:
 npx hardhat compile
 ```
 
-### Deployments
+
+
+
+### protocol-contracts--deployments
 
 To deploy messenger protocol use:
 ```bash
@@ -34,16 +45,22 @@ npx hardhat run scripts/deployMessenger.ts --network [network_name]
 Deployed contract address you can find in ./addresses/ folder
 
 
+
+
+
 ## Testing
 
-### Local tests
+### local-testing
 
 To test the deploying to hardhat network run this command:
 ```shell
 npx hardhat test test/messenger.test.ts
 ```
 
-### Testnet and mainnet testing
+
+
+
+### testnet--mainnet-testing
 
 If you deployed contract into some testnet / mainnet, you can send custom message and get the last one using these commands:
 ```shell
@@ -53,6 +70,8 @@ npx hardhat sendMessage --destchainid 80002 --destaddress <address of deployed c
 ```shell
 npx hardhat getLastMessage --sender <your sender wallet address> --network polygon_amoy
 ```
+
+
 
 
 ## License 
