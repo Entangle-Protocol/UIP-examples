@@ -35,7 +35,7 @@ task("sendMessage", "Proposes an operation")
         const address = loadDeploymentAddress(network.name, "MessengerProtocol");
         const instance = await ethers.getContractAt("MessengerProtocol", address, signer);
         const tx = await instance.sendMessage(
-            taskArgs.destChainId,
+            taskArgs.destchainid,
             3,
             0,
             destAddress_bytes,

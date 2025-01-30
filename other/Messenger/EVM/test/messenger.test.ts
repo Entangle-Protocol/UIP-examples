@@ -1,10 +1,5 @@
 import { ethers, upgrades } from "hardhat";
-import {
-    EndPoint,
-    EndPoint__factory,
-    MessengerProtocol,
-    WNative,
-} from "../typechain-types";
+import { Endpoint, MessengerProtocol, WNative } from "../typechain-types";
 import { expect } from "chai";
 import { DEFAULT_CONSENSUS_RATE } from "../utils/constants";
 import fs from "fs"
@@ -14,7 +9,7 @@ async function deployEndpoint() {
     const [owner] = await ethers.getSigners()
     const args = [[owner.address], DEFAULT_CONSENSUS_RATE]
     
-    const factory = await ethers.getContractFactory("EndPoint")
+    const factory = await ethers.getContractFactory("Endpoint")
     const endpoint = await upgrades.deployProxy(factory, args, {
         kind: "uups"
     })
@@ -49,7 +44,7 @@ describe("Messenger", function () {
     let owner: HardhatEthersSigner;
     let connector: HardhatEthersSigner;
     let messengerProtocol: MessengerProtocol;
-    let endpoint: EndPoint;
+    let endpoint: Endpoint;
     let native: WNative;
     let coder = ethers.AbiCoder.defaultAbiCoder();
 
@@ -59,8 +54,8 @@ describe("Messenger", function () {
         messengerProtocol = await deployMessengerProtocol(owner.address, await endpoint.getAddress());
         native = await deployWNative()
 
-        await endpoint.setNative(await native.getAddress())
-        await endpoint.setConnector(await connector.getAddress())
+        await endpoint.setWrappedNative(await native.getAddress())
+        await endpoint.setUTSConnector(await connector.getAddress())
 
         // data
         const randomSolidityAddress = await messengerProtocol.getAddress();
