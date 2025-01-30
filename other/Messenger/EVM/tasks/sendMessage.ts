@@ -18,10 +18,9 @@ async function hexToString(hex: any) {
 }
 
 task("sendMessage", "Proposes an operation")
-    .addParam("dest_chain_id", "The destination chain ID")
-    .addParam("dest_address", "The destination address")
+    .addParam("destchainid", "The destination chain ID")
+    .addParam("destaddress", "The destination address")
     .addParam("message", "The message to send")
-    .addParam("deploy_address", "Address of deployed messenger")
     .setAction(async (taskArgs, {network, ethers}) => {
         const coder = ethers.AbiCoder.defaultAbiCoder();
         
@@ -33,9 +32,7 @@ task("sendMessage", "Proposes an operation")
             [taskArgs.destaddress]
         );
 
-        console.log(destAddress_bytes)
-        
-        const address = await loadDeploymentAddress(netname, "MessengerProtocol");
+        const address = loadDeploymentAddress(network.name, "MessengerProtocol");
         const instance = await ethers.getContractAt("MessengerProtocol", address, signer);
         const tx = await instance.sendMessage(
             taskArgs.destChainId,
