@@ -2,6 +2,7 @@ import { task } from "hardhat/config";
 import fs from "fs";
 import { SEPARATOR } from "../utils/constants";
 import { BytesLike } from "ethers";
+import { loadDeploymentAddress } from "../scripts/utils";
 
 // import { ethers } from "hardhat";
 
@@ -28,19 +29,24 @@ task("sendMessage", "Proposes an operation")
         console.log("signer: ", signer.address);
 
         const destAddress_bytes = coder.encode(
-            ["address"],
-            [taskArgs.destAddress]
+            ["bytes"],
+            [taskArgs.destaddress]
         );
 
-
-        const instance = await ethers.getContractAt("MessengerProtocol", taskArgs.deployAddress, signer);
+        console.log(destAddress_bytes)
+        
+        const address = await loadDeploymentAddress(netname, "MessengerProtocol");
+        const instance = await ethers.getContractAt("MessengerProtocol", address, signer);
         const tx = await instance.sendMessage(
             taskArgs.destChainId,
             3,
             0,
             destAddress_bytes,
             taskArgs.message,
-            {value: 100000}
+            {   
+                value: 1000000,
+                gasLimit: 2000000
+            }
         )
         const rec = await tx.wait();
         console.log(SEPARATOR)

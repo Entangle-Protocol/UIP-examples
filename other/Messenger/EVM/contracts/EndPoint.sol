@@ -1,4 +1,4 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "@entangle-labs/uip-contracts/contracts/endpoint/EndPoint.sol";
+import "@entangle-labs/uip-contracts/contracts/endpoint/Endpoint.sol";

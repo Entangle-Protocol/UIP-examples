@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {Initializable, AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {IProposer, AgentParams} from "@entangle-labs/uip-contracts/contracts/interfaces/IProposer.sol";
+import {IEndpoint, AgentParams} from "@entangle-labs/uip-contracts/contracts/interfaces/IEndpoint.sol";
 import {MessageReceiver} from "@entangle-labs/uip-contracts/contracts/MessageReceiver.sol";
 import {SelectorLib} from "./lib/SelectorLib.sol";
 
@@ -70,7 +70,7 @@ contract MessengerProtocol is
         );
         bytes memory encodedParams = abi.encodePacked(agentParams.waitForBlocks, agentParams.customGasLimit);
         
-        IProposer(endPoint).propose{value: msg.value}(
+        IEndpoint(endPoint).propose{value: msg.value}(
             chainID,
             SelectorLib.encodeDefaultSelector(
                 DEFAULT_SELECTOR
@@ -81,7 +81,7 @@ contract MessengerProtocol is
         );
     }
 
-    function execute(bytes calldata data) external override onlyEndPoint {
+    function execute(bytes calldata data) external payable override onlyEndPoint {
         bytes memory payload;
         bytes memory message;
         bytes memory sender;
