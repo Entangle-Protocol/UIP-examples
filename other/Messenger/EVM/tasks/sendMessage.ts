@@ -28,7 +28,7 @@ task("sendMessage", "Proposes an operation")
         console.log("signer: ", signer.address);
 
         const destAddress_bytes = coder.encode(
-            ["bytes"],
+            ["address"],
             [taskArgs.destaddress]
         );
 
