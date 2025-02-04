@@ -36,9 +36,9 @@ contract EntangleToken is
     //          EVENTS
     // ==============================
     event EntangelToken__NewEndpoint(address oldEndpoint, address newEndpoint);
-    event BridgeDone(address from, address to, uint256 amount, uint256 srcChainId, bytes32 indexed marker);
+    event EntangelToken__Sent(address from, address to, uint256 amount, uint256 toChainId, bytes32 indexed marker);
+    event EntangelToken__Received(address from, address to, uint256 amount, uint256 srcChainId, bytes32 indexed marker);
 
-    bytes32 public constant ADMIN = keccak256("ADMIN");
     bytes32 public constant SPOTTER = keccak256("SPOTTER");
     bytes32 public constant BURNER = keccak256("BURNER");
     
@@ -54,9 +54,9 @@ contract EntangleToken is
     function initialize(
         string memory name,
         string memory symbol,
-        address _admin,
-        address _startReceipient,
-        uint256 _startAmount
+        address admin,
+        address startReceipient,
+        uint256 startAmount
     )
         initializer public
     {
@@ -64,31 +64,30 @@ contract EntangleToken is
         __Pausable_init();
         __AccessControl_init();
         __UUPSUpgradeable_init();
-        _setRoleAdmin(ADMIN, ADMIN);
-        _setRoleAdmin(BURNER, ADMIN);
-        _grantRole(ADMIN, _admin);
-        _mint(_startReceipient, _startAmount);
+        _grantRole(DEFAULT_ADMIN_ROLE, admin);
+        _setRoleAdmin(BURNER, DEFAULT_ADMIN_ROLE);
+        _mint(startReceipient, startAmount);
     }
 
     /// @notice Initiates the token bridging operation between chains.
-    /// @param _chainIdTo The ID of the target chain for token bridging.
-    /// @param _to The address of the recipient on the target chain.
-    /// @param _amount The amount of tokens to bridge.
-    /// @param _marker The marker for the currect bridge operation.
+    /// @param toChainId The ID of the target chain for token bridging.
+    /// @param to The address of the recipient on the target chain.
+    /// @param amount The amount of tokens to bridge.
+    /// @param marker The marker for the currect bridge operation.
     function bridge(
-        uint256 _chainIdTo,
-        address _from,
-        bytes memory _to,
-        uint256 _amount,
-        bytes32 _marker,
+        uint256 toChainId,
+        address from,
+        bytes memory to,
+        uint256 amount,
+        bytes32 marker,
         uint256 waitForBlocks,
         uint256 customGasLimit
-    ) external whenNotPaused {
+    ) external payable whenNotPaused {
         if (!knownOrigins[msg.sender]) revert EntangelToken__UnknownOrigin();
         if (address(endpoint) == address(0)) revert EntangelToken__EndpointNotSet();
-        if (_chainIdTo == block.chainid) revert EntangelToken__BridgingToTheSameChain();
-        if (_amount < minBridgeAmounts[_chainIdTo]) revert EntangelToken__AmountIsLessThanMinimum();
-        if (minBridgeAmounts[_chainIdTo] == 0) revert EntangelToken__ChainIsNotSupported();
+        if (toChainId == block.chainid) revert EntangelToken__BridgingToTheSameChain();
+        if (amount < minBridgeAmounts[toChainId]) revert EntangelToken__AmountIsLessThanMinimum();
+        if (minBridgeAmounts[toChainId] == 0) revert EntangelToken__ChainIsNotSupported();
 
         AgentParams memory agentParams = AgentParams(
             waitForBlocks,
@@ -96,22 +95,22 @@ contract EntangleToken is
         );
         bytes memory encodedParams = abi.encodePacked(agentParams.waitForBlocks, agentParams.customGasLimit);
 
-        _burn(_from, _amount);
-        endpoint.propose(
-            _chainIdTo,
+        _burn(from, amount);
+        endpoint.propose{ value: msg.value }(
+            toChainId,
             SelectorLib.encodeDefaultSelector(bytes4(keccak256("redeem(bytes calldata)"))),
             encodedParams,
-            _to,
-            abi.encode(abi.encode(_from), _to, _amount, _marker)
+            to,
+            abi.encode(abi.encode(from), to, amount, marker)
         );
+
+        emit EntangelToken__Sent(from, abi.decode(to, (address)), amount, toChainId, marker);
     }
 
     /// @notice Redeems tokens on the receiving chain after a successful bridge operation.
     /// @param data Keeper encoded data, real params below
-    /// @custom:param _to The recipient address in bytes
-    /// @custom:param _amount The amount of tokens to transfer.
-    /// @custom:param _fee The fee deducted from the transferred amount.
-    /// @custom:param _txhash The transaction hash from the sending chain.
+    /// @custom:param to The recipient address in bytes
+    /// @custom:param amount The amount of tokens to transfer.
     /// @custom:param _fromChain The ID of the sending chain.
     function redeem(bytes calldata data) external onlyRole(SPOTTER) whenNotPaused {
         if (!knownOrigins[msg.sender]) revert EntangelToken__UnknownOrigin();
@@ -128,14 +127,14 @@ contract EntangleToken is
         address from = abi.decode(sender, (address));
 
         _mint(to, amount);
-        emit BridgeDone(from, to, amount, srcChainId, marker);
+        emit EntangelToken__Received(from, to, amount, srcChainId, marker);
     }
 
     /// @notice Burns a specified amount of tokens.
     /// Only the burner role can execute this function.
-    /// @param _amount The amount of wrapped tokens to burn.
-    function burn(uint256 _amount) external onlyRole(BURNER) {
-        _burn(msg.sender, _amount);
+    /// @param amount The amount of wrapped tokens to burn.
+    function burn(address user, uint256 amount) external onlyRole(BURNER) {
+        _burn(user, amount);
     }
 
     function _afterTokenTransfer(address, address to, uint256 amount) internal {
@@ -148,21 +147,21 @@ contract EntangleToken is
 
     /// @notice Sets the endpoint address.
     /// This value can only be set ONCE.
-    /// @param _endpoint The address of the aggregation spotter.
-    function setEndpoint(address _endpoint) external onlyRole(ADMIN) {
-        if (_endpoint == address(0)) revert EntangelToken__ZeroAddress();
+    /// @param newEndpoint The address of the aggregation spotter.
+    function setEndpoint(address newEndpoint) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (newEndpoint == address(0)) revert EntangelToken__ZeroAddress();
 
         address oldEndpoint = address(endpoint);
-        endpoint = IEndpoint(_endpoint);
-        _grantRole(SPOTTER, _endpoint);
+        endpoint = IEndpoint(newEndpoint);
+        _grantRole(SPOTTER, newEndpoint);
 
-        emit EntangelToken__NewEndpoint(oldEndpoint, _endpoint);
+        emit EntangelToken__NewEndpoint(oldEndpoint, newEndpoint);
     }
 
     /// @notice Sets the minimum amount of tokens that can be bridged.
     /// @param chainIds The IDs of the chains.
     /// @param minAmounts The minimum amounts of tokens that can be bridged to chains
-    function setMinBridgeAmount(uint256[] memory chainIds, uint256[] memory minAmounts) public onlyRole(ADMIN) {
+    function setMinBridgeAmount(uint256[] memory chainIds, uint256[] memory minAmounts) public onlyRole(DEFAULT_ADMIN_ROLE) {
         if (chainIds.length != minAmounts.length) revert EntangelToken__LengthsMismatch();
         uint256 chainIdsLen = chainIds.length;
 
@@ -173,7 +172,7 @@ contract EntangleToken is
         }
     }
 
-    function setOrigins(address[] memory origins, bool[] memory statuses) public onlyRole(ADMIN) {
+    function setOrigins(address[] memory origins, bool[] memory statuses) public onlyRole(DEFAULT_ADMIN_ROLE) {
         if (origins.length != statuses.length) revert EntangelToken__LengthsMismatch();
 
         for (uint256 i = 0; i < origins.length; ++i) {
@@ -182,18 +181,18 @@ contract EntangleToken is
     }
 
     /// @notice Pauses token bridging.
-    function pauseBridge() external onlyRole(ADMIN) {
+    function pauseBridge() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _pause();
     }
 
     /// @notice Unpauses token bridging.
-    function unpauseBridge() external onlyRole(ADMIN) {
+    function unpauseBridge() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _unpause();
     }
 
     function _authorizeUpgrade(address newImplementation)
         internal
-        onlyRole(ADMIN)
+        onlyRole(DEFAULT_ADMIN_ROLE)
         override
     {}
 }

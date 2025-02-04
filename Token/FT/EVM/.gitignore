@@ -2,6 +2,9 @@ node_modules
 package-lock.json
 .env
 
+addresses/localhost
+addresses/hardhat
+
 # Hardhat files
 /cache
 /artifacts
