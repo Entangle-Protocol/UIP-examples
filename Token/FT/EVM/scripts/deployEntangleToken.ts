@@ -3,6 +3,7 @@ import { saveDeploymentAddress } from "./utils";
 
 export async function main() {
     const netname = hre.network.name;
+    console.log("Deploying Token Bridge to", netname);
     const endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${netname}/Endpoint.json`);
 
     const name = "Test Bridge Token";
