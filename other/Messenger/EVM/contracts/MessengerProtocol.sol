@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {Initializable, AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {IProposer, AgentParams} from "@entangle-labs/uip-contracts/contracts/interfaces/IProposer.sol";
+import {IEndpoint, AgentParams} from "@entangle-labs/uip-contracts/contracts/interfaces/endpoint/IEndpoint.sol";
 import {MessageReceiver} from "@entangle-labs/uip-contracts/contracts/MessageReceiver.sol";
 import {SelectorLib} from "./lib/SelectorLib.sol";
 
@@ -34,27 +34,27 @@ contract MessengerProtocol is
     // ==============================
     //          STORAGE
     // ==============================
-    address public endPoint;
+    address public endpoint;
     mapping(bytes => uint256) messagesReceived;
     mapping(bytes => bytes[]) messages;
 
     // ==============================
     //          MODIFIERS
     // ==============================
-    modifier onlyEndPoint() {
-        require(msg.sender == endPoint, "Not endpoint");
+    modifier onlyEndpoint() {
+        require(msg.sender == endpoint, "Not endpoint");
         _;
     }
 
     // ==============================
     //          FUNCTIONS
     // ==============================
-    function initialize(address admin, address newEndPoint) public initializer {
+    function initialize(address admin, address newendpoint) public initializer {
         __UUPSUpgradeable_init();
         __AccessControl_init();
         _setRoleAdmin(ADMIN, ADMIN);
         _grantRole(ADMIN, admin);
-        endPoint = newEndPoint;
+        endpoint = newendpoint;
     }
 
     function sendMessage(
@@ -70,7 +70,7 @@ contract MessengerProtocol is
         );
         bytes memory encodedParams = abi.encodePacked(agentParams.waitForBlocks, agentParams.customGasLimit);
         
-        IProposer(endPoint).propose{value: msg.value}(
+        IEndpoint(endpoint).propose{value: msg.value}(
             chainID,
             SelectorLib.encodeDefaultSelector(
                 DEFAULT_SELECTOR
@@ -81,7 +81,7 @@ contract MessengerProtocol is
         );
     }
 
-    function execute(bytes calldata data) external override onlyEndPoint {
+    function execute(bytes calldata data) external override payable onlyEndpoint {
         bytes memory payload;
         bytes memory message;
         bytes memory sender;
@@ -134,8 +134,8 @@ contract MessengerProtocol is
     }
 
     // ======    ADMIN   ======
-    function changeEndpoint(address _newEndpoint) external onlyRole(ADMIN) {
-        endPoint = _newEndpoint;
+    function changeendpoint(address _newendpoint) external onlyRole(ADMIN) {
+        endpoint = _newendpoint;
     }
 
     function _authorizeUpgrade(address) internal override onlyRole(ADMIN) {}

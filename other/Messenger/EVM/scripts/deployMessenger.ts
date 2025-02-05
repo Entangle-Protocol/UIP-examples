@@ -2,7 +2,9 @@ import hre, { ethers, upgrades } from "hardhat";
 import { saveDeploymentAddress } from "./utils";
 
 async function deployMessenger() {
-    const endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${hre.network.name}/Endpoint.json`)
+    const netname = hre.network.name
+
+    const endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${netname}/Endpoint.json`)
 
     const [signer] = await ethers.getSigners() 
     

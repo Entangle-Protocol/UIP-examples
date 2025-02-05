@@ -26,11 +26,9 @@ function saveDeploymentAddress(
         data.impl = impl;
         fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
     }
-
-    if (network !== "hardhat") {
-        console.log(`\nData successfully saved to ${filePath}`);
-        console.log("=================================== \n\n\n")
-    }
+    
+    console.log(`\nData successfully saved to ${filePath}`);
+    console.log("=================================== \n\n\n")
 }
 
 export { 
