@@ -13,11 +13,16 @@ task("sendTokens", "Initiates token transfer through the bridge")
         const address = loadDeploymentAddress(network.name, "ExampleToken");
         const tokenBridge = await ethers.getContractAt("ExampleToken", address, signer);
 
+        const encodedDestAddress = ethers.AbiCoder.defaultAbiCoder().encode(
+            ["address"],
+            [taskParams.destaddress]
+        );
+
         const destAddress = await tokenBridge.knownOrigins(taskParams.tochainid);
-        if (destAddress.toLowerCase() != taskParams.destAddress.toLowerCase()) {
+        if (destAddress.toLowerCase() != encodedDestAddress.toLowerCase()) {
             await tokenBridge.setOrigins(
                 [taskParams.tochainid],
-                [taskParams.destaddress]
+                [encodedDestAddress]
             );    
         }
 
@@ -29,11 +34,10 @@ task("sendTokens", "Initiates token transfer through the bridge")
             0,
             {   
                 value: 1000000,
-                gasLimit: 2000000
             }
         );
         const receipt = await tx.wait();
         console.log("\n\n", receipt);
 
-        console.log("\n\n", `${taskParams.amount} tokens sent to chain ${taskParams.tochainid} to address ${taskParams.to} from chain ${network.config.chainId} from address ${taskParams.from}`);
+        console.log("\n\n", `${taskParams.amount} tokens sent to chain ${taskParams.tochainid} to address ${taskParams.to} from chain ${network.config.chainId} from address ${signer.address}`);
     });
