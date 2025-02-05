@@ -51,7 +51,7 @@ task("sendTokens", "Initiates token transfer through the bridge")
         const receipt = await tx.wait();
         console.log("\n\n", receipt);
 
-        console.log("\n\n", `${taskParams.amount} tokens sent to chain ${taskParams.tochainid} from address ${taskParams.from} to address ${taskParams.to}`);
+        console.log("\n\n", `${taskParams.amount} tokens sent to chain ${taskParams.tochainid} to address ${taskParams.to} from chain ${network.config.chainId} from address ${taskParams.from}`);
     });
 
 task("receiveTokens", "Receive tokens sent through the bridge")
