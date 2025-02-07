@@ -57,7 +57,7 @@ const config: HardhatUserConfig = {
         chainId: 11155111
     },
     polygon_amoy: {
-        url: "https://rpc-amoy.polygon.technology",
+        url: `https://polygon-amoy.infura.io/v3/${process.env.INFURA_KEY}` || "",
         accounts: {
             mnemonic: process.env.MNEMONIC || "",
         },

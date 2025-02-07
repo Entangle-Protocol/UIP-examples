@@ -85,7 +85,7 @@ contract ExampleToken is
             waitForBlocks,
             customGasLimit
         );
-        bytes memory encodedParams = abi.encodePacked(agentParams.waitForBlocks, agentParams.customGasLimit);
+        bytes memory encodedParams = abi.encode(agentParams.waitForBlocks, agentParams.customGasLimit);
 
         address from = msg.sender;
         _burn(from, amount);

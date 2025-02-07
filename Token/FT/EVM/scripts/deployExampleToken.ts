@@ -22,6 +22,7 @@ export async function main() {
     const address = exampleToken.target.toString();
     const implAddress = await upgrades.erc1967.getImplementationAddress(address);
 
+    console.log(`endpoint address on ${netname}:`, endpoint.address);
     await exampleToken.setEndpoint(endpoint.address);
     saveDeploymentAddress(netname, "ExampleToken", address, implAddress);
 };
