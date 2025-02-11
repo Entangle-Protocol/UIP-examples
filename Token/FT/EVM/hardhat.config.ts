@@ -2,6 +2,7 @@ import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import '@openzeppelin/hardhat-upgrades';
 import "./tasks/sendTokens";
+import "./tasks/setOrigin";
 import dotenv from "dotenv";
 dotenv.config();
 
