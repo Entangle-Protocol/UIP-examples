@@ -9,7 +9,7 @@ export async function main() {
     const name = "Test Bridge Token";
     const symbol = "TBT";
     const [signer] = await ethers.getSigners();
-    const initialAmount = ethers.parseEther("100");
+    const initialAmount = ethers.parseEther("100000");
     const args = [name, symbol, signer.address, signer.address, initialAmount];
 
     const ExampleToken = await ethers.getContractFactory("ExampleToken")
