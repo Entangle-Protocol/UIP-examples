@@ -1,0 +1,21 @@
+[package]
+name = "messenger-extension"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+devnet = ["messenger/devnet"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+borsh = "0.10.4"
+messenger = { path = "../../programs/messenger", features = ["no-entrypoint"] }
+solana-sdk = "2"
+
+[dependencies.uip-endpoint-solana]
+git = "ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git"
+branch = "develop"
+features = ["no-entrypoint"]

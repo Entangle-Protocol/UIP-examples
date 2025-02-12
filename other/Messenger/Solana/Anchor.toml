@@ -1,0 +1,40 @@
+[toolchain]
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+chunk-loader = "CHunpGoZivy5x1dcASNQEHcbCJfRYXUwBXxgVnXday3k"
+messenger = "MesRprmcvhQFtyP4xBEsDvCY9ig1ek5Zfwcf26KGZ5f"
+
+[programs.devnet]
+chunk-loader = "CHunpGoZivy5x1dcASNQEHcbCJfRYXUwBXxgVnXday3k"
+messenger = "MesRprmcvhQFtyP4xBEsDvCY9ig1ek5Zfwcf26KGZ5f"
+
+[test.validator]
+url = "https://api.devnet.solana.com"
+[[test.validator.clone]]
+# UIP program
+address = "pHoEPVJZRCWYaZ2TjHwVWgeee5DnFWGug7vaMbYt4xe"
+[[test.validator.clone]]
+# UTS vault
+address = "APz2xWn2NfRhxzkaaXALEorfCgvHpXAfEo2kJC6ZE1zW"
+[[test.validator.account]]
+address = "C4KbAeFrYCu3LZpUBtGqupArntha1KEdrhz1Nu6pG8Sv"
+filename = "tests/accounts/uip-config.json"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "bun test --timeout 0 tests"
+
+get-messages-by-sender = "bun run scripts/getMessagesBySender.ts"
+initialize-messenger = "bun run scripts/initialize.ts"
+send-big-message = "bun run scripts/sendBigMessage.ts"
+send-message = "bun run scripts/sendMessage.ts"
