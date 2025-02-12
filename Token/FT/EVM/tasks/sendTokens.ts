@@ -31,9 +31,9 @@ task("sendTokens", "Initiates token transfer through the bridge")
             taskParams.to,
             taskParams.amount,
             3,
-            0,
+            60000n,
             {   
-                value: 1000000,
+                value: 10000000,
             }
         );
         const receipt = await tx.wait();

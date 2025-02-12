@@ -2,6 +2,7 @@ import { ethers, upgrades } from "hardhat";
 import { ExampleToken, Endpoint, WNative } from "../typechain-types";
 import { expect } from "chai";
 import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/signers";
+import { token } from "../typechain-types/@openzeppelin/contracts";
 
 describe("ExampleToken", () => {
     let exampleToken: ExampleToken;
@@ -121,6 +122,8 @@ describe("ExampleToken", () => {
         );
 
         await exampleToken.setEndpoint(Bob.address);
+        // const gasCost = await ethers.provider.estimateGas(await exampleToken.connect(Bob).execute(data, { gasPrice: 43875468n }));
+        // console.log("gas cost:", gasCost);
         await expect(exampleToken.connect(Bob).execute(data))
             .to.emit(exampleToken, "ExampleToken__Received")
             .withArgs(Alice.address, Bob.address, amount, SRC_CHAIN_ID);
