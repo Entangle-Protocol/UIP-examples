@@ -17,6 +17,8 @@
 Entangle’s Universal Interoperability Protocol (UIP) revolutionizes Web3 by enabling communication across all blockchains using the fastest, fully abstracted, and infinitely scalable cross-chain messaging protocol. UIP offers instant interoperability as a service, allowing developers to build, scale and automate applications and assets across any chain, including complex protocols, such as omnichain liquidity pools and autonomous AI agents.
 
 
+## Risk notice
+The smart-contracts provided within this repository are presented as illustrative examples and have not undergone formal security audits. Users are advised to exercise extreme caution and utilize these contracts at their own risk.
 
 ## License 
 This project is licensed under the [MIT License](./LICENCE)

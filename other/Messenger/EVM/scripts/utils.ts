@@ -26,22 +26,11 @@ function saveDeploymentAddress(
         data.impl = impl;
         fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
     }
-
-    if (network !== "hardhat") {
-        console.log(`\nData successfully saved to ${filePath}`);
-        console.log("=================================== \n\n\n")
-    }
-}
-
-function loadDeploymentAddress(network: string, contractName: string, silent: boolean = false) {
-    const filePath = `./addresses/${network}/${contractName}.json`;
-    console.log(`Deployment address loaded from
-        ${filePath}   
-    `)
-    return JSON.parse(fs.readFileSync(filePath, "utf8")).address;
+    
+    console.log(`\nData successfully saved to ${filePath}`);
+    console.log("=================================== \n\n\n")
 }
 
 export { 
     saveDeploymentAddress,
-    loadDeploymentAddress
 };
