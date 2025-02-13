@@ -47,9 +47,6 @@ send a message to another chain. Example:
   ```sh
   anchor run --provider.cluster devnet send-message -- 1 ethereum-sepolia 100 100000 "Hi from Solana!"
   ```
-* [SendBigMessage script](./scripts/sendMessage.ts) is the same as
-`SendMessage`, but works for sending messages that don't fit in a single
-transaction
 * [GetMessagesBySender script](./scripts/getMessagesBySender.ts) that
 can be used to verify the delivery of a user's messages. Example:
   ```sh

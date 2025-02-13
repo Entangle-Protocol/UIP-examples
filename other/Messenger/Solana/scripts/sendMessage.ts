@@ -4,7 +4,7 @@ import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { BN } from "bn.js";
 
 async function main(): Promise<void> {
-  if (process.argv.length < 2 + 3) {
+  if (process.argv.length < 2 + 5) {
     console.error(
       "Usage: sendMessage <#times> <dst-chain> <ccm-fee> <custom-gas-limit> <text>",
     );
@@ -61,6 +61,7 @@ async function main(): Promise<void> {
           destination,
           sender: payer,
           text,
+          payer,
         });
         console.log(`${i + 1} signature:`, transactionSignature);
         break;

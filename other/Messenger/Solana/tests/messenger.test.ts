@@ -16,11 +16,12 @@ import {
   findMessage as findMessengerMessage,
   getMessagesBySender,
   initialize as initializeMessenger,
+  MAX_TEXT_LEN_ONE_TX,
   MESSENGER,
   MESSENGER_PROGRAM,
   registerExtension as registerExtensionMessenger,
-  sendBigMessage,
   sendMessage,
+  sendMessageOneTx,
   setAllowedSenders,
 } from "../helpers/messenger";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
@@ -144,18 +145,35 @@ describe("messenger", () => {
       }, 12000);
     });
 
-    const { transactionSignature } = await sendMessage({
+    const { transactionSignature } = await sendMessageOneTx({
       destination,
       ccmFee,
       customGasLimit,
       text,
       sender,
+      payer,
     });
     const txId = bs58.decode(transactionSignature);
     srcOpTxId[0] = Array.from(txId.subarray(0, 32));
     srcOpTxId[1] = Array.from(txId.subarray(32));
 
     await eventPromise;
+
+    const testLongMessage = async (len: number) => {
+      const text = "a".repeat(len);
+      await sendMessageOneTx({
+        destination,
+        ccmFee,
+        customGasLimit,
+        text,
+        sender,
+        payer,
+      });
+    };
+    await testLongMessage(MAX_TEXT_LEN_ONE_TX);
+    expect(testLongMessage(MAX_TEXT_LEN_ONE_TX + 1)).rejects.toThrow(
+      "Transaction too large",
+    );
   });
 
   test("sendMessage (big)", async () => {
@@ -188,7 +206,7 @@ describe("messenger", () => {
       }, 12000);
     });
 
-    await sendBigMessage({
+    await sendMessage({
       destination,
       ccmFee,
       customGasLimit,
@@ -236,6 +254,7 @@ describe("messenger", () => {
       destination,
       text,
       sender,
+      payer,
     });
 
     const txId = bs58.decode(transactionSignature);
@@ -362,6 +381,7 @@ describe("messenger", () => {
       destination,
       text,
       sender,
+      payer,
     });
     const txId = bs58.decode(transactionSignature);
     srcOpTxId[0] = Array.from(txId.subarray(0, 32));

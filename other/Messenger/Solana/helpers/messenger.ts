@@ -22,7 +22,9 @@ export const MESSENGER_PROGRAM: Program<Messenger> = anchor.workspace.Messenger;
 export type Message = IdlTypes<Messenger>["crossChainMessage"];
 export type Destination = IdlTypes<Messenger>["destination"];
 
-export const MESSENGER: PublicKey = PublicKey.findProgramAddressSync(
+export const MAX_TEXT_LEN_ONE_TX = 796;
+
+export const MESSENGER = PublicKey.findProgramAddressSync(
   [Buffer.from("messenger")],
   MESSENGER_PROGRAM.programId,
 )[0];
@@ -117,9 +119,20 @@ export type SendMessageInput = {
   customGasLimit: BN;
   text: string;
   sender: Keypair;
+  payer: Keypair;
 };
 
 export async function sendMessage(
+  input: SendMessageInput,
+): Promise<{ transactionSignature: TransactionSignature }> {
+  if (input.text.length <= MAX_TEXT_LEN_ONE_TX) {
+    return await sendMessageOneTx(input);
+  } else {
+    return await sendMessageManyTx(input);
+  }
+}
+
+export async function sendMessageOneTx(
   {
     ccmFee,
     customGasLimit,
@@ -139,16 +152,7 @@ export async function sendMessage(
   return { transactionSignature };
 }
 
-export type SendBigMessageInput = {
-  destination: Destination;
-  ccmFee: BN;
-  customGasLimit: BN;
-  text: string;
-  sender: Keypair;
-  payer: Keypair;
-};
-
-export async function sendBigMessage(
+async function sendMessageManyTx(
   {
     ccmFee,
     customGasLimit,
@@ -156,7 +160,7 @@ export async function sendBigMessage(
     text,
     sender,
     payer,
-  }: SendBigMessageInput,
+  }: SendMessageInput,
 ): Promise<{ transactionSignature: TransactionSignature }> {
   const data = encodeSendMessageParams({
     ccmFee,
