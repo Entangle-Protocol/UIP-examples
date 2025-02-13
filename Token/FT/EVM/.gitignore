@@ -5,6 +5,8 @@ package-lock.json
 addresses/localhost
 addresses/hardhat
 
+/.openzeppelin
+
 # Hardhat files
 /cache
 /artifacts
