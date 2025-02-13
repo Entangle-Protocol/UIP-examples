@@ -27,12 +27,11 @@ task("sendMessage", "Proposes an operation")
         const tx = await instance.sendMessage(
             taskArgs.destchainid,
             3,
-            0,
+            272200,
             destAddress_bytes,
             taskArgs.message,
             {   
                 value: 1000000,
-                gasLimit: 2000000
             }
         )
         const rec = await tx.wait();
