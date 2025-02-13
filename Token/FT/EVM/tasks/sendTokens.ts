@@ -36,8 +36,7 @@ task("sendTokens", "Initiates token transfer through the bridge")
                 value: 10000000,
             }
         );
-        const receipt = await tx.wait();
-        console.log("\n\n", receipt);
-
+        await tx.wait();
+        console.log("\nTransaction sent:", tx.hash);
         console.log("\n\n", `${taskParams.amount} tokens sent to chain ${taskParams.tochainid} to address ${taskParams.to} from chain ${network.config.chainId} from address ${signer.address}`);
     });
