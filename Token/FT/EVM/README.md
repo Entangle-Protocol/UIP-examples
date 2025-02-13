@@ -41,7 +41,7 @@ npx hardhat run scripts/deployExampleToken.ts --network <network_name>
 ### Setup
 Before sending tokens, you need to set the token contract from another chain as an origin. Run the following command:
 ```bash
-npx hardhat setOrigin --chainid <other_chain_id> --networkname <other_network_name> --network <current_network>
+npx hardhat setOrigin --destnetwork <other_network_name> --network <current_network>
 ```
 You need to do this for both networks.
 
@@ -56,7 +56,7 @@ npx hardhat test test/ExampleToken.test.ts
 ### Cross-chain token transfer
 If you deployed the contract on multiple networks, you can send tokens across chains using:
 ```bash
-npx hardhat sendTokens --tochainid <other_chain_id> --to <receiver_address_on_other_chain> --amount <amount> --destaddress <ExampleToken_address_on_other_chain> --network <current_chain>
+npx hardhat sendTokens --tochainid <other_chain_id> --to <receiver_address_on_other_chain> --amount <amount> --destaddress <ExampleToken_address_on_other_chain> --network <current_network>
 ```
 
 ## License
