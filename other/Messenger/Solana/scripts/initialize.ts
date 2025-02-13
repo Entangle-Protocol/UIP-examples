@@ -5,9 +5,9 @@ import {
   initialize,
   registerExtension,
   setAllowedSenders,
-} from "../../helpers/messenger";
-import { hexToBytes } from "../../helpers/endpoint";
-import { readKeypairFromFile } from "../../helpers/utils";
+} from "../helpers/messenger";
+import { hexToBytes } from "../helpers/endpoint";
+import { readKeypairFromFile } from "../helpers/utils";
 
 async function main(): Promise<void> {
   if (process.argv.length < 2 + 1) {
@@ -16,7 +16,7 @@ async function main(): Promise<void> {
   }
 
   const ipfsCid = process.argv[2];
-  let allowedSenders = null;
+  let allowedSenders: Array<Buffer> | null = null;
   if (process.argv.length > 2 + 1) {
     allowedSenders = process.argv.slice(3).map(hexToBytes);
   }

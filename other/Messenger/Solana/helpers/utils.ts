@@ -14,10 +14,14 @@ import * as anchor from "@coral-xyz/anchor";
 import { BN } from "@coral-xyz/anchor";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { readFileSync } from "fs";
-import { Wallet } from "ethers";
 
 export const SOLANA_MAINNET_CHAIN_ID = new BN("11100000000000000501");
 export const SOLANA_DEVNET_CHAIN_ID = new BN("100000000000000000000");
+export const SEPOLIA_CHAIN_ID = new BN("11155111");
+export const POLYGON_AMOY_CHAIN_ID = new BN("80002");
+export const POLYGON_CHAIN_ID = new BN("137");
+export const EIB_CHAIN_ID = new BN("33033");
+export const TEIB_CHAIN_ID = new BN("33133");
 
 // export const SOLANA_CHAIN_ID =
 //   anchor.AnchorProvider.env().connection.rpcEndpoint.includes("devnet")
@@ -124,6 +128,24 @@ export function readKeypairFromFile(filepath: string): Keypair {
   const contents = readFileSync(filepath, "utf-8");
   const parsedContents = JSON.parse(contents);
   return Keypair.fromSecretKey(new Uint8Array(parsedContents));
+}
+
+export function formatChainId(chainId: BN): string {
+  if (chainId.eq(SOLANA_DEVNET_CHAIN_ID)) {
+    return "Solana devnet";
+  } else if (chainId.eq(SOLANA_MAINNET_CHAIN_ID)) {
+    return "Solana mainnet";
+  } else if (chainId.eq(SEPOLIA_CHAIN_ID)) {
+    return "Sepolia";
+  } else if (chainId.eq(POLYGON_AMOY_CHAIN_ID)) {
+    return "Polygon amoy";
+  } else if (chainId.eq(TEIB_CHAIN_ID)) {
+    return "TEIB";
+  } else if (chainId.eq(EIB_CHAIN_ID)) {
+    return "EIB";
+  } else {
+    return "chain id " + chainId.toString();
+  }
 }
 
 export function encodeU32Le(value: number): ArrayBuffer {

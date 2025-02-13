@@ -5,14 +5,17 @@ import { BN } from "bn.js";
 
 async function main(): Promise<void> {
   if (process.argv.length < 2 + 3) {
-    console.error("Usage: sendMessage <dst-chain> <ccm-fee> <custom-gas-limit> <text>");
+    console.error(
+      "Usage: sendMessage <#times> <dst-chain> <ccm-fee> <custom-gas-limit> <text>",
+    );
     process.exit(1);
   }
 
-  const dstChain = process.argv[2];
-  const ccmFee = new BN(process.argv[3]);
-  const customGasLimit = new BN(process.argv[4]);
-  const text = process.argv.slice(5).join(" ");
+  const times = Number(process.argv[2]);
+  const dstChain = process.argv[3];
+  const ccmFee = new BN(process.argv[4]);
+  const customGasLimit = new BN(process.argv[5]);
+  const baseText = process.argv.slice(6).join(" ");
 
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
@@ -44,14 +47,30 @@ async function main(): Promise<void> {
       );
   }
 
-  const { transactionSignature } = await sendMessage({
-    ccmFee,
-    customGasLimit,
-    destination,
-    sender: payer,
-    text,
+  const promises = Array.from({ length: times }, async (_, i) => {
+    let text = baseText;
+    if (i != 0) {
+      text += " " + i;
+    }
+
+    while (true) {
+      try {
+        const { transactionSignature } = await sendMessage({
+          ccmFee,
+          customGasLimit,
+          destination,
+          sender: payer,
+          text,
+        });
+        console.log(`${i + 1} signature:`, transactionSignature);
+        break;
+      } catch (error) {
+        console.error(`${i + 1} failed:`, error);
+      }
+    }
   });
-  console.log("Transaction signature:", transactionSignature);
+
+  await Promise.all(promises);
 }
 
 main();
