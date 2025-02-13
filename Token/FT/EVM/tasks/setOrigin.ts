@@ -2,15 +2,19 @@ import { task } from "hardhat/config";
 import { loadDeploymentAddress } from "../scripts/utils";
 
 task("setOrigin", "Sets the ExampleToken contract from another chain as an origin on the current network")
-    .addParam("chainid", "Chain ID of the other network")
     .addParam("networkname", "Network name of the other chain (as per Hardhat config)")
-    .setAction(async (taskArgs, { ethers, network }) => {
+    .setAction(async (taskArgs, { ethers, network, config }) => {
         const [signer] = await ethers.getSigners();
         console.log(`Using signer: ${signer.address}`);
 
         const currentNetwork = network.name;
         const otherNetwork = taskArgs.networkname;
-        const otherChainId = taskArgs.chainid;
+        const otherChainId = config.networks[otherNetwork]?.chainId;
+
+        if (!otherChainId) {
+            console.error(`Chain ID not found for network: ${otherNetwork}`);
+            return;
+        }
 
         console.log(`Current network: ${currentNetwork}`);
         console.log(`Other network: ${otherNetwork} (Chain ID: ${otherChainId})`);
