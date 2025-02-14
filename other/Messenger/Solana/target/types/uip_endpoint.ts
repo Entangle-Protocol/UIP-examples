@@ -890,6 +890,26 @@ export type UipEndpoint = {
   ],
   "types": [
     {
+      "name": "commitment",
+      "docs": [
+        "Commitment option, corresponds to EVM `blockFinalizationOption`."
+      ],
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "finalized"
+          },
+          {
+            "name": "confirmed"
+          }
+        ]
+      }
+    },
+    {
       "name": "consensusReached",
       "docs": [
         "Emitted when consensus is reached on an incoming."
@@ -1514,11 +1534,15 @@ export type UipEndpoint = {
         "kind": "struct",
         "fields": [
           {
-            "name": "requireFinalization",
+            "name": "proposalCommitment",
             "docs": [
               "Indicates if finalization is required before proposal processing."
             ],
-            "type": "bool"
+            "type": {
+              "defined": {
+                "name": "commitment"
+              }
+            }
           },
           {
             "name": "customGasLimit",

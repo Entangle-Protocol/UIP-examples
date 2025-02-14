@@ -4,7 +4,12 @@ use alloy_sol_types::{
     SolType,
 };
 use anchor_lang::prelude::*;
-use uip_endpoint::{chains::*, program::UipEndpoint, selector::Selector, state::TransmitterParams};
+use uip_endpoint::{
+    chains::*,
+    program::UipEndpoint,
+    selector::Selector,
+    state::{Commitment, TransmitterParams},
+};
 
 #[derive(Accounts)]
 pub struct SendMessage<'info> {
@@ -70,7 +75,7 @@ pub fn send_message(
         ccm_fee,
         dest_chain_id,
         TransmitterParams {
-            require_finalization: false,
+            proposal_commitment: Commitment::Confirmed,
             custom_gas_limit,
         },
         selector,

@@ -884,6 +884,26 @@
   ],
   "types": [
     {
+      "name": "Commitment",
+      "docs": [
+        "Commitment option, corresponds to EVM `blockFinalizationOption`."
+      ],
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Finalized"
+          },
+          {
+            "name": "Confirmed"
+          }
+        ]
+      }
+    },
+    {
       "name": "ConsensusReached",
       "docs": [
         "Emitted when consensus is reached on an incoming."
@@ -1508,11 +1528,15 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "require_finalization",
+            "name": "proposal_commitment",
             "docs": [
               "Indicates if finalization is required before proposal processing."
             ],
-            "type": "bool"
+            "type": {
+              "defined": {
+                "name": "Commitment"
+              }
+            }
           },
           {
             "name": "custom_gas_limit",

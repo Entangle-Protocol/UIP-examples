@@ -4070,7 +4070,7 @@ dependencies = [
 [[package]]
 name = "uip-endpoint-solana"
 version = "2.0.0"
-source = "git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop#1270db8c8b57f58036d027adb63e53f681badaac"
+source = "git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop#4213235a8bc1c1c211fd561a81e6e9859518dd2c"
 dependencies = [
  "alloy-sol-types",
  "anchor-lang",
@@ -4138,7 +4138,7 @@ dependencies = [
 [[package]]
 name = "uts-mock"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop#1270db8c8b57f58036d027adb63e53f681badaac"
+source = "git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop#4213235a8bc1c1c211fd561a81e6e9859518dd2c"
 dependencies = [
  "anchor-lang",
  "solana-invoke",

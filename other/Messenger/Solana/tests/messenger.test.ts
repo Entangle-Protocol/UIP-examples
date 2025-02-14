@@ -48,7 +48,7 @@ const signer = new Wallet(
   "0x74e3ffad2b87174dc1d806edf1a01e3b017cf1be05d1894d329826f10fa1d72f",
 );
 const transmitterParams = {
-  requireFinalization: false,
+  proposalCommitment: { confirmed: {} },
   customGasLimit: new BN(2),
 };
 const transmitterParamsEncoded = encodeTransmitterParams(transmitterParams);

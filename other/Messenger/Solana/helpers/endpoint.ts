@@ -414,7 +414,7 @@ export function encodeTransmitterParams(
   transmitterParams: TransmitterParams,
 ): Buffer {
   return hexToBytes(ethers.solidityPacked(["uint256", "uint256"], [
-    transmitterParams.requireFinalization ? 1 : 0,
+    transmitterParams.proposalCommitment.confirmed ? 1 : 0,
     BigInt(transmitterParams.customGasLimit.toString()),
   ]));
 }
