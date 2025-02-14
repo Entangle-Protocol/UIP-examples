@@ -56,7 +56,7 @@ npx hardhat test test/ExampleToken.test.ts
 ### Cross-chain token transfer
 If you deployed the contract on multiple networks, you can send tokens across chains using:
 ```bash
-npx hardhat sendTokens --tochainid <other_chain_id> --to <receiver_address_on_other_chain> --amount <amount> --destaddress <ExampleToken_address_on_other_chain> --network <current_network>
+npx hardhat sendTokens --tochainid <other_chain_id> --to <receiver_address_on_other_chain> --amount <amount> --network <current_network>
 ```
 
 ## License
