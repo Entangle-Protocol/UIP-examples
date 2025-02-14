@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {Initializable, AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {IEndpoint, AgentParams} from "@entangle-labs/uip-contracts/contracts/interfaces/endpoint/IEndpoint.sol";
+import {IEndpoint, TransmitterParams} from "@entangle-labs/uip-contracts/contracts/interfaces/endpoint/IEndpoint.sol";
 import {MessageReceiver} from "@entangle-labs/uip-contracts/contracts/MessageReceiver.sol";
 import {SelectorLib} from "./lib/SelectorLib.sol";
 
@@ -59,16 +59,16 @@ contract MessengerProtocol is
 
     function sendMessage(
         uint256 chainID,
-        uint256 waitForBlocks,
+        uint256 blockFinalizationOption,
         uint256 customGasLimit,
         bytes calldata destAddress,
         string calldata _msg
     ) external payable {
-        AgentParams memory agentParams = AgentParams(
-            waitForBlocks,
+        TransmitterParams memory transmitterParams = TransmitterParams(
+            blockFinalizationOption,
             customGasLimit
         );
-        bytes memory encodedParams = abi.encodePacked(agentParams.waitForBlocks, agentParams.customGasLimit);
+        bytes memory encodedParams = abi.encodePacked(transmitterParams.blockFinalizationOption, transmitterParams.customGasLimit);
         
         IEndpoint(endpoint).propose{value: msg.value}(
             chainID,

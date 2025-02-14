@@ -21,13 +21,16 @@ task("sendMessage", "Proposes an operation")
             ["address"],
             [taskArgs.destaddress]
         );
+
+        const blockFinalizationOption = 3
+        const customGasLimit = 272200
         
         const address = await loadDeploymentAddress(netname, "MessengerProtocol");
         const instance = await ethers.getContractAt("MessengerProtocol", address, signer);
         const tx = await instance.sendMessage(
             taskArgs.destchainid,
-            3,
-            272200,
+            blockFinalizationOption,
+            customGasLimit,
             destAddress_bytes,
             taskArgs.message,
             {   
