@@ -16,7 +16,7 @@ task("sendTokens", "Initiates token transfer through the bridge")
             taskParams.tochainid,
             taskParams.to,
             taskParams.amount,
-            3,
+            0,
             60000n,
             {   
                 value: 10000000,
