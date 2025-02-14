@@ -5,7 +5,7 @@ import { ERC20Upgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC2
 import { UUPSUpgradeable } from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import { AccessControlUpgradeable } from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import { IEndpoint, AgentParams } from "@entangle-labs/uip-contracts/contracts/interfaces/endpoint/IEndpoint.sol";
+import { IEndpoint, TransmitterParams } from "@entangle-labs/uip-contracts/contracts/interfaces/endpoint/IEndpoint.sol";
 import { SelectorLib } from "@entangle-labs/uip-contracts/contracts/lib/SelectorLib.sol";
 import { MessageReceiver } from "@entangle-labs/uip-contracts/contracts/MessageReceiver.sol";
 
@@ -62,15 +62,23 @@ contract ExampleToken is
         _mint(startReceipient, startAmount);
     }
 
-    /// @notice Initiates the token bridging operation between chains.
-    /// @param toChainId The ID of the target chain for token bridging.
-    /// @param to The address of the recipient on the target chain.
-    /// @param amount The amount of tokens to bridge.
+    /**
+     * @notice Initiates the token bridging operation between chains.
+     * @param toChainId The ID of the target chain for token bridging.
+     * @param to The address of the recipient on the target chain.
+     * @param amount The amount of tokens to bridge.
+     * @param blockFinalizationOption Finalization option
+     * Options available are:
+     * HARD finalization: 0 (DEFAULT)
+     * SOFT finalization: 1 
+     * NO   finalization: 2
+     * @param customGasLimit Custom gas limit for execution between endpoint and target protocol
+     */
     function bridge(
         uint256 toChainId,
         address to,
         uint256 amount,
-        uint256 waitForBlocks,
+        uint256 blockFinalizationOption,
         uint256 customGasLimit
     ) external payable {
         if (address(endpoint) == address(0)) revert ExampleToken__EndpointNotSet();
@@ -81,11 +89,11 @@ contract ExampleToken is
             revert ExampleToken__UnknownOrigin();
         }
 
-        AgentParams memory agentParams = AgentParams(
-            waitForBlocks,
+        TransmitterParams memory transmitterParams = TransmitterParams(
+            blockFinalizationOption,
             customGasLimit
         );
-        bytes memory encodedParams = abi.encode(agentParams.waitForBlocks, agentParams.customGasLimit);
+        bytes memory encodedParams = abi.encode(transmitterParams.blockFinalizationOption, transmitterParams.customGasLimit);
 
         address from = msg.sender;
         _burn(from, amount);
