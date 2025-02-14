@@ -121,6 +121,8 @@ describe("ExampleToken", () => {
         );
 
         await exampleToken.setEndpoint(Bob.address);
+        const estimatedGas = await ethers.provider.estimateGas(await exampleToken.connect(Bob).execute(data, { "gasPrice": 43875468n } ));
+        console.log(estimatedGas);
         await expect(exampleToken.connect(Bob).execute(data))
             .to.emit(exampleToken, "ExampleToken__Received")
             .withArgs(Alice.address, Bob.address, amount, SRC_CHAIN_ID);

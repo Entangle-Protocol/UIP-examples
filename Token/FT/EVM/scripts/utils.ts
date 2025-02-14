@@ -41,7 +41,16 @@ function loadDeploymentAddress(network: string, contractName: string, silent: bo
     return JSON.parse(fs.readFileSync(filePath, "utf8")).address;
 }
 
+function upgradeImplAddress(filePath: string, newAddress: string) {
+    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    data.impl = newAddress;
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+    console.log("New implementation address saved to:\t", filePath);
+}
+
 export { 
     saveDeploymentAddress,
-    loadDeploymentAddress
+    loadDeploymentAddress,
+    upgradeImplAddress
 };

@@ -153,6 +153,10 @@ contract ExampleToken is
         }
     }
 
+    function mint(address to, uint256 amount) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        _mint(to, amount);
+    }
+
     function _authorizeUpgrade(address newImplementation)
         internal
         onlyRole(DEFAULT_ADMIN_ROLE)

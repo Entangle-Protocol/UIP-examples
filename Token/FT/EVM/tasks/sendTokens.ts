@@ -5,26 +5,12 @@ task("sendTokens", "Initiates token transfer through the bridge")
     .addParam("tochainid", "Destination chain id")
     .addParam("to", "Receiver address")
     .addParam("amount", "Amount to transfer")
-    .addParam("destaddress", "Token address in the destination network")
     .setAction(async (taskParams, {network, ethers}) => {
         const [signer] = await ethers.getSigners();
         console.log("signer: ", signer.address);
 
         const address = loadDeploymentAddress(network.name, "ExampleToken");
         const tokenBridge = await ethers.getContractAt("ExampleToken", address, signer);
-
-        const encodedDestAddress = ethers.AbiCoder.defaultAbiCoder().encode(
-            ["address"],
-            [taskParams.destaddress]
-        );
-
-        const destAddress = await tokenBridge.knownOrigins(taskParams.tochainid);
-        if (destAddress.toLowerCase() != encodedDestAddress.toLowerCase()) {
-            await tokenBridge.setOrigins(
-                [taskParams.tochainid],
-                [encodedDestAddress]
-            );    
-        }
 
         const tx = await tokenBridge.bridge(
             taskParams.tochainid,

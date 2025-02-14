@@ -5,6 +5,12 @@ package-lock.json
 addresses/localhost
 addresses/hardhat
 
+# DELETE
+addresses/mantle_sepolia
+addresses/polygon_amoy
+addresses/teib
+addresses/ethereum_sepolia
+
 /.openzeppelin
 
 # Hardhat files
