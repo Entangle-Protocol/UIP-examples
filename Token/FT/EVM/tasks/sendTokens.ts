@@ -12,11 +12,16 @@ task("sendTokens", "Initiates token transfer through the bridge")
         const address = loadDeploymentAddress(network.name, "ExampleToken");
         const tokenBridge = await ethers.getContractAt("ExampleToken", address, signer);
 
-        const encodedReceiver = ethers.AbiCoder.defaultAbiCoder().encode(["address"], [taskParams.to]);
+        let receiverAddress: string;
+        if (taskParams.to.length == 42) {
+            receiverAddress = ethers.AbiCoder.defaultAbiCoder().encode(["address"], [taskParams.to]);
+        } else {
+            receiverAddress = taskParams.to;
+        }
 
         const tx = await tokenBridge.bridge(
             taskParams.tochainid,
-            encodedReceiver,
+            receiverAddress,
             taskParams.amount,
             0,
             60000n,
