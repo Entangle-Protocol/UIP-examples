@@ -85,14 +85,16 @@ describe("ExampleToken", () => {
 
         const amount = ethers.parseEther("100");
         await exampleToken.connect(Alice).approve(exampleToken.target, amount);
+
+        const encodedBobAddress = ethers.AbiCoder.defaultAbiCoder().encode(["address"], [Bob.address]);
         
         await expect(
             exampleToken.connect(Alice).bridge(
                 DEST_CHAIN_ID,
-                Bob.address,
+                encodedBobAddress,
                 amount,
                 0,
-                0
+                60000n
             , { value: 5 })
         ).to.emit(exampleToken, "ExampleToken__Bridged");
     });
@@ -121,8 +123,6 @@ describe("ExampleToken", () => {
         );
 
         await exampleToken.setEndpoint(Bob.address);
-        const estimatedGas = await ethers.provider.estimateGas(await exampleToken.connect(Bob).execute(data, { "gasPrice": 43875468n } ));
-        console.log(estimatedGas);
         await expect(exampleToken.connect(Bob).execute(data))
             .to.emit(exampleToken, "ExampleToken__Received")
             .withArgs(Alice.address, Bob.address, amount, SRC_CHAIN_ID);

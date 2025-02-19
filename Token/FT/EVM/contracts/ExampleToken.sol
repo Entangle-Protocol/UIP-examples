@@ -32,7 +32,7 @@ contract ExampleToken is
     //          EVENTS
     // ==============================
     event ExampleToken__NewEndpoint(address oldEndpoint, address newEndpoint);
-    event ExampleToken__Bridged(address from, address to, uint256 amount, uint256 toChainId);
+    event ExampleToken__Bridged(address from, bytes to, uint256 amount, uint256 toChainId);
     event ExampleToken__Received(address from, address to, uint256 amount, uint256 srcChainId);
 
     bytes32 public constant ENDPOINT = keccak256("ENDPOINT");
@@ -65,7 +65,7 @@ contract ExampleToken is
     /**
      * @notice Initiates the token bridging operation between chains.
      * @param toChainId The ID of the target chain for token bridging.
-     * @param to The address of the recipient on the target chain.
+     * @param to The encoded address of the recipient on the target chain.
      * @param amount The amount of tokens to bridge.
      * @param blockFinalizationOption Finalization option
      * Options available are:
@@ -76,7 +76,7 @@ contract ExampleToken is
      */
     function bridge(
         uint256 toChainId,
-        address to,
+        bytes calldata to,
         uint256 amount,
         uint256 blockFinalizationOption,
         uint256 customGasLimit
@@ -103,7 +103,7 @@ contract ExampleToken is
             SelectorLib.encodeDefaultSelector(bytes4(keccak256("execute(bytes calldata)"))),
             encodedParams,
             destAddress,
-            abi.encode(abi.encode(from), abi.encode(to), amount)
+            abi.encode(abi.encode(from), to, amount)
         );
 
         emit ExampleToken__Bridged(from, to, amount, toChainId);
