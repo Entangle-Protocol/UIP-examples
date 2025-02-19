@@ -13,10 +13,17 @@ task("sendTokens", "Initiates token transfer through the bridge")
         const tokenBridge = await ethers.getContractAt("ExampleToken", address, signer);
 
         let receiverAddress: string;
-        if (taskParams.to.length == 42) {
+
+        if (taskParams.to.length === 42 && taskParams.to.startsWith("0x")) {
             receiverAddress = ethers.AbiCoder.defaultAbiCoder().encode(["address"], [taskParams.to]);
+        } else if (taskParams.to.length === 44) {
+            const solanaPublicKey = Buffer.from(require("bs58").decode(taskParams.to));
+            if (solanaPublicKey.length !== 32) {
+                throw new Error("Invalid Solana address");
+            }
+            receiverAddress = ethers.AbiCoder.defaultAbiCoder().encode(["bytes32"], [solanaPublicKey]);
         } else {
-            receiverAddress = taskParams.to;
+            throw new Error("Invalid receiver address format");
         }
 
         const tx = await tokenBridge.bridge(
