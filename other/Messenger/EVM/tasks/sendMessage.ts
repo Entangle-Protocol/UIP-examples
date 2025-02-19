@@ -17,6 +17,16 @@ task("sendMessage", "Proposes an operation")
         const [signer] = await ethers.getSigners();
         console.log("signer: ", signer.address);
 
+        if (taskArgs.destaddress.length == 42) {
+            const destAddress_bytes = coder.encode(
+                ["address"],
+                [taskArgs.destaddress]
+            );
+        } else if (taskArgs.destaddress.length != 44) {
+            console.log("invalid destination address")
+            return
+        }
+      
         const destAddress_bytes = coder.encode(
             ["address"],
             [taskArgs.destaddress]
