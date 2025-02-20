@@ -37,28 +37,28 @@ const config: HardhatUserConfig = {
     teib: {
         url: "https://evm-testnet.entangle.fi",
         accounts: {
-            mnemonic: "juice banana virtual cabbage addict security valid diamond flat warfare large phone",
+            mnemonic: "",
         },
         chainId: 33133
     },
     ethereum_sepolia: {
         url: "https://ethereum-sepolia-rpc.publicnode.com",
         accounts: {
-            mnemonic: "juice banana virtual cabbage addict security valid diamond flat warfare large phone",
+            mnemonic: "",
         },
         chainId: 11155111
     },
     polygon_amoy: {
         url: "https://rpc-amoy.polygon.technology",
         accounts: {
-            mnemonic: "juice banana virtual cabbage addict security valid diamond flat warfare large phone",
+            mnemonic: "",
         },
         chainId: 80002
     },
     mantle_sepolia: {
         url: "https://rpc.sepolia.mantle.xyz",
         accounts: {
-            mnemonic: "juice banana virtual cabbage addict security valid diamond flat warfare large phone"
+            mnemonic: ""
         },
         chainId: 5003
     }
