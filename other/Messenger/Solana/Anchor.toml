@@ -35,5 +35,5 @@ wallet = "~/.config/solana/id.json"
 test = "bun test --timeout 0 tests"
 
 get-messages-by-sender = "bun run scripts/getMessagesBySender.ts"
-initialize-messenger = "bun run scripts/initialize.ts"
+initialize = "bun run scripts/initialize.ts"
 send-message = "bun run scripts/sendMessage.ts"

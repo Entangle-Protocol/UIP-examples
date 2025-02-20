@@ -1,5 +1,5 @@
 use borsh::BorshDeserialize;
-use solana_sdk::{instruction::AccountMeta, pubkey::Pubkey, system_program};
+use solana_program::{instruction::AccountMeta, pubkey::Pubkey, system_program};
 use uip_endpoint::{chains::*, state::MessageData};
 
 #[cfg(not(feature = "devnet"))]

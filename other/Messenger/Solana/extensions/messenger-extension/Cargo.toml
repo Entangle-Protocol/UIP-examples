@@ -13,7 +13,7 @@ crate-type = ["cdylib"]
 [dependencies]
 borsh = "0.10.4"
 messenger = { path = "../../programs/messenger", features = ["no-entrypoint"] }
-solana-sdk = "2"
+solana-program = "1.18"
 
 [dependencies.uip-endpoint-solana]
 git = "ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git"

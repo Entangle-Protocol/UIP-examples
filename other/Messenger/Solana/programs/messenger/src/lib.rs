@@ -1,4 +1,5 @@
 //! Messenger protocol, utilizing UIP for cross-chain communication.
+#![allow(unexpected_cfgs)]
 
 use crate::instructions::*;
 use anchor_lang::prelude::*;

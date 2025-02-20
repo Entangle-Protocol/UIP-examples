@@ -43,11 +43,8 @@ pub fn send_message(
     custom_gas_limit: u128,
     text: String,
 ) -> Result<()> {
-    let sender = ctx.accounts.sender.key().to_bytes().to_vec();
-    let selector = Selector::DefaultSelector.into();
-
     let text = sol_data::String::abi_encode(&text);
-    let payload = <(Bytes, Bytes)>::abi_encode_params(&(text, sender));
+    let payload = <(Bytes, Bytes)>::abi_encode_params(&(text, ctx.accounts.sender.key()));
 
     let (dest_chain_id, dest_addr) = match destination {
         Destination::SolanaMainnet => (SOLANA_MAINNET_CHAIN_ID, crate::ID.to_bytes().into()),
@@ -78,7 +75,7 @@ pub fn send_message(
             proposal_commitment: Commitment::Confirmed,
             custom_gas_limit,
         },
-        selector,
+        Selector::DefaultSelector.into(),
         dest_addr,
         payload,
     )

@@ -20,7 +20,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         msg_hash,
     } = parse_uip_message(&ctx.accounts.uip_msg, &crate::ID)?;
 
-    let allowed_smart_contracts = [
+    let allowed_origins = [
         (&SOLANA_DEVNET_CHAIN_ID, &crate::ID.to_bytes()[..]),
         (&SOLANA_MAINNET_CHAIN_ID, &crate::ID.to_bytes()[..]),
         (&ETHEREUM_SEPOLIA_CHAIN_ID, &ETHEREUM_SEPOLIA_ADDRESS),
@@ -29,7 +29,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         (&TEIB_CHAIN_ID, &TEIB_ADDRESS),
     ];
     require!(
-        allowed_smart_contracts.contains(&(&src_chain_id, &sender_addr[..])),
+        allowed_origins.contains(&(&src_chain_id, &sender_addr[..])),
         MessengerError::SenderSmartContractNotAllowed
     );
 
