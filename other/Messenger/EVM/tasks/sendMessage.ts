@@ -17,20 +17,23 @@ task("sendMessage", "Proposes an operation")
         const [signer] = await ethers.getSigners();
         console.log("signer: ", signer.address);
 
-        if (taskArgs.destaddress.length == 42) {
-            const destAddress_bytes = coder.encode(
+        let destAddress_bytes;
+        if (taskArgs.destaddress.length == 42 && taskArgs.destaddress.startsWith("0x")) {
+            destAddress_bytes = coder.encode(
                 ["address"],
                 [taskArgs.destaddress]
             );
-        } else if (taskArgs.destaddress.length != 44) {
-            console.log("invalid destination address")
-            return
+        } else {
+            const solanaPublicKey = Buffer.from(require("bs58").decode(taskArgs.destaddress));
+            if (solanaPublicKey.length !== 32) {
+                throw new Error("Invalid Solana address");
+            }
+
+            destAddress_bytes = coder.encode(
+                ["bytes32"], 
+                [solanaPublicKey]
+            );
         }
-      
-        const destAddress_bytes = coder.encode(
-            ["address"],
-            [taskArgs.destaddress]
-        );
         
         const address = await loadDeploymentAddress(netname, "MessengerProtocol");
         const instance = await ethers.getContractAt("MessengerProtocol", address, signer);
