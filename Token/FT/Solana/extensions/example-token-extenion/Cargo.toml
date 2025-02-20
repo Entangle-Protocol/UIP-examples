@@ -1,0 +1,22 @@
+[package]
+name = "example-token-extension"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+devnet = ["example-token/devnet"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+alloy-sol-types = "0.7"
+borsh = "0.10.4"
+example-token = { path = "../../programs/example-token", features = ["no-entrypoint"] }
+solana-program = "1.18"
+
+[dependencies.uip-endpoint-solana]
+git = "ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git"
+branch = "develop"
+features = ["no-entrypoint"]

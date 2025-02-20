@@ -1,0 +1,67 @@
+use alloy_sol_types::{
+    sol_data::{Bytes, Uint},
+    SolType,
+};
+use borsh::BorshDeserialize;
+use solana_program::{instruction::AccountMeta, pubkey, pubkey::Pubkey, system_program};
+use uip_endpoint::state::MessageData;
+
+#[repr(C)]
+pub struct InstructionInfo {
+    pub compute_units: u32,
+    pub accounts_len: u32,
+    pub accounts: [AccountMeta; 32],
+}
+
+/// Populates `result` with compute units and account metadata based on the
+/// provided serialized message data.
+///
+/// # Safety
+///
+/// The caller must ensure that `msg_data_ptr` points to a valid array of
+/// `msg_data_len` initialized bytes.
+#[no_mangle]
+pub unsafe extern "C" fn get_instruction_info(
+    msg_data_ptr: *const u8,
+    msg_data_len: usize,
+    result: &mut InstructionInfo,
+) {
+    let mut msg_data = core::slice::from_raw_parts(msg_data_ptr, msg_data_len);
+    let msg_data = MessageData::deserialize(&mut msg_data).unwrap();
+
+    let payload = &msg_data.initial_proposal.payload;
+    let (_, to, _) = <(Bytes, Bytes, Uint<256>)>::abi_decode_params(payload, true).unwrap();
+
+    let to = (&to as &[u8]).try_into().unwrap();
+
+    let (config_pda, _) =
+        Pubkey::find_program_address(&[b"config"], &example_token::ID.to_bytes().into());
+    result.accounts[0] = AccountMeta::new_readonly(config_pda, false);
+
+    let (mint_pda, _) =
+        Pubkey::find_program_address(&[b"exa_mint"], &example_token::ID.to_bytes().into());
+    result.accounts[1] = AccountMeta::new(mint_pda, false);
+    result.accounts[2] = AccountMeta::new(find_ata(&to, &mint_pda), false);
+    result.accounts[3] = AccountMeta::new_readonly(TOKEN_PROGRAM_ID, false);
+    result.accounts[4] = AccountMeta::new_readonly(system_program::ID, false);
+
+    result.accounts_len = 5;
+    result.compute_units = 0;
+}
+
+const TOKEN_PROGRAM_ID: Pubkey = pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+
+fn find_ata(wallet_address: &Pubkey, token_mint_address: &Pubkey) -> Pubkey {
+    const ASSOCIATED_TOKEN_PROGRAM_ID: Pubkey =
+        pubkey!("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
+
+    Pubkey::find_program_address(
+        &[
+            &wallet_address.to_bytes(),
+            &TOKEN_PROGRAM_ID.to_bytes(),
+            &token_mint_address.to_bytes(),
+        ],
+        &ASSOCIATED_TOKEN_PROGRAM_ID,
+    )
+    .0
+}

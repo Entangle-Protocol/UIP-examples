@@ -1,0 +1,122 @@
+use crate::{addresses::*, error::*, state::*, utils::find_ata};
+use alloy_sol_types::{
+    sol_data::{Bytes, Uint},
+    SolType,
+};
+use anchor_lang::prelude::*;
+use solana_invoke::invoke_signed;
+use spl_token::instruction::mint_to;
+use uip_endpoint::{
+    chains::*,
+    sdk::{parse_uip_message, route_instruction, BasicMessageData},
+};
+
+#[derive(Accounts)]
+pub struct Execute<'info> {
+    /// CHECK: It's checked in `parse_uip_message`.
+    uip_msg: AccountInfo<'info>,
+}
+
+pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()> {
+    let BasicMessageData {
+        payload,
+        sender_addr,
+        src_chain_id,
+        ..
+    } = parse_uip_message(&ctx.accounts.uip_msg, &crate::ID)?;
+
+    let allowed_origins = [
+        (&SOLANA_DEVNET_CHAIN_ID, &crate::ID.to_bytes()[..]),
+        (&SOLANA_MAINNET_CHAIN_ID, &crate::ID.to_bytes()[..]),
+        (&POLYGON_AMOY_CHAIN_ID, &POLYGON_AMOY_ADDRESS),
+        (&MANTLE_SEPOLIA_CHAIN_ID, &MANTLE_SEPOLIA_ADDRESS),
+        (&TEIB_CHAIN_ID, &TEIB_ADDRESS),
+    ];
+    require!(
+        allowed_origins.contains(&(&src_chain_id, &sender_addr[..])),
+        ExampleTokenError::SenderSmartContractNotAllowed
+    );
+
+    msg!("CCM instruction: ReceiveMessage");
+
+    let (from, to, amount) = <(Bytes, Bytes, Uint<256>)>::abi_decode_params(&payload, true)
+        .map_err(|_| ProgramError::InvalidInstructionData)?;
+
+    let amount = amount
+        .try_into()
+        .map_err(|_| ProgramError::InvalidInstructionData)?;
+    let to = (&to as &[u8])
+        .try_into()
+        .map_err(|_| ProgramError::InvalidInstructionData)?;
+
+    route_instruction(
+        &crate::ID,
+        bridge_mint,
+        ctx.remaining_accounts,
+        to,
+        BridgeMintInput { to, amount },
+    )?;
+
+    msg!(
+        "{} received {} tokens from {}",
+        to,
+        amount,
+        hex::encode(from)
+    );
+
+    Ok(())
+}
+
+#[derive(Accounts)]
+struct BridgeMint<'info> {
+    #[account(mut)]
+    payer: Signer<'info>,
+    #[account(seeds = [b"config"], bump)]
+    config: Account<'info, ExampleTokenConfig>,
+    /// CHECK: it's checked to be the EXA mint
+    #[account(mut, seeds = [b"exa_mint"], bump)]
+    exa_mint: AccountInfo<'info>,
+    /// CHECK: it's checked to be the `to` ATA
+    #[account(mut)]
+    token_account: AccountInfo<'info>,
+    /// CHECK: it's checked to be the SPL token program
+    #[account(address = spl_token::ID)]
+    token_program: AccountInfo<'info>,
+    system_program: Program<'info, System>,
+}
+
+struct BridgeMintInput {
+    to: Pubkey,
+    amount: u64,
+}
+
+fn bridge_mint(ctx: Context<BridgeMint>, input: BridgeMintInput) -> Result<()> {
+    let config = &ctx.accounts.config;
+    let exa_mint = &ctx.accounts.exa_mint;
+    let token_account = &ctx.accounts.token_account;
+
+    require!(
+        token_account.key() == find_ata(&input.to, exa_mint.key),
+        ErrorCode::ConstraintAddress
+    );
+
+    let ix = mint_to(
+        &spl_token::ID,
+        exa_mint.key,
+        token_account.key,
+        &config.key(),
+        &[],
+        input.amount,
+    )?;
+    invoke_signed(
+        &ix,
+        &[
+            exa_mint.to_account_info(),
+            token_account.to_account_info(),
+            config.to_account_info(),
+        ],
+        &[&[b"config", &[ctx.bumps.config]]],
+    )?;
+
+    Ok(())
+}
