@@ -5,11 +5,9 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-chunk-loader = "CHunpGoZivy5x1dcASNQEHcbCJfRYXUwBXxgVnXday3k"
 example-token = "eTokpPEQPZ9Xdt7ZzSoC4pk4bwufdZ6rAEQb3GKchcH"
 
 [programs.devnet]
-chunk-loader = "CHunpGoZivy5x1dcASNQEHcbCJfRYXUwBXxgVnXday3k"
 example-token = "eTokpPEQPZ9Xdt7ZzSoC4pk4bwufdZ6rAEQb3GKchcH"
 
 [test.validator]
