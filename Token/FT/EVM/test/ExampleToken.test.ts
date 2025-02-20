@@ -122,10 +122,12 @@ describe("ExampleToken", () => {
             ]
         );
 
+        const encodedAliceAddress = ethers.AbiCoder.defaultAbiCoder().encode(["address"], [Alice.address]);
+
         await exampleToken.setEndpoint(Bob.address);
         await expect(exampleToken.connect(Bob).execute(data))
             .to.emit(exampleToken, "ExampleToken__Received")
-            .withArgs(Alice.address, Bob.address, amount, SRC_CHAIN_ID);
+            .withArgs(encodedAliceAddress, Bob.address, amount, SRC_CHAIN_ID);
 
         expect(await exampleToken.balanceOf(Bob.address)).to.equal(amount);
     });

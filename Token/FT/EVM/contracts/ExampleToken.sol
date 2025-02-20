@@ -33,7 +33,7 @@ contract ExampleToken is
     // ==============================
     event ExampleToken__NewEndpoint(address oldEndpoint, address newEndpoint);
     event ExampleToken__Bridged(address from, bytes to, uint256 amount, uint256 toChainId);
-    event ExampleToken__Received(address from, address to, uint256 amount, uint256 srcChainId);
+    event ExampleToken__Received(bytes from, address to, uint256 amount, uint256 srcChainId);
 
     bytes32 public constant ENDPOINT = keccak256("ENDPOINT");
     
@@ -131,10 +131,9 @@ contract ExampleToken is
         ) = abi.decode(payload, (bytes, bytes, uint256));
 
         address to = abi.decode(receiver, (address));
-        address from = abi.decode(sender, (address));
 
         _mint(to, amount);
-        emit ExampleToken__Received(from, to, amount, srcChainId);
+        emit ExampleToken__Received(sender, to, amount, srcChainId);
     }
 
     // ======    ADMIN   ======
