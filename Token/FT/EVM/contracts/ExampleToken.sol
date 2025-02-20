@@ -164,6 +164,11 @@ contract ExampleToken is
         _mint(to, amount);
     }
 
+    function decimals() public view virtual override returns (uint8) {
+        // For compatibility with Solana
+        return 9;
+    }
+
     function _authorizeUpgrade(address newImplementation)
         internal
         onlyRole(DEFAULT_ADMIN_ROLE)
