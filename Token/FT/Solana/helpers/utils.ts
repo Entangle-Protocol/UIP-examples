@@ -23,10 +23,6 @@ export const POLYGON_CHAIN_ID = new BN("137");
 export const EIB_CHAIN_ID = new BN("33033");
 export const TEIB_CHAIN_ID = new BN("33133");
 
-// export const SOLANA_CHAIN_ID =
-//   anchor.AnchorProvider.env().connection.rpcEndpoint.includes("devnet")
-//     ? SOLANA_DEVNET_CHAIN_ID
-//     : SOLANA_MAINNET_CHAIN_ID;
 export const SOLANA_CHAIN_ID = SOLANA_DEVNET_CHAIN_ID;
 
 export function setupTests(): { connection: Connection; payer: Keypair } {

@@ -35,6 +35,7 @@ import { Wallet } from "ethers";
 import { randomInt } from "crypto";
 import { CID } from "multiformats";
 import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
   getAccount,
   getAssociatedTokenAddressSync,
   getOrCreateAssociatedTokenAccount,
@@ -118,17 +119,12 @@ describe("example token", () => {
   });
 
   test("mint", async () => {
-    await Promise.all(
-      [sender.publicKey, receiver.publicKey].map(
-        (owner) =>
-          getOrCreateAssociatedTokenAccount(
-            connection,
-            payer,
-            EXA_MINT,
-            owner,
-            true,
-          ),
-      ),
+    await getOrCreateAssociatedTokenAccount(
+      connection,
+      payer,
+      EXA_MINT,
+      sender.publicKey,
+      true,
     );
 
     const exaBalanceBefore = await getAccount(
@@ -305,7 +301,13 @@ describe("example token", () => {
         isSigner: false,
         isWritable: true,
       },
+      { pubkey: receiver.publicKey, isSigner: false, isWritable: false },
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+      {
+        pubkey: ASSOCIATED_TOKEN_PROGRAM_ID,
+        isSigner: false,
+        isWritable: false,
+      },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
     ];
 
@@ -334,13 +336,18 @@ describe("example token", () => {
 
     const balanceBefore = await connection.getBalance(executor.publicKey);
 
-    const exaBalanceBefore = await getAccount(
-      connection,
-      getAssociatedTokenAddressSync(
-        EXA_MINT,
-        receiver.publicKey,
-      ),
-    ).then((x) => x.amount);
+    let exaBalanceBefore: bigint = 0n;
+    try {
+      exaBalanceBefore = await getAccount(
+        connection,
+        getAssociatedTokenAddressSync(
+          EXA_MINT,
+          receiver.publicKey,
+        ),
+      ).then((x) => x.amount);
+    } catch (e) {
+      expect(e.toString()).toInclude("TokenAccountNotFoundError");
+    }
 
     input.spendingLimit = new BN(3_000_000);
     await executeFull(input);

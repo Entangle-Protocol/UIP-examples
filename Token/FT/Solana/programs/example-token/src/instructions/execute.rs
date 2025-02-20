@@ -4,7 +4,8 @@ use alloy_sol_types::{
     SolType,
 };
 use anchor_lang::prelude::*;
-use solana_invoke::invoke_signed;
+use solana_invoke::{invoke, invoke_signed};
+use spl_associated_token_account::instruction::create_associated_token_account;
 use spl_token::instruction::mint_to;
 use uip_endpoint::{
     chains::*,
@@ -45,7 +46,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
     let amount = amount
         .try_into()
         .map_err(|_| ProgramError::InvalidInstructionData)?;
-    let to = (&to as &[u8])
+    let to: Pubkey = (&to as &[u8])
         .try_into()
         .map_err(|_| ProgramError::InvalidInstructionData)?;
 
@@ -53,7 +54,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         &crate::ID,
         bridge_mint,
         ctx.remaining_accounts,
-        to,
+        (),
         BridgeMintInput { to, amount },
     )?;
 
@@ -79,9 +80,14 @@ struct BridgeMint<'info> {
     /// CHECK: it's checked to be the `to` ATA
     #[account(mut)]
     token_account: AccountInfo<'info>,
+    /// CHECK: it's checked in CPI
+    to: AccountInfo<'info>,
     /// CHECK: it's checked to be the SPL token program
     #[account(address = spl_token::ID)]
     token_program: AccountInfo<'info>,
+    /// CHECK: it's checked to be the SPL associated token program
+    #[account(address = spl_associated_token_account::ID)]
+    associated_token_program: AccountInfo<'info>,
     system_program: Program<'info, System>,
 }
 
@@ -91,14 +97,29 @@ struct BridgeMintInput {
 }
 
 fn bridge_mint(ctx: Context<BridgeMint>, input: BridgeMintInput) -> Result<()> {
+    let payer = &ctx.accounts.payer;
     let config = &ctx.accounts.config;
     let exa_mint = &ctx.accounts.exa_mint;
     let token_account = &ctx.accounts.token_account;
+    let to = &ctx.accounts.to;
 
     require!(
         token_account.key() == find_ata(&input.to, exa_mint.key),
         ErrorCode::ConstraintAddress
     );
+
+    if token_account.data_is_empty() {
+        let ix = create_associated_token_account(payer.key, to.key, exa_mint.key);
+        invoke(
+            &ix,
+            &[
+                payer.to_account_info(),
+                token_account.to_account_info(),
+                to.to_account_info(),
+                exa_mint.to_account_info(),
+            ],
+        )?;
+    }
 
     let ix = mint_to(
         &spl_token::ID,

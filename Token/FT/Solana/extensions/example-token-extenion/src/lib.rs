@@ -42,19 +42,19 @@ pub unsafe extern "C" fn get_instruction_info(
         Pubkey::find_program_address(&[b"exa_mint"], &example_token::ID.to_bytes().into());
     result.accounts[1] = AccountMeta::new(mint_pda, false);
     result.accounts[2] = AccountMeta::new(find_ata(&to, &mint_pda), false);
-    result.accounts[3] = AccountMeta::new_readonly(TOKEN_PROGRAM_ID, false);
-    result.accounts[4] = AccountMeta::new_readonly(system_program::ID, false);
+    result.accounts[3] = AccountMeta::new_readonly(to, false);
+    result.accounts[4] = AccountMeta::new_readonly(TOKEN_PROGRAM_ID, false);
+    result.accounts[5] = AccountMeta::new_readonly(ASSOCIATED_TOKEN_PROGRAM_ID, false);
+    result.accounts[6] = AccountMeta::new_readonly(system_program::ID, false);
 
-    result.accounts_len = 5;
+    result.accounts_len = 7;
     result.compute_units = 0;
 }
 
 const TOKEN_PROGRAM_ID: Pubkey = pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+const ASSOCIATED_TOKEN_PROGRAM_ID: Pubkey = pubkey!("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
 
 fn find_ata(wallet_address: &Pubkey, token_mint_address: &Pubkey) -> Pubkey {
-    const ASSOCIATED_TOKEN_PROGRAM_ID: Pubkey =
-        pubkey!("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
-
     Pubkey::find_program_address(
         &[
             &wallet_address.to_bytes(),

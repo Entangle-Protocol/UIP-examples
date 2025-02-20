@@ -24,6 +24,7 @@ hex = "0.4"
 hex-literal = "0.4"
 ruint = "1.12"
 solana-invoke = { git = "https://github.com/lincot/solana-invoke", branch = "solana-program-v1-only" }
+spl-associated-token-account = { version = "1", features = ["no-entrypoint"] }
 spl-token = { version = "4.0", features = ["no-entrypoint"] }
 
 [dependencies.uip-endpoint-solana]
