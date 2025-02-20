@@ -5,11 +5,9 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-chunk-loader = "CHunpGoZivy5x1dcASNQEHcbCJfRYXUwBXxgVnXday3k"
 messenger = "MesRprmcvhQFtyP4xBEsDvCY9ig1ek5Zfwcf26KGZ5f"
 
 [programs.devnet]
-chunk-loader = "CHunpGoZivy5x1dcASNQEHcbCJfRYXUwBXxgVnXday3k"
 messenger = "MesRprmcvhQFtyP4xBEsDvCY9ig1ek5Zfwcf26KGZ5f"
 
 [test.validator]
@@ -20,6 +18,9 @@ address = "pHoEPVJZRCWYaZ2TjHwVWgeee5DnFWGug7vaMbYt4xe"
 [[test.validator.clone]]
 # UTS vault
 address = "APz2xWn2NfRhxzkaaXALEorfCgvHpXAfEo2kJC6ZE1zW"
+[[test.validator.clone]]
+# Chunk Loader
+address = "ChUnQ7H46X5UeQJHVgZFBy3hGM95TwWsmvBRwQxVz3JG"
 [[test.validator.account]]
 address = "C4KbAeFrYCu3LZpUBtGqupArntha1KEdrhz1Nu6pG8Sv"
 filename = "tests/accounts/uip-config.json"
