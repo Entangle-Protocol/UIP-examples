@@ -26,7 +26,7 @@ task("proposal", "Prints proposal data from a given transaction")
             .filter((event) => event && event.name === "MessageProposed");
 
         // Log the event data
-        const fields = ["Chain id: ", "Msg.value: ", "Selector slot: ", "Agent parameters: ", "Sender address: ", "Destination address: ", "Encoded payload: "]
+        const fields = ["Chain id: ", "Msg.value: ", "Selector slot: ", "Agent parameters: ", "Sender address: ", "Destination address: ", "Encoded payload: ", "Reserved: "]
         proposeEvent.forEach((event) => {
             event!.args.forEach((elem) => {
                 console.log(fields[event!.args.indexOf(elem)], elem);
