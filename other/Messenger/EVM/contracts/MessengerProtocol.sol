@@ -3,7 +3,8 @@ pragma solidity ^0.8.24;
 
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {Initializable, AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import {IEndpoint, TransmitterParams} from "@entangle-labs/uip-contracts/contracts/interfaces/endpoint/IEndpoint.sol";
+import {IEndpoint} from "@entangle-labs/uip-contracts/contracts/interfaces/endpoint/IEndpoint.sol";
+import {TransmitterParamsLib} from "@entangle-labs/uip-contracts/contracts/lib/TransmitterParamsLib.sol";
 import {MessageReceiver} from "@entangle-labs/uip-contracts/contracts/MessageReceiver.sol";
 import {SelectorLib} from "./lib/SelectorLib.sol";
 
@@ -64,7 +65,7 @@ contract MessengerProtocol is
         bytes calldata destAddress,
         string calldata _msg
     ) external payable {
-        TransmitterParams memory transmitterParams = TransmitterParams(
+        TransmitterParamsLib.TransmitterParams memory transmitterParams = TransmitterParamsLib.TransmitterParams(
             blockFinalizationOption,
             customGasLimit
         );

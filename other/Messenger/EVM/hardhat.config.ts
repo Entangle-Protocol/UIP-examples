@@ -7,6 +7,7 @@ import "./tasks/balance"
 import "./tasks/getBlock"
 import "./tasks/readTxEvent"
 import "./tasks/getMsgHash"
+import "./tasks/getTxData"
 
 const config: HardhatUserConfig = {
   solidity: {
