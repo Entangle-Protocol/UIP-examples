@@ -134,7 +134,7 @@ contract MessengerProtocol is
     }
 
     // ======    ADMIN   ======
-    function changeendpoint(address _newendpoint) external onlyRole(ADMIN) {
+    function changeEndpoint(address _newendpoint) external onlyRole(ADMIN) {
         endpoint = _newendpoint;
     }
 
