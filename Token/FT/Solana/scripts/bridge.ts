@@ -8,7 +8,7 @@ import { PublicKey } from "@solana/web3.js";
 async function main(): Promise<void> {
   if (process.argv.length < 2 + 6) {
     console.error(
-      "Usage: sendMessage <#times> <dst-chain> <ccm-fee> <custom-gas-limit> <to> <amount>",
+      "Usage: sendMessage <#times> <dst-chain> <ccm-fee> <custom-gas-limit> <to> <base-amount>",
     );
     process.exit(1);
   }
@@ -23,7 +23,7 @@ async function main(): Promise<void> {
   } else {
     to = new PublicKey(process.argv[6]).toBuffer();
   }
-  const amount = new BN(process.argv[7]);
+  const baseAmount = new BN(process.argv[7]);
 
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
@@ -60,7 +60,7 @@ async function main(): Promise<void> {
           customGasLimit,
           destination,
           sender: payer,
-          amount,
+          amount: baseAmount.add(new BN(i)),
           to,
         });
         console.log(`${i + 1} signature:`, transactionSignature);
