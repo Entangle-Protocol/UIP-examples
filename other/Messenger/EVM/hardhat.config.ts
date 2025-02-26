@@ -1,13 +1,18 @@
 import { HardhatUserConfig, task } from "hardhat/config";
 import '@openzeppelin/hardhat-upgrades';
 import "@nomicfoundation/hardhat-toolbox";
-import "./tasks/sendMessage"
-import "./tasks/getLastMessage"
 import "./tasks/balance"
 import "./tasks/getBlock"
-import "./tasks/readTxEvent"
+import "./tasks/getChainIds"
+import "./tasks/getLastMessage"
+import "./tasks/getMsg"
+import "./tasks/getMsgExecution"
 import "./tasks/getMsgHash"
+import "./tasks/getMsgStatusByHash"
+import "./tasks/getReward"
 import "./tasks/getTxData"
+import "./tasks/readTxEvent"
+import "./tasks/sendMessage"
 
 const config: HardhatUserConfig = {
   solidity: {
