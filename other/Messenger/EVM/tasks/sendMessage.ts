@@ -35,7 +35,7 @@ task("sendMessage", "Proposes an operation")
             );
         }
 
-        const blockFinalizationOption = 3
+        const blockFinalizationOption = 0
         const customGasLimit = 272200
         
         const address = await loadDeploymentAddress(netname, "MessengerProtocol");

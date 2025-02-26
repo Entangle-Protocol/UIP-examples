@@ -8,7 +8,8 @@ import { hexToString } from "../utils/utils";
 task("getLastMessage", "Proposes returns last message")
     .addParam("sender", "source chain sender address")
     .setAction(async (taskArgs, {network, ethers}) => {
-        
+        const coder = ethers.AbiCoder.defaultAbiCoder();
+
         const [signer] = await ethers.getSigners();
         console.log(`signer: ${signer.address}`);
 
@@ -18,9 +19,26 @@ task("getLastMessage", "Proposes returns last message")
         const address = await loadDeploymentAddress(netname, "MessengerProtocol");
         const instance = await ethers.getContractAt("MessengerProtocol", address, signer);
         
-        const msgB: BytesLike = await instance.getLastMessage(
-            ethers.AbiCoder.defaultAbiCoder().encode(["address"], [taskArgs.sender])
-        )
+        let senderBytes;
+        if (taskArgs.sender.length == 42 && taskArgs.sender.startsWith("0x")) {
+            senderBytes = coder.encode(
+                ["address"],
+                [taskArgs.sender]
+            );
+        } else {
+            const solanaPublicKey = Buffer.from(require("bs58").decode(taskArgs.sender));
+            if (solanaPublicKey.length !== 32) {
+                throw new Error("Invalid Solana address");
+            }
+
+            senderBytes = coder.encode(
+                ["bytes32"], 
+                [solanaPublicKey]
+            );
+        }
+
+
+        const msgB: BytesLike = await instance.getLastMessage(senderBytes)
         console.log(SEPARATOR)
 
         const lenHex = msgB.toString().substring(64 * 5, 64 * 5 + 2)

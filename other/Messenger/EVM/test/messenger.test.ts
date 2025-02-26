@@ -65,13 +65,13 @@ describe("Messenger", function () {
         );
         const msg = "My msg";
         const destChainId = 1;
-        const waitForBlocks = 3
-        const customGasLimit = 0
+        const blockFinalizationOption = 0
+        const customGasLimit = 300000
 
         // send
         await messengerProtocol.sendMessage(
             destChainId,
-            waitForBlocks,
+            blockFinalizationOption,
             customGasLimit,
             randomSolidityAddress_bytes,
             msg,
