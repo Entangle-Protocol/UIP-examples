@@ -26,7 +26,7 @@ pub struct Bridge<'info> {
     exa_mint: AccountInfo<'info>,
     /// CHECK: checked in the CPI
     #[account(mut)]
-    uts_vault: AccountInfo<'info>,
+    uts_connector: AccountInfo<'info>,
     /// CHECK: checked in CPI
     #[account(seeds = [b"uip_signer"], bump)]
     program_signer: AccountInfo<'info>,
@@ -97,7 +97,7 @@ pub fn bridge(
             ctx.accounts.uip_program.to_account_info(),
             uip_endpoint::cpi::accounts::Propose {
                 payer: ctx.accounts.sender.to_account_info(),
-                uts_vault: ctx.accounts.uts_vault.to_account_info(),
+                uts_connector: ctx.accounts.uts_connector.to_account_info(),
                 program_signer: Some(ctx.accounts.program_signer.to_account_info()),
                 system_program: ctx.accounts.system_program.to_account_info(),
             },

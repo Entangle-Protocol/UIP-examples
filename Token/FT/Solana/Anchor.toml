@@ -16,8 +16,11 @@ url = "https://api.devnet.solana.com"
 # UIP program
 address = "pHoEPVJZRCWYaZ2TjHwVWgeee5DnFWGug7vaMbYt4xe"
 [[test.validator.clone]]
-# UTS vault
-address = "APz2xWn2NfRhxzkaaXALEorfCgvHpXAfEo2kJC6ZE1zW"
+# UTS config
+address = "J8WXFLwtv6AD45cjbcVtF33EqeVT8Ef9U9iDG8wS4PUH"
+[[test.validator.clone]]
+# UTS connector
+address = "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
 [[test.validator.account]]
 address = "C4KbAeFrYCu3LZpUBtGqupArntha1KEdrhz1Nu6pG8Sv"
 filename = "tests/accounts/uip-config.json"

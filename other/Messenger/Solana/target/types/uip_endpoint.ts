@@ -116,24 +116,6 @@ export type UipEndpoint = {
       ],
       "args": [
         {
-          "name": "repeater",
-          "type": {
-            "array": [
-              "u8",
-              20
-            ]
-          }
-        },
-        {
-          "name": "rotator",
-          "type": {
-            "array": [
-              "u8",
-              20
-            ]
-          }
-        },
-        {
           "name": "targetConsensusRate",
           "type": "u32"
         },
@@ -142,11 +124,7 @@ export type UipEndpoint = {
           "type": "u32"
         },
         {
-          "name": "messageLifetimeSec",
-          "type": "u32"
-        },
-        {
-          "name": "initialSigners",
+          "name": "signers",
           "type": {
             "vec": {
               "array": [
@@ -157,7 +135,7 @@ export type UipEndpoint = {
           }
         },
         {
-          "name": "initialExecutors",
+          "name": "executors",
           "type": {
             "vec": "pubkey"
           }
@@ -231,8 +209,9 @@ export type UipEndpoint = {
           "signer": true
         },
         {
-          "name": "utsVault",
-          "writable": true
+          "name": "utsConnector",
+          "writable": true,
+          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
         },
         {
           "name": "programSigner",
@@ -407,12 +386,9 @@ export type UipEndpoint = {
           "signer": true
         },
         {
-          "name": "endpointConfig",
-          "writable": true
-        },
-        {
-          "name": "utsVault",
-          "writable": true
+          "name": "utsConnector",
+          "writable": true,
+          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
         },
         {
           "name": "systemProgram",
@@ -462,11 +438,9 @@ export type UipEndpoint = {
           "signer": true
         },
         {
-          "name": "endpointConfig"
-        },
-        {
-          "name": "utsVault",
-          "writable": true
+          "name": "utsConnector",
+          "writable": true,
+          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
         },
         {
           "name": "systemProgram",
@@ -704,15 +678,64 @@ export type UipEndpoint = {
       ],
       "accounts": [
         {
-          "name": "endpointConfig"
-        },
-        {
           "name": "message",
           "writable": true
         },
         {
           "name": "payer",
           "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "updateUtsConfig",
+      "docs": [
+        "Update the UTS config account. Must be called whenever `UTS_CONNECTOR`",
+        "address changes."
+      ],
+      "discriminator": [
+        250,
+        224,
+        56,
+        169,
+        15,
+        124,
+        203,
+        47
+      ],
+      "accounts": [
+        {
+          "name": "utsConfig",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  116,
+                  115,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
@@ -756,6 +779,19 @@ export type UipEndpoint = {
         6,
         125,
         181
+      ]
+    },
+    {
+      "name": "utsConfig",
+      "discriminator": [
+        46,
+        209,
+        143,
+        241,
+        84,
+        152,
+        233,
+        3
       ]
     }
   ],
@@ -901,10 +937,10 @@ export type UipEndpoint = {
         "kind": "enum",
         "variants": [
           {
-            "name": "finalized"
+            "name": "confirmed"
           },
           {
-            "name": "confirmed"
+            "name": "finalized"
           }
         ]
       }
@@ -948,30 +984,6 @@ export type UipEndpoint = {
             "type": "pubkey"
           },
           {
-            "name": "repeater",
-            "docs": [
-              "Repeater contract address."
-            ],
-            "type": {
-              "array": [
-                "u8",
-                20
-              ]
-            }
-          },
-          {
-            "name": "rotator",
-            "docs": [
-              "Rotator contract address."
-            ],
-            "type": {
-              "array": [
-                "u8",
-                20
-              ]
-            }
-          },
-          {
             "name": "targetConsensusRate",
             "docs": [
               "Transmitter consensus rate required for execution."
@@ -982,14 +994,6 @@ export type UipEndpoint = {
             "name": "totalActiveSigners",
             "docs": [
               "Total number of currently active signers, used for consensus calculation."
-            ],
-            "type": "u32"
-          },
-          {
-            "name": "messageLifetimeSec",
-            "docs": [
-              "The period after which a message that wasn't executed can be closed to",
-              "reclaim lamports (in seconds)."
             ],
             "type": "u32"
           },
@@ -1550,6 +1554,22 @@ export type UipEndpoint = {
               "EVM execution gas limit."
             ],
             "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "utsConfig",
+      "docs": [
+        "An account to store the UTS connector address. It's meant for protocols to",
+        "fetch in case it changes."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "utsConnector",
+            "type": "pubkey"
           }
         ]
       }

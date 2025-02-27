@@ -9,10 +9,9 @@ import {
 } from "@solana/web3.js";
 import { Messenger } from "../target/types/messenger";
 import BN from "bn.js";
-import { findExtension, UIP_PROGRAM } from "./endpoint";
+import { fetchUtsConnector, findExtension, UIP_PROGRAM } from "./endpoint";
 import { CID } from "multiformats";
 import { encodeU32Le } from "./utils";
-import { UTS_VAULT } from "./utsMock";
 import { loadChunk, MAX_CHUNK_LEN, passToCpi } from "./chunkLoader";
 import { randomInt } from "crypto";
 
@@ -144,7 +143,7 @@ export async function sendMessageOneTx(
   const transactionSignature = await MESSENGER_PROGRAM.methods
     .sendMessage(destination, ccmFee, customGasLimit, text)
     .accounts({
-      utsVault: UTS_VAULT,
+      utsConnector: await fetchUtsConnector(),
       sender: sender.publicKey,
     })
     .signers([sender])
@@ -203,7 +202,7 @@ async function sendMessageManyTx(
     chunkId,
     accounts: [
       { pubkey: sender.publicKey, isSigner: true, isWritable: true },
-      { pubkey: UTS_VAULT, isSigner: false, isWritable: true },
+      { pubkey: await fetchUtsConnector(), isSigner: false, isWritable: true },
       {
         pubkey: PublicKey.findProgramAddressSync(
           [Buffer.from("uip_signer")],

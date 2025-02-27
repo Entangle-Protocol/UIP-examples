@@ -110,24 +110,6 @@
       ],
       "args": [
         {
-          "name": "repeater",
-          "type": {
-            "array": [
-              "u8",
-              20
-            ]
-          }
-        },
-        {
-          "name": "rotator",
-          "type": {
-            "array": [
-              "u8",
-              20
-            ]
-          }
-        },
-        {
           "name": "target_consensus_rate",
           "type": "u32"
         },
@@ -136,11 +118,7 @@
           "type": "u32"
         },
         {
-          "name": "message_lifetime_sec",
-          "type": "u32"
-        },
-        {
-          "name": "initial_signers",
+          "name": "signers",
           "type": {
             "vec": {
               "array": [
@@ -151,7 +129,7 @@
           }
         },
         {
-          "name": "initial_executors",
+          "name": "executors",
           "type": {
             "vec": "pubkey"
           }
@@ -225,8 +203,9 @@
           "signer": true
         },
         {
-          "name": "uts_vault",
-          "writable": true
+          "name": "uts_connector",
+          "writable": true,
+          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
         },
         {
           "name": "program_signer",
@@ -401,12 +380,9 @@
           "signer": true
         },
         {
-          "name": "endpoint_config",
-          "writable": true
-        },
-        {
-          "name": "uts_vault",
-          "writable": true
+          "name": "uts_connector",
+          "writable": true,
+          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
         },
         {
           "name": "system_program",
@@ -456,11 +432,9 @@
           "signer": true
         },
         {
-          "name": "endpoint_config"
-        },
-        {
-          "name": "uts_vault",
-          "writable": true
+          "name": "uts_connector",
+          "writable": true,
+          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
         },
         {
           "name": "system_program",
@@ -698,15 +672,64 @@
       ],
       "accounts": [
         {
-          "name": "endpoint_config"
-        },
-        {
           "name": "message",
           "writable": true
         },
         {
           "name": "payer",
           "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_uts_config",
+      "docs": [
+        "Update the UTS config account. Must be called whenever `UTS_CONNECTOR`",
+        "address changes."
+      ],
+      "discriminator": [
+        250,
+        224,
+        56,
+        169,
+        15,
+        124,
+        203,
+        47
+      ],
+      "accounts": [
+        {
+          "name": "uts_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  116,
+                  115,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
@@ -750,6 +773,19 @@
         6,
         125,
         181
+      ]
+    },
+    {
+      "name": "UtsConfig",
+      "discriminator": [
+        46,
+        209,
+        143,
+        241,
+        84,
+        152,
+        233,
+        3
       ]
     }
   ],
@@ -895,10 +931,10 @@
         "kind": "enum",
         "variants": [
           {
-            "name": "Finalized"
+            "name": "Confirmed"
           },
           {
-            "name": "Confirmed"
+            "name": "Finalized"
           }
         ]
       }
@@ -942,30 +978,6 @@
             "type": "pubkey"
           },
           {
-            "name": "repeater",
-            "docs": [
-              "Repeater contract address."
-            ],
-            "type": {
-              "array": [
-                "u8",
-                20
-              ]
-            }
-          },
-          {
-            "name": "rotator",
-            "docs": [
-              "Rotator contract address."
-            ],
-            "type": {
-              "array": [
-                "u8",
-                20
-              ]
-            }
-          },
-          {
             "name": "target_consensus_rate",
             "docs": [
               "Transmitter consensus rate required for execution."
@@ -976,14 +988,6 @@
             "name": "total_active_signers",
             "docs": [
               "Total number of currently active signers, used for consensus calculation."
-            ],
-            "type": "u32"
-          },
-          {
-            "name": "message_lifetime_sec",
-            "docs": [
-              "The period after which a message that wasn't executed can be closed to",
-              "reclaim lamports (in seconds)."
             ],
             "type": "u32"
           },
@@ -1544,6 +1548,22 @@
               "EVM execution gas limit."
             ],
             "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UtsConfig",
+      "docs": [
+        "An account to store the UTS connector address. It's meant for protocols to",
+        "fetch in case it changes."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "uts_connector",
+            "type": "pubkey"
           }
         ]
       }

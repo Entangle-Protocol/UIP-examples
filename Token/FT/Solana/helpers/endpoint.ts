@@ -13,7 +13,6 @@ import {
 import { UipEndpoint } from "../target/types/uip_endpoint";
 import { BaseWallet, BytesLike, ethers } from "ethers";
 import { decodeI128Le, simulateTransaction, SOLANA_CHAIN_ID } from "./utils";
-import { UTS_VAULT } from "./utsMock";
 
 anchor.setProvider(anchor.AnchorProvider.env());
 export const UIP_PROGRAM: Program<UipEndpoint> = anchor.workspace.UipEndpoint;
@@ -43,50 +42,6 @@ export const findExtension = (program: PublicKey) =>
     Buffer.from("extension"),
     program.toBuffer(),
   ], UIP_PROGRAM.programId)[0];
-
-export type ProposeInput = {
-  ccmFee: BN;
-  proposer: Keypair;
-  destChainId: BN;
-  transmitterParams: TransmitterParams;
-  selectorSlot: number[];
-  destAddr: Buffer;
-  payload: Buffer;
-};
-
-// Send a proposal. Can only be used to send proposals directly from a user,
-// not a source contract.
-export async function propose(
-  {
-    ccmFee,
-    proposer,
-    destChainId,
-    transmitterParams,
-    selectorSlot,
-    destAddr,
-    payload,
-  }: ProposeInput,
-): Promise<{ transactionSignature: TransactionSignature }> {
-  const transactionSignature = await UIP_PROGRAM.methods
-    .propose(
-      PublicKey.default,
-      ccmFee,
-      destChainId,
-      transmitterParams,
-      selectorSlot,
-      destAddr,
-      payload,
-    )
-    .accountsStrict({
-      payer: proposer.publicKey,
-      utsVault: UTS_VAULT,
-      programSigner: null,
-      systemProgram: SystemProgram.programId,
-    })
-    .signers([proposer])
-    .rpc();
-  return { transactionSignature };
-}
 
 export type SimulateExecuteInput = {
   msgData: MessageData;
@@ -288,7 +243,6 @@ export async function unloadMessage(
   const transactionSignature = await UIP_PROGRAM.methods
     .unloadMessage()
     .accountsStrict({
-      endpointConfig: ENDPOINT_CONFIG,
       message,
       payer: payer.publicKey,
     })
@@ -417,4 +371,10 @@ export function encodeTransmitterParams(
     transmitterParams.proposalCommitment.confirmed ? 1 : 0,
     BigInt(transmitterParams.customGasLimit.toString()),
   ]));
+}
+
+export async function fetchUtsConnector(): Promise<PublicKey> {
+  return await UIP_PROGRAM.account.utsConfig.fetch(
+    new PublicKey("J8WXFLwtv6AD45cjbcVtF33EqeVT8Ef9U9iDG8wS4PUH"),
+  ).then((c) => c.utsConnector);
 }

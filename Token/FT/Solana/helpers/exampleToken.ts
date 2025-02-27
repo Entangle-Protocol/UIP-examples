@@ -3,9 +3,8 @@ import * as anchor from "@coral-xyz/anchor";
 import { Keypair, PublicKey, TransactionSignature } from "@solana/web3.js";
 import { ExampleToken } from "../target/types/example_token";
 import BN from "bn.js";
-import { findExtension } from "./endpoint";
+import { fetchUtsConnector, findExtension, UIP_PROGRAM } from "./endpoint";
 import { CID } from "multiformats";
-import { UTS_VAULT } from "./utsMock";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
 anchor.setProvider(anchor.AnchorProvider.env());
@@ -119,7 +118,7 @@ export async function bridge(
   const transactionSignature = await EXAMPLE_TOKEN_PROGRAM.methods
     .bridge(destination, to, amount, ccmFee, customGasLimit)
     .accounts({
-      utsVault: UTS_VAULT,
+      utsConnector: await fetchUtsConnector(),
       sender: sender.publicKey,
       config: EXAMPLE_TOKEN_CONFIG,
       tokenAccount: getAssociatedTokenAddressSync(EXA_MINT, sender.publicKey),
@@ -128,3 +127,5 @@ export async function bridge(
     .rpc();
   return { transactionSignature };
 }
+
+
