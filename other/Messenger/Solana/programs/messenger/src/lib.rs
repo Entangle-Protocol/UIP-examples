@@ -9,7 +9,7 @@ pub mod error;
 mod instructions;
 pub mod state;
 
-declare_id!("MesRprmcvhQFtyP4xBEsDvCY9ig1ek5Zfwcf26KGZ5f");
+declare_id!("MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1");
 
 /// The messenger program module.
 #[program]

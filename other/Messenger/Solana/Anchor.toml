@@ -5,10 +5,10 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-messenger = "MesRprmcvhQFtyP4xBEsDvCY9ig1ek5Zfwcf26KGZ5f"
+messenger = "MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1"
 
 [programs.devnet]
-messenger = "MesRprmcvhQFtyP4xBEsDvCY9ig1ek5Zfwcf26KGZ5f"
+messenger = "MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1"
 
 [test.validator]
 url = "https://api.devnet.solana.com"
