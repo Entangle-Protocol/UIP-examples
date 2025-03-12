@@ -41,9 +41,12 @@ async function main(): Promise<void> {
     case "teib":
       destination = { teib: {} };
       break;
+    case "base-sepolia":
+      destination = { baseSepolia: {} };
+      break;
     default:
       throw new Error(
-        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon-amoy, mantle-sepolia, teib",
+        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon-amoy, mantle-sepolia, teib, base-sepolia",
       );
   }
 

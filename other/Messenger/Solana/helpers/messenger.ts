@@ -313,6 +313,8 @@ export function encodeSendMessageParams({
     destinationNum = 4;
   } else if (destination.teib) {
     destinationNum = 5;
+  } else if (destination.baseSepolia) {
+    destinationNum = 6;
   } else {
     throw new Error("invalid destination");
   }

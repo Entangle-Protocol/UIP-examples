@@ -22,6 +22,7 @@ export const POLYGON_AMOY_CHAIN_ID = new BN("80002");
 export const POLYGON_CHAIN_ID = new BN("137");
 export const EIB_CHAIN_ID = new BN("33033");
 export const TEIB_CHAIN_ID = new BN("33133");
+export const BASE_SEPOLIA_CHAIN_ID = new BN("84532");
 
 // export const SOLANA_CHAIN_ID =
 //   anchor.AnchorProvider.env().connection.rpcEndpoint.includes("devnet")
@@ -143,6 +144,8 @@ export function formatChainId(chainId: BN): string {
     return "TEIB";
   } else if (chainId.eq(EIB_CHAIN_ID)) {
     return "EIB";
+  } else if (chainId.eq(BASE_SEPOLIA_CHAIN_ID)) {
+    return "Base Sepolia";
   } else {
     return "chain id " + chainId.toString();
   }

@@ -34,6 +34,7 @@ pub enum Destination {
     PolygonAmoy,
     MantleSepolia,
     Teib,
+    BaseSepolia,
 }
 
 pub fn send_message(
@@ -55,6 +56,7 @@ pub fn send_message(
         Destination::PolygonAmoy => (POLYGON_AMOY_CHAIN_ID, POLYGON_AMOY_ADDRESS.into()),
         Destination::MantleSepolia => (MANTLE_SEPOLIA_CHAIN_ID, MANTLE_SEPOLIA_ADDRESS.into()),
         Destination::Teib => (TEIB_CHAIN_ID, TEIB_ADDRESS.into()),
+        Destination::BaseSepolia => (BASE_SEPOLIA_CHAIN_ID, BASE_SEPOLIA_ADDRESS.into()),
     };
 
     uip_endpoint::cpi::propose(
