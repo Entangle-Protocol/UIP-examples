@@ -34,7 +34,7 @@ pub unsafe extern "C" fn get_instruction_info(
         Pubkey::find_program_address(&[b"messenger"], &messenger::ID.to_bytes().into());
     result.accounts[0] = AccountMeta::new(messenger_pda, false);
     let (message_pda, _) = Pubkey::find_program_address(
-        &[b"message", &msg_data.msg_hash_with_message(SOLANA_CHAIN_ID)],
+        &[b"message", &msg_data.hash_prefixed(SOLANA_CHAIN_ID)],
         &messenger::ID.to_bytes().into(),
     );
     result.accounts[1] = AccountMeta::new(message_pda, false);
