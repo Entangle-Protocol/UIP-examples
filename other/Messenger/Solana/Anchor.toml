@@ -14,10 +14,10 @@ messenger = "MesRprmcvhQFtyP4xBEsDvCY9ig1ek5Zfwcf26KGZ5f"
 url = "https://api.devnet.solana.com"
 [[test.validator.clone]]
 # UIP program
-address = "pHoEPVJZRCWYaZ2TjHwVWgeee5DnFWGug7vaMbYt4xe"
+address = "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX"
 [[test.validator.clone]]
 # UTS config
-address = "J8WXFLwtv6AD45cjbcVtF33EqeVT8Ef9U9iDG8wS4PUH"
+address = "oGoTxL4LiedkCW6nW9Wgaqq9gU8EAK5AUL5crhTpucy"
 [[test.validator.clone]]
 # UTS connector
 address = "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
@@ -25,7 +25,7 @@ address = "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
 # Chunk Loader
 address = "ChUnQ7H46X5UeQJHVgZFBy3hGM95TwWsmvBRwQxVz3JG"
 [[test.validator.account]]
-address = "C4KbAeFrYCu3LZpUBtGqupArntha1KEdrhz1Nu6pG8Sv"
+address = "ENRSBZkbQsre1guoPDrpKkTtyaJQuLfCQMgESpjUuVAg"
 filename = "tests/accounts/uip-config.json"
 
 [registry]

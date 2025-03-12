@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/uip_endpoint.json`.
  */
 export type UipEndpoint = {
-  "address": "pHoEPVJZRCWYaZ2TjHwVWgeee5DnFWGug7vaMbYt4xe",
+  "address": "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX",
   "metadata": {
     "name": "uipEndpoint",
     "version": "2.0.0",

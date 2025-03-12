@@ -375,6 +375,6 @@ export function encodeTransmitterParams(
 
 export async function fetchUtsConnector(): Promise<PublicKey> {
   return await UIP_PROGRAM.account.utsConfig.fetch(
-    new PublicKey("J8WXFLwtv6AD45cjbcVtF33EqeVT8Ef9U9iDG8wS4PUH"),
+    new PublicKey("oGoTxL4LiedkCW6nW9Wgaqq9gU8EAK5AUL5crhTpucy"),
   ).then((c) => c.utsConnector);
 }
