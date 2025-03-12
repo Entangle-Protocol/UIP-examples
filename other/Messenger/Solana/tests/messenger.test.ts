@@ -95,7 +95,7 @@ describe("messenger", () => {
 
   test("registerExtension", async () => {
     const ipfsCid =
-      "bafkreihwalovxt6jjsko7gws4m34frlqoqi5huqd5x3lacjrqyyzxm3tuy";
+      "bafkreia2gxlqwpkvtx2bzetzuk4swfqf54j5g2tufasexoiqrrud3xakgu";
 
     await registerExtensionMessenger({
       admin,
