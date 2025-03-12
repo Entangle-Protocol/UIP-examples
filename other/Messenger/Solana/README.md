@@ -26,7 +26,7 @@ The repository contains
 protocol. It can be compiled as follows:
 
 ```sh
-cargo build --target wasm32-wasip1 --release -p messenger-extension
+cargo build --target wasm32-wasip1 --release -p messenger-extension # --features devnet
 wasm-opt -O4 target/wasm32-wasip1/release/messenger_extension.wasm -o target/wasm32-wasip1/release/messenger_extension-optimized.wasm
 ```
 
