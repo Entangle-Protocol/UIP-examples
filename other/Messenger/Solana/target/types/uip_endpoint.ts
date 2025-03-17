@@ -29,14 +29,7 @@ export type UipEndpoint = {
         "of those."
       ],
       "discriminator": [
-        130,
-        221,
-        242,
-        154,
-        13,
-        193,
-        189,
-        29
+        8
       ],
       "accounts": [
         {
@@ -69,14 +62,7 @@ export type UipEndpoint = {
         "Initialize the endpoint configuration."
       ],
       "discriminator": [
-        175,
-        175,
-        109,
-        31,
-        13,
-        152,
-        155,
-        237
+        1
       ],
       "accounts": [
         {
@@ -99,10 +85,6 @@ export type UipEndpoint = {
               }
             ]
           }
-        },
-        {
-          "name": "admin",
-          "signer": true
         },
         {
           "name": "payer",
@@ -152,14 +134,7 @@ export type UipEndpoint = {
         "using the chunk loader program."
       ],
       "discriminator": [
-        104,
-        102,
-        190,
-        230,
-        104,
-        107,
-        135,
-        171
+        6
       ],
       "accounts": [
         {
@@ -193,14 +168,7 @@ export type UipEndpoint = {
         "Propose a message for execution on another chain."
       ],
       "discriminator": [
-        93,
-        253,
-        82,
-        168,
-        118,
-        33,
-        102,
-        90
+        3
       ],
       "accounts": [
         {
@@ -295,14 +263,7 @@ export type UipEndpoint = {
         "Register a protocol extension IPFS CID."
       ],
       "discriminator": [
-        158,
-        205,
-        4,
-        17,
-        6,
-        106,
-        172,
-        148
+        2
       ],
       "accounts": [
         {
@@ -370,14 +331,7 @@ export type UipEndpoint = {
         "transfer the system message to EIB."
       ],
       "discriminator": [
-        209,
-        195,
-        75,
-        71,
-        204,
-        170,
-        131,
-        55
+        11
       ],
       "accounts": [
         {
@@ -422,14 +376,7 @@ export type UipEndpoint = {
         "is used to transfer the system message to EIB."
       ],
       "discriminator": [
-        223,
-        178,
-        20,
-        217,
-        127,
-        238,
-        74,
-        207
+        10
       ],
       "accounts": [
         {
@@ -474,14 +421,7 @@ export type UipEndpoint = {
         "updated accordingly."
       ],
       "discriminator": [
-        186,
-        152,
-        52,
-        68,
-        241,
-        170,
-        59,
-        135
+        7
       ],
       "accounts": [
         {
@@ -522,14 +462,7 @@ export type UipEndpoint = {
         "on-chain and only works for `msg_data` that fits in 1 tx."
       ],
       "discriminator": [
-        17,
-        186,
-        90,
-        212,
-        31,
-        13,
-        0,
-        71
+        4
       ],
       "accounts": [
         {
@@ -592,14 +525,7 @@ export type UipEndpoint = {
         "fields, filling the rest with the default values."
       ],
       "discriminator": [
-        132,
-        72,
-        97,
-        160,
-        53,
-        175,
-        209,
-        49
+        5
       ],
       "accounts": [
         {
@@ -667,14 +593,7 @@ export type UipEndpoint = {
         "or if the message lifetime has been passed since loading it."
       ],
       "discriminator": [
-        168,
-        231,
-        17,
-        124,
-        180,
-        115,
-        22,
-        125
+        9
       ],
       "accounts": [
         {
@@ -695,14 +614,7 @@ export type UipEndpoint = {
         "address changes."
       ],
       "discriminator": [
-        250,
-        224,
-        56,
-        169,
-        15,
-        124,
-        203,
-        47
+        12
       ],
       "accounts": [
         {
@@ -745,53 +657,25 @@ export type UipEndpoint = {
     {
       "name": "endpointConfig",
       "discriminator": [
-        171,
-        84,
-        2,
-        168,
-        152,
-        151,
-        133,
-        235
+        1
       ]
     },
     {
       "name": "extension",
       "discriminator": [
-        141,
-        183,
-        126,
-        42,
-        23,
-        237,
-        11,
-        5
+        2
       ]
     },
     {
       "name": "message",
       "discriminator": [
-        110,
-        151,
-        23,
-        110,
-        198,
-        6,
-        125,
-        181
+        3
       ]
     },
     {
       "name": "utsConfig",
       "discriminator": [
-        46,
-        209,
-        143,
-        241,
-        84,
-        152,
-        233,
-        3
+        4
       ]
     }
   ],
@@ -799,66 +683,31 @@ export type UipEndpoint = {
     {
       "name": "consensusReached",
       "discriminator": [
-        240,
-        211,
-        75,
-        133,
-        165,
-        96,
-        113,
-        26
+        2
       ]
     },
     {
       "name": "extensionRegistered",
       "discriminator": [
-        219,
-        157,
-        97,
-        76,
-        11,
-        64,
-        68,
-        1
+        5
       ]
     },
     {
       "name": "messageExecuted",
       "discriminator": [
-        214,
-        203,
-        124,
-        241,
-        94,
-        227,
-        41,
-        59
+        4
       ]
     },
     {
       "name": "messageExecutionStarted",
       "discriminator": [
-        29,
-        226,
-        165,
-        23,
-        26,
-        122,
-        90,
-        25
+        3
       ]
     },
     {
       "name": "messageProposed",
       "discriminator": [
-        76,
-        212,
-        2,
-        231,
-        8,
-        229,
-        92,
-        222
+        1
       ]
     }
   ],
@@ -976,13 +825,6 @@ export type UipEndpoint = {
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "admin",
-            "docs": [
-              "Administrator address."
-            ],
-            "type": "pubkey"
-          },
           {
             "name": "targetConsensusRate",
             "docs": [

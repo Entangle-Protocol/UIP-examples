@@ -109,7 +109,7 @@ fn bridge_mint(ctx: Context<BridgeMint>, input: BridgeMintInput) -> Result<()> {
     );
 
     if token_account.data_is_empty() {
-        let ix = create_associated_token_account(payer.key, to.key, exa_mint.key);
+        let ix = create_associated_token_account(payer.key, to.key, exa_mint.key, &spl_token::ID);
         invoke(
             &ix,
             &[

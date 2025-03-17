@@ -19,10 +19,10 @@ devnet = ["uip-endpoint-solana/devnet"]
 
 [dependencies]
 alloy-sol-types = "0.7"
-anchor-lang = "0.30.1"
+anchor-lang = "0.31.0"
 hex-literal = "0.4"
 
 [dependencies.uip-endpoint-solana]
 git = "ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git"
 branch = "develop"
-features = ["cpi", "devnet"]
+features = ["cpi"]

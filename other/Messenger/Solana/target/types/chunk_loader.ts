@@ -16,14 +16,7 @@ export type ChunkLoader = {
     {
       "name": "loadChunk",
       "discriminator": [
-        150,
-        253,
-        71,
-        60,
-        25,
-        59,
-        163,
-        86
+        1
       ],
       "accounts": [
         {
@@ -87,14 +80,7 @@ export type ChunkLoader = {
     {
       "name": "passToCpi",
       "discriminator": [
-        30,
-        59,
-        13,
-        218,
-        144,
-        105,
-        60,
-        196
+        2
       ],
       "accounts": [
         {
@@ -120,14 +106,7 @@ export type ChunkLoader = {
     {
       "name": "chunkHolder",
       "discriminator": [
-        167,
-        224,
-        119,
-        158,
-        7,
-        124,
-        187,
-        156
+        1
       ]
     }
   ],

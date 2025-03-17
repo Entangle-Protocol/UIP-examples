@@ -45,6 +45,7 @@ pub mod messenger {
 
     /// Executes an incoming cross-chain message, saving the received message in
     /// a `CrossChainMessage` account.
+    #[instruction(discriminator = [240])]
     pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()> {
         instructions::execute(ctx)
     }

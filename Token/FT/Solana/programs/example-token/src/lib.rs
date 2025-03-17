@@ -46,6 +46,7 @@ pub mod example_token {
     }
 
     /// Executes an incoming cross-chain message.
+    #[instruction(discriminator = [240])]
     pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()> {
         instructions::execute(ctx)
     }
