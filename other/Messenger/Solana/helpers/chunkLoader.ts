@@ -13,7 +13,7 @@ anchor.setProvider(anchor.AnchorProvider.env());
 export const CHUNK_LOADER_PROGRAM: Program<ChunkLoader> =
   anchor.workspace.ChunkLoader;
 
-export const MAX_CHUNK_LEN = 978;
+export const MAX_CHUNK_LEN = 985;
 
 export type Chunk = IdlTypes<ChunkLoader>["chunk"];
 
