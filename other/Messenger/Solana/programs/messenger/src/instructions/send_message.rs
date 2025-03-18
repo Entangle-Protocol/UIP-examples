@@ -35,6 +35,7 @@ pub enum Destination {
     MantleSepolia,
     Teib,
     BaseSepolia,
+    SonicBlazeTestnet,
 }
 
 pub fn send_message(
@@ -48,15 +49,16 @@ pub fn send_message(
     let payload = <(Bytes, Bytes)>::abi_encode_params(&(text, ctx.accounts.sender.key()));
 
     let (dest_chain_id, dest_addr) = match destination {
-        Destination::SolanaMainnet => (SOLANA_MAINNET_CHAIN_ID, crate::ID.to_bytes().into()),
-        Destination::SolanaDevnet => (SOLANA_DEVNET_CHAIN_ID, crate::ID.to_bytes().into()),
-        Destination::EthereumSepolia => {
-            (ETHEREUM_SEPOLIA_CHAIN_ID, ETHEREUM_SEPOLIA_ADDRESS.into())
+        Destination::SolanaMainnet => (SOLANA_MAINNET_CHAIN_ID, crate::ID.to_bytes()),
+        Destination::SolanaDevnet => (SOLANA_DEVNET_CHAIN_ID, crate::ID.to_bytes()),
+        Destination::EthereumSepolia => (ETHEREUM_SEPOLIA_CHAIN_ID, ETHEREUM_SEPOLIA_ADDRESS),
+        Destination::PolygonAmoy => (POLYGON_AMOY_CHAIN_ID, POLYGON_AMOY_ADDRESS),
+        Destination::MantleSepolia => (MANTLE_SEPOLIA_CHAIN_ID, MANTLE_SEPOLIA_ADDRESS),
+        Destination::Teib => (TEIB_CHAIN_ID, TEIB_ADDRESS),
+        Destination::BaseSepolia => (BASE_SEPOLIA_CHAIN_ID, BASE_SEPOLIA_ADDRESS),
+        Destination::SonicBlazeTestnet => {
+            (SONIC_BLAZE_TESTNET_CHAIN_ID, SONIC_BLAZE_TESTNET_ADDRESS)
         }
-        Destination::PolygonAmoy => (POLYGON_AMOY_CHAIN_ID, POLYGON_AMOY_ADDRESS.into()),
-        Destination::MantleSepolia => (MANTLE_SEPOLIA_CHAIN_ID, MANTLE_SEPOLIA_ADDRESS.into()),
-        Destination::Teib => (TEIB_CHAIN_ID, TEIB_ADDRESS.into()),
-        Destination::BaseSepolia => (BASE_SEPOLIA_CHAIN_ID, BASE_SEPOLIA_ADDRESS.into()),
     };
 
     uip_endpoint::cpi::propose(
@@ -78,7 +80,7 @@ pub fn send_message(
             custom_gas_limit,
         },
         Selector::DefaultSelector.into(),
-        dest_addr,
+        dest_addr.into(),
         payload,
     )
 }

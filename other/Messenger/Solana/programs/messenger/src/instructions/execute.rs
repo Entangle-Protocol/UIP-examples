@@ -27,6 +27,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         (&POLYGON_AMOY_CHAIN_ID, &POLYGON_AMOY_ADDRESS),
         (&MANTLE_SEPOLIA_CHAIN_ID, &MANTLE_SEPOLIA_ADDRESS),
         (&TEIB_CHAIN_ID, &TEIB_ADDRESS),
+        (&SONIC_BLAZE_TESTNET_CHAIN_ID, &SONIC_BLAZE_TESTNET_ADDRESS),
     ];
     require!(
         allowed_origins.contains(&(&src_chain_id, &sender_addr[..])),

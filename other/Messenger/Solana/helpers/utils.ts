@@ -23,6 +23,7 @@ export const POLYGON_CHAIN_ID = new BN("137");
 export const EIB_CHAIN_ID = new BN("33033");
 export const TEIB_CHAIN_ID = new BN("33133");
 export const BASE_SEPOLIA_CHAIN_ID = new BN("84532");
+export const SONIC_BLAZE_TESTNET_CHAIN_ID = new BN("57054");
 
 // export const SOLANA_CHAIN_ID =
 //   anchor.AnchorProvider.env().connection.rpcEndpoint.includes("devnet")
@@ -146,6 +147,8 @@ export function formatChainId(chainId: BN): string {
     return "EIB";
   } else if (chainId.eq(BASE_SEPOLIA_CHAIN_ID)) {
     return "Base Sepolia";
+  } else if (chainId.eq(SONIC_BLAZE_TESTNET_CHAIN_ID)) {
+    return "Sonic Blaze Testnet";
   } else {
     return "chain id " + chainId.toString();
   }

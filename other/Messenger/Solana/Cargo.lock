@@ -3019,7 +3019,7 @@ dependencies = [
 [[package]]
 name = "uip-endpoint-solana"
 version = "2.0.0"
-source = "git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop#ef5226cc731b8155bf5495b25d7c1253077148f7"
+source = "git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop#d64db31591d1e959c90cb6f6644143b1c2329584"
 dependencies = [
  "alloy-sol-types",
  "anchor-lang",

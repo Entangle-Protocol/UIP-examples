@@ -44,9 +44,12 @@ async function main(): Promise<void> {
     case "base-sepolia":
       destination = { baseSepolia: {} };
       break;
+    case "sonic-blaze-testnet":
+      destination = { sonicBlazeTestnet: {} };
+      break;
     default:
       throw new Error(
-        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon-amoy, mantle-sepolia, teib, base-sepolia",
+        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon-amoy, mantle-sepolia, teib, base-sepolia, sonic-blaze-testnet",
       );
   }
 
