@@ -42,7 +42,7 @@ async function main(): Promise<void> {
       allowedSenders,
     });
     console.log(
-      "UpdateClientInfo transaction signature:",
+      "SetAllowedSenders transaction signature:",
       transactionSignature,
     );
   }
