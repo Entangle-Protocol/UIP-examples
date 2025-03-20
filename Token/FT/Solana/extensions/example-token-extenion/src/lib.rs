@@ -9,12 +9,19 @@ use uip_endpoint::state::MessageData;
 #[repr(C)]
 pub struct InstructionInfo {
     pub compute_units: u32,
+    pub heap_frame: u32,
     pub accounts_len: u32,
     pub accounts: [AccountMeta; 32],
 }
 
-/// Populates `result` with compute units and account metadata based on the
-/// provided serialized message data.
+/// The interface version supported by the extension.
+#[no_mangle]
+pub extern "C" fn get_api_version() -> u32 {
+    0
+}
+
+/// Populates `result` with the required compute units, heap frame and account
+/// metadata based on the provided serialized message data.
 ///
 /// # Safety
 ///
@@ -49,6 +56,7 @@ pub unsafe extern "C" fn get_instruction_info(
 
     result.accounts_len = 7;
     result.compute_units = 0;
+    result.heap_frame = 0;
 }
 
 const TOKEN_PROGRAM_ID: Pubkey = pubkey!("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");

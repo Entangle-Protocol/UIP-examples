@@ -40,7 +40,7 @@ The repository contains scripts to interact with the deployed contract.
 contract is deployed to configurate the contract and register the extension.
 Example:
   ```sh
-  anchor run initialize --provider.cluster devnet -- bafkreiac2wlzrvuoyszrfc6gfpmz2tu2ady375h74zxouhrp6w24tdvsxe 9
+  anchor run initialize --provider.cluster devnet -- bafkreiclfrpslgozgbsarm2v63vaq6xnptqsdvicw6t46lybc2bu4gmgtm 9
   ```
 * [Mint script](./scripts/mint.ts) that can be used to mint tokens. Example:
   ```sh
