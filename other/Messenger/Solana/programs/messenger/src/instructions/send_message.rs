@@ -36,6 +36,7 @@ pub enum Destination {
     Teib,
     BaseSepolia,
     SonicBlazeTestnet,
+    AvalancheFuji,
 }
 
 pub fn send_message(
@@ -59,6 +60,7 @@ pub fn send_message(
         Destination::SonicBlazeTestnet => {
             (SONIC_BLAZE_TESTNET_CHAIN_ID, SONIC_BLAZE_TESTNET_ADDRESS)
         }
+        Destination::AvalancheFuji => (AVALANCHE_FUJI_CHAIN_ID, AVALANCHE_FUJI_ADDRESS),
     };
 
     uip_endpoint::cpi::propose(
