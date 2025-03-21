@@ -67,6 +67,27 @@ const config: HardhatUserConfig = {
             mnemonic: ""
         },
         chainId: 5003
+    },
+    base_sepolia: {
+        url: "https://1rpc.io/sepolia",
+        accounts: {
+            mnemonic: ""
+        },
+        chainId: 84532
+    },
+    sonic_blaze: {
+        url: "https://rpc.blaze.soniclabs.com",
+        accounts: {
+            mnemonic: ""
+        },
+        chainId: 57054
+    },
+    avalanche_fuji: {
+        url: "https://avalanche-fuji.drpc.org",
+        accounts: {
+            mnemonic: ""
+        },
+        chainId: 43113
     }
   }
 };
