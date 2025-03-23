@@ -1360,7 +1360,7 @@ dependencies = [
  "alloy-sol-types",
  "anchor-lang",
  "hex-literal",
- "uip-endpoint-solana",
+ "uip-solana-sdk",
 ]
 
 [[package]]
@@ -1370,7 +1370,7 @@ dependencies = [
  "borsh 0.10.4",
  "messenger",
  "solana-program",
- "uip-endpoint-solana",
+ "uip-solana-sdk",
 ]
 
 [[package]]
@@ -2679,15 +2679,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "uip-endpoint-solana"
-version = "2.0.0"
-source = "git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop#75cb5e76c0ecccf47cca5d4b3c516494c5937a2e"
+name = "uip-solana-sdk"
+version = "0.1.0"
+source = "git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop#ff1d69376f138ef7d53bd3eeff05d6c86dbcb1c0"
 dependencies = [
- "alloy-sol-types",
  "anchor-lang",
  "bytemuck",
- "hex-literal",
  "solana-invoke",
+ "solana-program",
 ]
 
 [[package]]

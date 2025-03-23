@@ -4,11 +4,10 @@ use alloy_sol_types::{
     SolType,
 };
 use anchor_lang::prelude::*;
-use uip_endpoint::{
+use uip_solana_sdk::{
     chains::*,
-    program::UipEndpoint,
-    selector::Selector,
-    state::{Commitment, TransmitterParams},
+    cpi::{Commitment, ProposeInput, TransmitterParams},
+    UipEndpoint,
 };
 
 #[derive(Accounts)]
@@ -63,26 +62,23 @@ pub fn send_message(
         Destination::AvalancheFuji => (AVALANCHE_FUJI_CHAIN_ID, AVALANCHE_FUJI_ADDRESS),
     };
 
-    uip_endpoint::cpi::propose(
-        CpiContext::new_with_signer(
-            ctx.accounts.uip_program.to_account_info(),
-            uip_endpoint::cpi::accounts::Propose {
-                payer: ctx.accounts.sender.to_account_info(),
-                uts_connector: ctx.accounts.uts_connector.to_account_info(),
-                program_signer: Some(ctx.accounts.program_signer.to_account_info()),
-                system_program: ctx.accounts.system_program.to_account_info(),
-            },
-            &[&[b"uip_signer", &[ctx.bumps.program_signer]]],
-        ),
-        crate::ID,
+    uip_solana_sdk::cpi::propose(ProposeInput {
+        payer: ctx.accounts.sender.to_account_info(),
+        uts_connector: ctx.accounts.uts_connector.to_account_info(),
+        program_signer: ctx.accounts.program_signer.to_account_info(),
+        system_program: ctx.accounts.system_program.to_account_info(),
+        program_signer_bump: ctx.bumps.program_signer,
+        sender: &crate::ID,
         ccm_fee,
         dest_chain_id,
-        TransmitterParams {
+        transmitter_params: TransmitterParams {
             proposal_commitment: Commitment::Confirmed,
             custom_gas_limit,
         },
-        Selector::DefaultSelector.into(),
-        dest_addr.into(),
-        payload,
-    )
+        selector_slot: &Default::default(),
+        dest_addr: &dest_addr,
+        payload: &payload,
+    })?;
+
+    Ok(())
 }

@@ -26,7 +26,7 @@ The repository contains
 protocol. It can be compiled as follows:
 
 ```sh
-cargo build --target wasm32-wasip1 --release -p messenger-extension # --features devnet
+cargo build --target wasm32-wasip1 --release -p messenger-extension
 wasm-opt -O4 target/wasm32-wasip1/release/messenger_extension.wasm -o target/wasm32-wasip1/release/messenger_extension-optimized.wasm
 ```
 
@@ -40,7 +40,7 @@ The repository contains scripts to interact with the deployed contract.
 the contract is deployed to configurate the Messenger and register the
 extension. Example:
   ```sh
-  anchor run initialize --provider.cluster devnet -- bafkreibmlflzcqxyc5eppljvs7x6jq5ijmbl7zr6xlg6h76hi3lwkkmerm
+  anchor run initialize --provider.cluster devnet -- bafkreic2gkgjwm6ypjxtyixmdyzvreho36n76ncykkmrth66vtddstbzs4
   ```
 * [SendMessage script](./scripts/sendMessage.ts) that can be used to
 send a message to another chain. Example:

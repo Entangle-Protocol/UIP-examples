@@ -2,9 +2,8 @@ use alloy_sol_types::{
     sol_data::{Bytes, Uint},
     SolType,
 };
-use borsh::BorshDeserialize;
 use solana_program::{instruction::AccountMeta, pubkey, pubkey::Pubkey, system_program};
-use uip_endpoint::state::MessageData;
+use uip_solana_sdk::{deserialize_message_data, MessageDataRef};
 
 #[repr(C)]
 pub struct InstructionInfo {
@@ -33,10 +32,9 @@ pub unsafe extern "C" fn get_instruction_info(
     msg_data_len: usize,
     result: &mut InstructionInfo,
 ) {
-    let mut msg_data = core::slice::from_raw_parts(msg_data_ptr, msg_data_len);
-    let msg_data = MessageData::deserialize(&mut msg_data).unwrap();
+    let msg_data = core::slice::from_raw_parts(msg_data_ptr, msg_data_len);
+    let MessageDataRef { payload, .. } = deserialize_message_data(msg_data).unwrap();
 
-    let payload = &msg_data.initial_proposal.payload;
     let (_, to, _) = <(Bytes, Bytes, Uint<256>)>::abi_decode_params(payload, true).unwrap();
 
     let to = (&to as &[u8]).try_into().unwrap();

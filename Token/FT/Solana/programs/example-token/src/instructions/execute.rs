@@ -7,10 +7,7 @@ use anchor_lang::prelude::*;
 use solana_invoke::{invoke, invoke_signed};
 use spl_associated_token_account::instruction::create_associated_token_account;
 use spl_token::instruction::mint_to;
-use uip_endpoint::{
-    chains::*,
-    sdk::{parse_uip_message, route_instruction, BasicMessageData},
-};
+use uip_solana_sdk::{chains::*, parse_uip_message, route_instruction, MessageDataRef};
 
 #[derive(Accounts)]
 pub struct Execute<'info> {
@@ -19,12 +16,13 @@ pub struct Execute<'info> {
 }
 
 pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()> {
-    let BasicMessageData {
+    let uip_msg_data = ctx.accounts.uip_msg.try_borrow_data()?;
+    let MessageDataRef {
         payload,
         sender_addr,
         src_chain_id,
         ..
-    } = parse_uip_message(&ctx.accounts.uip_msg, &crate::ID)?;
+    } = parse_uip_message(&ctx.accounts.uip_msg, &uip_msg_data, &crate::ID)?;
 
     let allowed_origins = [
         (&SOLANA_DEVNET_CHAIN_ID, &crate::ID.to_bytes()[..]),
@@ -34,13 +32,13 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         (&TEIB_CHAIN_ID, &TEIB_ADDRESS),
     ];
     require!(
-        allowed_origins.contains(&(&src_chain_id, &sender_addr[..])),
+        allowed_origins.contains(&(&src_chain_id, sender_addr)),
         ExampleTokenError::SenderSmartContractNotAllowed
     );
 
     msg!("CCM instruction: ReceiveMessage");
 
-    let (from, to, amount) = <(Bytes, Bytes, Uint<256>)>::abi_decode_params(&payload, true)
+    let (from, to, amount) = <(Bytes, Bytes, Uint<256>)>::abi_decode_params(payload, true)
         .map_err(|_| ProgramError::InvalidInstructionData)?;
 
     let amount = amount

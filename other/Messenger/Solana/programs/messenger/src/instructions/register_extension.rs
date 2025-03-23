@@ -1,6 +1,6 @@
 use crate::state::*;
 use anchor_lang::prelude::*;
-use uip_endpoint::program::UipEndpoint;
+use uip_solana_sdk::{cpi::RegisterExtensionInput, UipEndpoint};
 
 #[derive(Accounts)]
 pub struct RegisterExtension<'info> {
@@ -20,18 +20,15 @@ pub struct RegisterExtension<'info> {
 }
 
 pub fn register_extension(ctx: Context<RegisterExtension>, ipfs_cid: [u8; 36]) -> Result<()> {
-    uip_endpoint::cpi::register_extension(
-        CpiContext::new_with_signer(
-            ctx.accounts.uip_program.to_account_info(),
-            uip_endpoint::cpi::accounts::RegisterExtension {
-                extension: ctx.accounts.extension.to_account_info(),
-                system_program: ctx.accounts.system_program.to_account_info(),
-                program_signer: ctx.accounts.program_signer.to_account_info(),
-                payer: ctx.accounts.payer.to_account_info(),
-            },
-            &[&[b"uip_signer", &[ctx.bumps.program_signer]]],
-        ),
-        crate::ID,
+    uip_solana_sdk::cpi::register_extension(RegisterExtensionInput {
+        extension: ctx.accounts.extension.to_account_info(),
+        program_signer: ctx.accounts.program_signer.to_account_info(),
+        payer: ctx.accounts.payer.to_account_info(),
+        system_program: ctx.accounts.system_program.to_account_info(),
+        program_signer_bump: ctx.bumps.program_signer,
+        program_id: &crate::ID,
         ipfs_cid,
-    )
+    })?;
+
+    Ok(())
 }

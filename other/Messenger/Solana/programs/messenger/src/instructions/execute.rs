@@ -1,10 +1,7 @@
 use crate::{addresses::*, error::*, state::*};
 use alloy_sol_types::{sol_data, SolType};
 use anchor_lang::prelude::*;
-use uip_endpoint::{
-    chains::*,
-    sdk::{parse_uip_message, route_instruction, BasicMessageData},
-};
+use uip_solana_sdk::{chains::*, parse_uip_message, route_instruction, MessageDataRef};
 
 #[derive(Accounts)]
 pub struct Execute<'info> {
@@ -13,12 +10,14 @@ pub struct Execute<'info> {
 }
 
 pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()> {
-    let BasicMessageData {
+    let uip_msg_data = ctx.accounts.uip_msg.try_borrow_data()?;
+    let MessageDataRef {
         payload,
         sender_addr,
         src_chain_id,
         msg_hash,
-    } = parse_uip_message(&ctx.accounts.uip_msg, &crate::ID)?;
+        ..
+    } = parse_uip_message(&ctx.accounts.uip_msg, &uip_msg_data, &crate::ID)?;
 
     let allowed_origins = [
         (&SOLANA_DEVNET_CHAIN_ID, &crate::ID.to_bytes()[..]),
@@ -31,7 +30,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         (&AVALANCHE_FUJI_CHAIN_ID, &AVALANCHE_FUJI_ADDRESS),
     ];
     require!(
-        allowed_origins.contains(&(&src_chain_id, &sender_addr[..])),
+        allowed_origins.contains(&(&src_chain_id, sender_addr)),
         MessengerError::SenderSmartContractNotAllowed
     );
 
@@ -40,7 +39,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
     let (text, sender) = decode_message(payload)?;
 
     let ix_data = ReceiveMessageIxData {
-        msg_hash,
+        msg_hash: *msg_hash,
         text_len: text.len() as _,
         sender_len: sender.len() as _,
     };
@@ -119,7 +118,7 @@ fn receive_message(ctx: Context<ReceiveMessage>, message: ReceiveMessageInput) -
     Ok(())
 }
 
-fn decode_message(payload: Vec<u8>) -> Result<(String, Vec<u8>)> {
+fn decode_message(payload: &[u8]) -> Result<(String, Vec<u8>)> {
     /// Manual first step of message ABI decoding to save RAM. Equivalent to
     /// `let (text_bytes, sender) = <(Bytes, Bytes)>::abi_decode_params(payload, true)
     ///      .map_err(|_| ProgramError::InvalidInstructionData)?;`
@@ -133,7 +132,7 @@ fn decode_message(payload: Vec<u8>) -> Result<(String, Vec<u8>)> {
         (text_bytes, sender)
     }
 
-    let (text_bytes, sender) = decode_message_step1(&payload);
+    let (text_bytes, sender) = decode_message_step1(payload);
     let text = sol_data::String::abi_decode(text_bytes, true)
         .map_err(|_| ProgramError::InvalidInstructionData)?;
     let sender = Vec::from(sender);
