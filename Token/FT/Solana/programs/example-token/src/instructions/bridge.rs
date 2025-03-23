@@ -6,11 +6,7 @@ use alloy_sol_types::{
 use anchor_lang::prelude::*;
 use solana_invoke::invoke;
 use spl_token::instruction::burn;
-use uip_solana_sdk::{
-    chains::*,
-    cpi::{Commitment, ProposeInput, TransmitterParams},
-    UipEndpoint,
-};
+use uip_solana_sdk::{chains::*, Commitment, TransmitterParams, UipEndpoint};
 
 #[derive(Accounts)]
 pub struct Bridge<'info> {
@@ -89,23 +85,22 @@ pub fn bridge(
         Destination::Teib => (TEIB_CHAIN_ID, &TEIB_ADDRESS),
     };
 
-    uip_solana_sdk::cpi::propose(ProposeInput {
-        payer: ctx.accounts.sender.to_account_info(),
-        uts_connector: ctx.accounts.uts_connector.to_account_info(),
-        program_signer: ctx.accounts.program_signer.to_account_info(),
-        system_program: ctx.accounts.system_program.to_account_info(),
-        program_signer_bump: ctx.bumps.program_signer,
-        sender: &crate::ID,
-        ccm_fee,
-        dest_chain_id,
-        transmitter_params: TransmitterParams {
+    UipEndpoint::propose()
+        .payer(ctx.accounts.sender.to_account_info())
+        .uts_connector(ctx.accounts.uts_connector.to_account_info())
+        .program_signer(ctx.accounts.program_signer.to_account_info())
+        .system_program(ctx.accounts.system_program.to_account_info())
+        .program_signer_bump(ctx.bumps.program_signer)
+        .sender(&crate::ID)
+        .ccm_fee(ccm_fee)
+        .dest_chain_id(dest_chain_id)
+        .transmitter_params(TransmitterParams {
             proposal_commitment: Commitment::Confirmed,
             custom_gas_limit,
-        },
-        selector_slot: &Default::default(),
-        dest_addr,
-        payload: &payload,
-    })?;
+        })
+        .dest_addr(dest_addr)
+        .payload(&payload)
+        .call()?;
 
     Ok(())
 }
