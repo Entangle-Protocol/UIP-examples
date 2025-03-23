@@ -4,7 +4,7 @@ use alloy_sol_types::{
     SolType,
 };
 use anchor_lang::prelude::*;
-use uip_solana_sdk::{chains::*, Commitment, TransmitterParams, UipEndpoint};
+use uip_solana_sdk::{chains::*, Commitment, UipEndpoint};
 
 #[derive(Accounts)]
 pub struct SendMessage<'info> {
@@ -67,12 +67,10 @@ pub fn send_message(
         .sender(&crate::ID)
         .ccm_fee(ccm_fee)
         .dest_chain_id(dest_chain_id)
-        .transmitter_params(TransmitterParams {
-            proposal_commitment: Commitment::Confirmed,
-            custom_gas_limit,
-        })
         .dest_addr(&dest_addr)
         .payload(&payload)
+        .custom_gas_limit(custom_gas_limit)
+        .proposal_commitment(Commitment::Confirmed)
         .call()?;
 
     Ok(())
