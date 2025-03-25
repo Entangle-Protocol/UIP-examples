@@ -2,6 +2,8 @@ import { task } from "hardhat/config";
 import { SEPARATOR } from "../utils/constants";
 import { BytesLike } from "ethers";
 import { loadDeploymentAddress } from "../utils/utils";
+import { FeesEvm, FeesSolana, UIPProvider } from "@entangle-labs/uip-sdk";
+import { Connection, PublicKey, SystemProgram } from "@solana/web3.js";
 
 
 task("sendMessage", "Proposes an operation")
@@ -10,13 +12,26 @@ task("sendMessage", "Proposes an operation")
     .addParam("message", "The message to send")
     .setAction(async (taskArgs, {network, ethers}) => {
         const coder = ethers.AbiCoder.defaultAbiCoder();
-
+        const provider = new UIPProvider("https://evm-testnet.entangle.fi");
+        const feesEvm = new FeesEvm(provider);
+        
         const netname = network.name
         console.log(`Using network: ${netname}`)
-        
         const [signer] = await ethers.getSigners();
         console.log("signer: ", signer.address);
 
+        const blockFinalizationOption = 0
+        const customGasLimit = 272200
+
+        const address = await loadDeploymentAddress(netname, "MessengerProtocol");
+        const instance = await ethers.getContractAt("MessengerProtocol", address, signer);
+
+        let estimateFee = await feesEvm.estimateExecutionWithGas({
+            srcChainId: BigInt(network.config.chainId!),
+            destChainId: BigInt(taskArgs.destchainid),
+            gasLimit: BigInt(customGasLimit)
+        });
+    
         let destAddress_bytes;
         if (taskArgs.destaddress.length == 42 && taskArgs.destaddress.startsWith("0x")) {
             destAddress_bytes = coder.encode(
@@ -33,13 +48,33 @@ task("sendMessage", "Proposes an operation")
                 ["bytes32"], 
                 [solanaPublicKey]
             );
+
+            const feesSolana = new FeesSolana()
+            estimateFee = await feesSolana.estimateExecutionSolana({
+                // @ts-ignore
+                connection: new Connection(network.userConfig.networks[netname].url),
+                payload: Buffer.from(taskArgs.message),
+                srcChain: BigInt(!network.config.chainId),
+                senderAddr: Buffer.from(signer.address || ''),
+                destChain: BigInt(taskArgs.destchainid),
+                destAddr: new PublicKey(signer.address as string),
+                accounts: [
+                    { pubkey: address, isSigner: false, isWritable: true},
+                    {
+                        pubkey: new PublicKey("Ere3yTTR2TR8n1irGj15rhKqUrTauccdoZt7e5BZVVEC"),
+                        isSigner: false,
+                        isWritable: true
+                    },
+                    { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
+                ]
+            })
         }
 
-        const blockFinalizationOption = 0
-        const customGasLimit = 272200
+        if (estimateFee == undefined) {
+            console.log("Estimate fee returned with error")
+            return
+        }
         
-        const address = await loadDeploymentAddress(netname, "MessengerProtocol");
-        const instance = await ethers.getContractAt("MessengerProtocol", address, signer);
         const tx = await instance.sendMessage(
             taskArgs.destchainid,
             blockFinalizationOption,
@@ -47,7 +82,7 @@ task("sendMessage", "Proposes an operation")
             destAddress_bytes,
             taskArgs.message,
             {   
-                value: 1000000,
+                value: estimateFee + (estimateFee / 100n * 10n),
             }
         )
         const rec = await tx.wait();
