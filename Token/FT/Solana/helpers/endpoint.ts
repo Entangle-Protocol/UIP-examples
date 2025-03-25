@@ -22,7 +22,7 @@ export type SignatureEcdsa = IdlTypes<UipEndpoint>["signatureEcdsa"];
 export type TransmitterParams = IdlTypes<UipEndpoint>["transmitterParams"];
 
 export const ENDPOINT_CONFIG: PublicKey = PublicKey.findProgramAddressSync(
-  [Buffer.from("endpoint")],
+  [Buffer.from("endpoint_config")],
   UIP_PROGRAM.programId,
 )[0];
 
