@@ -13,6 +13,7 @@ import "./tasks/getReward"
 import "./tasks/getTxData"
 import "./tasks/readTxEvent"
 import "./tasks/sendMessage"
+import "./tasks/estimateFee"
 
 const config: HardhatUserConfig = {
   solidity: {
