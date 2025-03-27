@@ -1,9 +1,9 @@
 import { task } from "hardhat/config";
 import { SEPARATOR } from "../utils/constants";
-import { BytesLike } from "ethers";
+import { BytesLike, toUtf8Bytes } from "ethers";
 import { loadDeploymentAddress } from "../utils/utils";
 import { FeesEvm, FeesSolana, UIPProvider } from "@entangle-labs/uip-sdk";
-import { Connection, PublicKey, SystemProgram } from "@solana/web3.js";
+import { Connection, PublicKey, sendAndConfirmRawTransaction, SystemProgram } from "@solana/web3.js";
 
 
 task("sendMessage", "Proposes an operation")
@@ -26,11 +26,7 @@ task("sendMessage", "Proposes an operation")
         const address = await loadDeploymentAddress(netname, "MessengerProtocol");
         const instance = await ethers.getContractAt("MessengerProtocol", address, signer);
 
-        let estimateFee = await feesEvm.estimateExecutionWithGas({
-            srcChainId: BigInt(network.config.chainId!),
-            destChainId: BigInt(taskArgs.destchainid),
-            gasLimit: BigInt(customGasLimit)
-        });
+        let estimateFee
     
         let destAddress_bytes;
         if (taskArgs.destaddress.length == 42 && taskArgs.destaddress.startsWith("0x")) {
@@ -38,8 +34,20 @@ task("sendMessage", "Proposes an operation")
                 ["address"],
                 [taskArgs.destaddress]
             );
+
+            estimateFee = await feesEvm.estimateExecutionWithGas({
+                srcChainId: BigInt(network.config.chainId!),
+                destChainId: BigInt(taskArgs.destchainid),
+                gasLimit: BigInt(customGasLimit)
+            });
         } else {
-            const solanaPublicKey = Buffer.from(require("bs58").decode(taskArgs.destaddress));
+            let solanaPublicKey;
+
+            if (taskArgs.destaddress == 32) {
+                solanaPublicKey = Buffer.from(require("bs58").decode(taskArgs.destaddress));
+            } else {
+                solanaPublicKey = Buffer.from(taskArgs.destaddress, 'hex');
+            }
             if (solanaPublicKey.length !== 32) {
                 throw new Error("Invalid Solana address");
             }
@@ -49,19 +57,28 @@ task("sendMessage", "Proposes an operation")
                 [solanaPublicKey]
             );
 
+            const senderAddr = ethers.zeroPadValue(address, 32)
+            const payload = coder.encode(["bytes", "bytes"], [
+                coder.encode(["string"], [
+                    taskArgs.message,
+                ]),
+                
+                Buffer.from(senderAddr.slice(2, ), "hex"),
+            ])
+
+
             const feesSolana = new FeesSolana()
             estimateFee = await feesSolana.estimateExecutionSolana({
-                // @ts-ignore
-                connection: new Connection(network.userConfig.networks[netname].url),
-                payload: Buffer.from(taskArgs.message),
-                srcChain: BigInt(!network.config.chainId),
-                senderAddr: Buffer.from(signer.address || ''),
+                connection: new Connection('https://api.devnet.solana.com'),
+                payload: Buffer.from(payload.slice(2, ), 'hex'),
+                srcChain: BigInt(network.config.chainId!),
+                senderAddr: Buffer.from(senderAddr.slice(2, ), 'hex'),
                 destChain: BigInt(taskArgs.destchainid),
-                destAddr: new PublicKey(signer.address as string),
+                destAddr: new PublicKey("MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1"),
                 accounts: [
-                    { pubkey: address, isSigner: false, isWritable: true},
+                    { pubkey: new PublicKey("Ere3yTTR2TR8n1irGj15rhKqUrTauccdoZt7e5BZVVEC"), isSigner: false, isWritable: true},
                     {
-                        pubkey: new PublicKey("Ere3yTTR2TR8n1irGj15rhKqUrTauccdoZt7e5BZVVEC"),
+                        pubkey: new PublicKey("8bPE4PGRQy2nvVXgUA8yrXqLWCBpzozguvkBk2Gsuwrx"),
                         isSigner: false,
                         isWritable: true
                     },
@@ -74,6 +91,8 @@ task("sendMessage", "Proposes an operation")
             console.log("Estimate fee returned with error")
             return
         }
+
+        console.log("estimate fee = ", estimateFee)
         
         const tx = await instance.sendMessage(
             taskArgs.destchainid,
@@ -83,6 +102,7 @@ task("sendMessage", "Proposes an operation")
             taskArgs.message,
             {   
                 value: estimateFee + (estimateFee / 100n * 10n),
+                // value: estimateFee * 2n
             }
         )
         const rec = await tx.wait();
