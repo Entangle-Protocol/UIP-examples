@@ -13,7 +13,7 @@ This is an example of deploying and connecting a custom protocol on EVM-based ch
     - [Deployments](#deployments)
 - [Testing](#testing)
     - [Local tests](#local-testing)
-    - [Estimating fees] (#estimating-fees)
+    - [Estimating fees](#estimating-fees)
     - [Testnet and mainnet testing](#testnet-and-mainnet-testing)
 - [License](#license)
 
