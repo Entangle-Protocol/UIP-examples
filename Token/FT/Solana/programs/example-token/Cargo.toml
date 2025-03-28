@@ -9,7 +9,7 @@ crate-type = ["cdylib", "lib"]
 name = "example_token"
 
 [features]
-default = []
+default = ["no-idl"]
 cpi = ["no-entrypoint"]
 no-entrypoint = []
 no-idl = []
