@@ -31,6 +31,15 @@ function saveDeploymentAddress(
     console.log("=================================== \n\n\n")
 }
 
+function loadDeploymentAddress(network: string, contractName: string, silent: boolean = false) {
+    const filePath = `./addresses/${network}/${contractName}.json`;
+    console.log(`Deployment address loaded from
+        ${filePath}   
+    `)
+    return JSON.parse(fs.readFileSync(filePath, "utf8")).address;
+}
+
 export { 
     saveDeploymentAddress,
+    loadDeploymentAddress
 };

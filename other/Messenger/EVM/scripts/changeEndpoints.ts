@@ -10,7 +10,7 @@ async function changeEndpoints() {
     const messengerAddr = loadDeploymentAddress(netname, "MessengerProtocol")
     const messenger = await ethers.getContractAt("MessengerProtocol", messengerAddr, signer)
 
-    const oldEndpoint = await messenger.endPoint()
+    const oldEndpoint = await messenger.endpoint()
     await messenger.changeEndpoint(endpoint)
 
     console.log("\nnetwork: ", netname)
