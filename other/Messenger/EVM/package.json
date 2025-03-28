@@ -6,7 +6,7 @@
     "hardhat": "^2.22.17"
   },
   "dependencies": {
-    "@entangle-labs/uip-contracts": "latest",
+    "@entangle-labs/uip-contracts": "^0.0.18",
     "@entangle-labs/uip-sdk": "latest",
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@openzeppelin/contracts": "^5.1.0",

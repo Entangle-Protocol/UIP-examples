@@ -58,7 +58,7 @@ const config: HardhatUserConfig = {
     polygon_amoy: {
         url: "https://rpc-amoy.polygon.technology",
         accounts: {
-            mnemonic: "",
+            mnemonic: ""
         },
         chainId: 80002
     },
@@ -70,7 +70,7 @@ const config: HardhatUserConfig = {
         chainId: 5003
     },
     base_sepolia: {
-        url: "https://1rpc.io/sepolia",
+        url: "https://sepolia.base.org",
         accounts: {
             mnemonic: ""
         },
