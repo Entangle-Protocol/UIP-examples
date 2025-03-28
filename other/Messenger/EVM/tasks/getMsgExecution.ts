@@ -3,7 +3,7 @@ import fs from "fs";
 import { SEPARATOR } from "../utils/constants";
 
 task("getMsgExecution", "Checking Message Execution on Destination Endpoint")
-    .addParam("hash", "TEIB tx hash")
+    .addParam("hash", "TEIB msg hash")
     .setAction(async (taskArgs, {network, ethers}) => {
         const [signer] = await ethers.getSigners();
         console.log(`signer: ${signer.address}`);

@@ -7,7 +7,7 @@ import { getMessageStatus } from "./msgStatus";
 const yellow = chalk.yellow;
 const green = chalk.green;
 
-task("getMsg", "Returns full message info by given TEIB hash")
+task("getMsgInfo", "Returns full message info by given TEIB hash")
     .addParam("hash", "TEIB chain tx hash")
     .setAction(async (taskArgs, {network, ethers}) => {
         const [signer] = await ethers.getSigners();

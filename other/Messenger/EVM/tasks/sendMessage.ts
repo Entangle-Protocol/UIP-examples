@@ -10,8 +10,11 @@ task("sendMessage", "Proposes an operation")
     .addParam("destchainid", "The destination chain ID")
     .addParam("destaddress", "The destination address")
     .addParam("message", "The message to send")
+    .addOptionalParam("finalization", "Block finalization option")
+    .addOptionalParam("gaslimit", "Custom gas limit")
     .setAction(async (taskArgs, {network, ethers}) => {
         const coder = ethers.AbiCoder.defaultAbiCoder();
+
         const provider = new UIPProvider("https://evm-testnet.entangle.fi");
         const feesEvm = new FeesEvm(provider);
         
@@ -20,8 +23,12 @@ task("sendMessage", "Proposes an operation")
         const [signer] = await ethers.getSigners();
         console.log("signer: ", signer.address);
 
-        const blockFinalizationOption = 0
-        const customGasLimit = 272200
+        const blockFinalizationOption = taskArgs.finalization || 0
+        let customGasLimit = taskArgs.gaslimit || 272200
+
+        if (taskArgs.destchainid == 5003) {
+            customGasLimit = 40000000
+        }
 
         const address = await loadDeploymentAddress(netname, "MessengerProtocol");
         const instance = await ethers.getContractAt("MessengerProtocol", address, signer);
