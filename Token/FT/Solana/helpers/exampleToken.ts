@@ -14,12 +14,12 @@ export const EXAMPLE_TOKEN_PROGRAM: Program<ExampleToken> =
 export type Destination = IdlTypes<ExampleToken>["destination"];
 
 export const EXAMPLE_TOKEN_CONFIG = PublicKey.findProgramAddressSync(
-  [Buffer.from("config")],
+  [Buffer.from("CONFIG")],
   EXAMPLE_TOKEN_PROGRAM.programId,
 )[0];
 
 export const EXA_MINT = PublicKey.findProgramAddressSync(
-  [Buffer.from("exa_mint")],
+  [Buffer.from("EXA_MINT")],
   EXAMPLE_TOKEN_PROGRAM.programId,
 )[0];
 

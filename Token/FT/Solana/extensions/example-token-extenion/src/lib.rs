@@ -40,11 +40,11 @@ pub unsafe extern "C" fn get_instruction_info(
     let to = (&to as &[u8]).try_into().unwrap();
 
     let (config_pda, _) =
-        Pubkey::find_program_address(&[b"config"], &example_token::ID.to_bytes().into());
+        Pubkey::find_program_address(&[b"CONFIG"], &example_token::ID.to_bytes().into());
     result.accounts[0] = AccountMeta::new_readonly(config_pda, false);
 
     let (mint_pda, _) =
-        Pubkey::find_program_address(&[b"exa_mint"], &example_token::ID.to_bytes().into());
+        Pubkey::find_program_address(&[b"EXA_MINT"], &example_token::ID.to_bytes().into());
     result.accounts[1] = AccountMeta::new(mint_pda, false);
     result.accounts[2] = AccountMeta::new(find_ata(&to, &mint_pda), false);
     result.accounts[3] = AccountMeta::new_readonly(to, false);

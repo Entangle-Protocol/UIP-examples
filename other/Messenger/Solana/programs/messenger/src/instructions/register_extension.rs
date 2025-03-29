@@ -9,7 +9,7 @@ pub struct RegisterExtension<'info> {
     #[account(mut)]
     extension: AccountInfo<'info>,
     /// CHECK: checked in CPI
-    #[account(seeds = [b"uip_signer"], bump)]
+    #[account(seeds = [b"UIP_SIGNER"], bump)]
     program_signer: AccountInfo<'info>,
     #[account(address = messenger.admin)]
     admin: Signer<'info>,

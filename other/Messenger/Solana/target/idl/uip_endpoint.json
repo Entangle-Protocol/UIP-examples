@@ -2,14 +2,47 @@
   "address": "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX",
   "metadata": {
     "name": "uip_endpoint",
-    "version": "2.0.0",
+    "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "Created with Anchor"
+    "description": "Universal Interoperability Protocol Solana endpoint"
   },
   "docs": [
     "The UIP program module."
   ],
   "instructions": [
+    {
+      "name": "deregister_super_transmitter",
+      "docs": [
+        "Deregister a super transmitter."
+      ],
+      "discriminator": [
+        14
+      ],
+      "accounts": [
+        {
+          "name": "endpoint_config",
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "endpoint_config"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "super_signer",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        }
+      ]
+    },
     {
       "name": "execute",
       "docs": [
@@ -28,7 +61,9 @@
       "accounts": [
         {
           "name": "endpoint_config",
-          "writable": true
+          "docs": [
+            "Should only be mutable during configuration to make the config colder."
+          ]
         },
         {
           "name": "message",
@@ -67,14 +102,21 @@
               {
                 "kind": "const",
                 "value": [
-                  101,
-                  110,
-                  100,
-                  112,
-                  111,
-                  105,
-                  110,
-                  116
+                  69,
+                  78,
+                  68,
+                  80,
+                  79,
+                  73,
+                  78,
+                  84,
+                  95,
+                  67,
+                  79,
+                  78,
+                  70,
+                  73,
+                  71
                 ]
               }
             ]
@@ -92,15 +134,19 @@
       ],
       "args": [
         {
+          "name": "admin",
+          "type": "pubkey"
+        },
+        {
           "name": "target_consensus_rate",
-          "type": "u32"
+          "type": "u64"
         },
         {
-          "name": "total_active_signers",
-          "type": "u32"
+          "name": "target_super_consensus_rate",
+          "type": "u64"
         },
         {
-          "name": "signers",
+          "name": "allowed_signers",
           "type": {
             "vec": {
               "array": [
@@ -111,7 +157,18 @@
           }
         },
         {
-          "name": "executors",
+          "name": "allowed_super_signers",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                20
+              ]
+            }
+          }
+        },
+        {
+          "name": "allowed_executors",
           "type": {
             "vec": "pubkey"
           }
@@ -173,7 +230,7 @@
         {
           "name": "uts_connector",
           "writable": true,
-          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
+          "address": "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
         },
         {
           "name": "program_signer",
@@ -187,16 +244,16 @@
               {
                 "kind": "const",
                 "value": [
-                  117,
-                  105,
-                  112,
+                  85,
+                  73,
+                  80,
                   95,
-                  115,
-                  105,
-                  103,
-                  110,
-                  101,
-                  114
+                  83,
+                  73,
+                  71,
+                  78,
+                  69,
+                  82
                 ]
               }
             ],
@@ -217,7 +274,7 @@
           "type": "pubkey"
         },
         {
-          "name": "ccm_fee",
+          "name": "total_fee",
           "type": "u64"
         },
         {
@@ -272,16 +329,16 @@
               {
                 "kind": "const",
                 "value": [
-                  117,
-                  105,
-                  112,
+                  85,
+                  73,
+                  80,
                   95,
-                  115,
-                  105,
-                  103,
-                  110,
-                  101,
-                  114
+                  83,
+                  73,
+                  71,
+                  78,
+                  69,
+                  82
                 ]
               }
             ],
@@ -318,6 +375,44 @@
       ]
     },
     {
+      "name": "register_super_transmitter",
+      "docs": [
+        "Register a super transmitter."
+      ],
+      "discriminator": [
+        13
+      ],
+      "accounts": [
+        {
+          "name": "endpoint_config",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "endpoint_config"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "super_signer",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "replenish",
       "docs": [
         "Instruct the executors to resend the message in case it failed, paying an",
@@ -336,7 +431,7 @@
         {
           "name": "uts_connector",
           "writable": true,
-          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
+          "address": "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
         },
         {
           "name": "system_program",
@@ -381,7 +476,7 @@
         {
           "name": "uts_connector",
           "writable": true,
-          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
+          "address": "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
         },
         {
           "name": "system_program",
@@ -445,6 +540,16 @@
               }
             }
           }
+        },
+        {
+          "name": "super_signatures",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "SignatureEcdsa"
+              }
+            }
+          }
         }
       ],
       "returns": "bool"
@@ -468,24 +573,24 @@
               {
                 "kind": "const",
                 "value": [
-                  105,
-                  109,
-                  112,
-                  111,
-                  115,
-                  115,
-                  105,
-                  98,
-                  108,
-                  101,
+                  73,
+                  77,
+                  80,
+                  79,
+                  83,
+                  83,
+                  73,
+                  66,
+                  76,
+                  69,
                   95,
-                  109,
-                  101,
-                  115,
-                  115,
-                  97,
-                  103,
-                  101
+                  77,
+                  69,
+                  83,
+                  83,
+                  65,
+                  71,
+                  69
                 ]
               }
             ]
@@ -531,24 +636,24 @@
               {
                 "kind": "const",
                 "value": [
-                  105,
-                  109,
-                  112,
-                  111,
-                  115,
-                  115,
-                  105,
-                  98,
-                  108,
-                  101,
+                  73,
+                  77,
+                  80,
+                  79,
+                  83,
+                  83,
+                  73,
+                  66,
+                  76,
+                  69,
                   95,
-                  109,
-                  101,
-                  115,
-                  115,
-                  97,
-                  103,
-                  101
+                  77,
+                  69,
+                  83,
+                  83,
+                  65,
+                  71,
+                  69
                 ]
               }
             ]
@@ -602,6 +707,34 @@
       "args": []
     },
     {
+      "name": "update_target_super_consensus_rate",
+      "docs": [
+        "Update target super consensus rate."
+      ],
+      "discriminator": [
+        15
+      ],
+      "accounts": [
+        {
+          "name": "endpoint_config",
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "endpoint_config"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "target_super_consensus_rate",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "update_uts_config",
       "docs": [
         "Update the UTS config account. Must be called whenever `UTS_CONNECTOR`",
@@ -619,16 +752,16 @@
               {
                 "kind": "const",
                 "value": [
-                  117,
-                  116,
-                  115,
+                  85,
+                  84,
+                  83,
                   95,
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
+                  67,
+                  79,
+                  78,
+                  70,
+                  73,
+                  71
                 ]
               }
             ]
@@ -675,27 +808,21 @@
   ],
   "events": [
     {
-      "name": "ConsensusReached",
-      "discriminator": [
-        2
-      ]
-    },
-    {
       "name": "ExtensionRegistered",
-      "discriminator": [
-        5
-      ]
-    },
-    {
-      "name": "MessageExecuted",
       "discriminator": [
         4
       ]
     },
     {
-      "name": "MessageExecutionStarted",
+      "name": "MessageExecuted",
       "discriminator": [
         3
+      ]
+    },
+    {
+      "name": "MessageExecutionStarted",
+      "discriminator": [
+        2
       ]
     },
     {
@@ -765,6 +892,31 @@
       "code": 397184011,
       "name": "InvalidConfigurationSource",
       "msg": "The message source is invalid for configuration"
+    },
+    {
+      "code": 397184012,
+      "name": "MessageNotLoaded",
+      "msg": "The message is not loaded"
+    },
+    {
+      "code": 397184013,
+      "name": "DuplicateTransmitter",
+      "msg": "A transmitter address is duplicated"
+    },
+    {
+      "code": 397184014,
+      "name": "TransmitterNotFound",
+      "msg": "Transmitter address is not found"
+    },
+    {
+      "code": 397184015,
+      "name": "FeeTooLow",
+      "msg": "Fee is too low"
+    },
+    {
+      "code": 397184016,
+      "name": "EndpointPaused",
+      "msg": "Endpoint is paused"
     }
   ],
   "types": [
@@ -789,29 +941,6 @@
       }
     },
     {
-      "name": "ConsensusReached",
-      "docs": [
-        "Emitted when consensus is reached on an incoming."
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "msg_hash",
-            "docs": [
-              "Hash of the message."
-            ],
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
       "name": "EndpointConfig",
       "docs": [
         "The configuration account for the protocol."
@@ -820,23 +949,30 @@
         "kind": "struct",
         "fields": [
           {
+            "name": "admin",
+            "docs": [
+              "Administrator public key."
+            ],
+            "type": "pubkey"
+          },
+          {
             "name": "target_consensus_rate",
             "docs": [
               "Transmitter consensus rate required for execution."
             ],
-            "type": "u32"
+            "type": "u64"
           },
           {
-            "name": "total_active_signers",
+            "name": "target_super_consensus_rate",
             "docs": [
-              "Total number of currently active signers, used for consensus calculation."
+              "Transmitter consensus rate required for execution."
             ],
-            "type": "u32"
+            "type": "u64"
           },
           {
-            "name": "signers",
+            "name": "allowed_signers",
             "docs": [
-              "Signer addresses (allowed to sign a message)."
+              "Executor addreses that are allowed to sign a message."
             ],
             "type": {
               "vec": {
@@ -848,9 +984,23 @@
             }
           },
           {
-            "name": "executors",
+            "name": "allowed_super_signers",
             "docs": [
-              "Executor addresses (allowed to execute a message)."
+              "Supertransmitter addreses that are allowed to sign a message."
+            ],
+            "type": {
+              "vec": {
+                "array": [
+                  "u8",
+                  20
+                ]
+              }
+            }
+          },
+          {
+            "name": "allowed_executors",
+            "docs": [
+              "Addresses that are allowed to execute a message."
             ],
             "type": {
               "vec": "pubkey"
@@ -1055,6 +1205,13 @@
             "type": "pubkey"
           },
           {
+            "name": "loaded_at",
+            "docs": [
+              "Timestamp when the message was loaded."
+            ],
+            "type": "i64"
+          },
+          {
             "name": "hash",
             "docs": [
               "Precomputed message hash."
@@ -1065,13 +1222,6 @@
                 32
               ]
             }
-          },
-          {
-            "name": "loaded_at",
-            "docs": [
-              "Timestamp when the message was loaded."
-            ],
-            "type": "i64"
           },
           {
             "name": "msg_data",
@@ -1087,7 +1237,21 @@
           {
             "name": "signers",
             "docs": [
-              "List of signers that signed the message."
+              "List of executors that signed the message."
+            ],
+            "type": {
+              "vec": {
+                "array": [
+                  "u8",
+                  20
+                ]
+              }
+            }
+          },
+          {
+            "name": "super_signers",
+            "docs": [
+              "List of supertransmitters that signed the message."
             ],
             "type": {
               "vec": {
@@ -1117,7 +1281,7 @@
             "type": "u128"
           },
           {
-            "name": "ccm_fee",
+            "name": "total_fee",
             "docs": [
               "Fee for cross-chain communication."
             ],
@@ -1225,7 +1389,7 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "ccm_fee",
+            "name": "total_fee",
             "docs": [
               "The fee initially paid for message delivery."
             ],
@@ -1416,6 +1580,11 @@
       "name": "CONSENSUS_RATE_DENOM",
       "type": "u64",
       "value": "10000"
+    },
+    {
+      "name": "MIN_FEE",
+      "type": "u64",
+      "value": "30"
     }
   ]
 }

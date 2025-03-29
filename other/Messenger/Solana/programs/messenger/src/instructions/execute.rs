@@ -72,7 +72,7 @@ struct ReceiveMessage<'info> {
         space = 8 + CrossChainMessage::space(ix_data.sender_len as _, ix_data.text_len as _),
         payer = payer,
         seeds = [
-            &b"message"[..],
+            &b"MESSAGE"[..],
             &ix_data.msg_hash,
         ],
         bump,

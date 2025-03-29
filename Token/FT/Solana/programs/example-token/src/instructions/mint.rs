@@ -5,12 +5,12 @@ use spl_token::instruction::mint_to;
 
 #[derive(Accounts)]
 pub struct Mint<'info> {
-    #[account(seeds = [b"config"], bump)]
+    #[account(seeds = [b"CONFIG"], bump)]
     config: Account<'info, ExampleTokenConfig>,
     #[account(address = config.admin)]
     admin: Signer<'info>,
     /// CHECK: it's derived from the EXA mint seeds
-    #[account(mut, seeds = [b"exa_mint"], bump)]
+    #[account(mut, seeds = [b"EXA_MINT"], bump)]
     exa_mint: AccountInfo<'info>,
     /// CHECK: checked in CPI
     #[account(mut)]
@@ -40,7 +40,7 @@ pub fn mint(ctx: Context<Mint>, amount: u64) -> Result<()> {
             destination_ata.to_account_info(),
             config.to_account_info(),
         ],
-        &[&[b"config", &[ctx.bumps.config]]],
+        &[&[b"CONFIG", &[ctx.bumps.config]]],
     )?;
 
     Ok(())

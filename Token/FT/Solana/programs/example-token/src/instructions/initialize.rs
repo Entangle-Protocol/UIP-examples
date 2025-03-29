@@ -13,12 +13,12 @@ pub struct Initialize<'info> {
         init,
         space = 8 + ExampleTokenConfig::space(),
         payer = payer,
-        seeds = [b"config"],
+        seeds = [b"CONFIG"],
         bump
     )]
     config: Account<'info, ExampleTokenConfig>,
     /// CHECK: it's derived from the EXA mint seeds
-    #[account(mut, seeds = [b"exa_mint"], bump)]
+    #[account(mut, seeds = [b"EXA_MINT"], bump)]
     exa_mint: AccountInfo<'info>,
     #[account(mut)]
     payer: Signer<'info>,
@@ -38,7 +38,7 @@ pub fn initialize(ctx: Context<Initialize>, admin: Pubkey, decimals: u8) -> Resu
     config.admin = admin;
 
     let space = spl_token::state::Mint::LEN;
-    let mint_seeds: &[&[&[u8]]] = &[&[b"exa_mint", &[ctx.bumps.exa_mint]]];
+    let mint_seeds: &[&[&[u8]]] = &[&[b"EXA_MINT", &[ctx.bumps.exa_mint]]];
     let ctx2 = CpiContext::new_with_signer(
         system_program.to_account_info(),
         CreateAccount {

@@ -8,14 +8,47 @@ export type UipEndpoint = {
   "address": "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX",
   "metadata": {
     "name": "uipEndpoint",
-    "version": "2.0.0",
+    "version": "0.1.0",
     "spec": "0.1.0",
-    "description": "Created with Anchor"
+    "description": "Universal Interoperability Protocol Solana endpoint"
   },
   "docs": [
     "The UIP program module."
   ],
   "instructions": [
+    {
+      "name": "deregisterSuperTransmitter",
+      "docs": [
+        "Deregister a super transmitter."
+      ],
+      "discriminator": [
+        14
+      ],
+      "accounts": [
+        {
+          "name": "endpointConfig",
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "endpointConfig"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "superSigner",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        }
+      ]
+    },
     {
       "name": "execute",
       "docs": [
@@ -34,7 +67,9 @@ export type UipEndpoint = {
       "accounts": [
         {
           "name": "endpointConfig",
-          "writable": true
+          "docs": [
+            "Should only be mutable during configuration to make the config colder."
+          ]
         },
         {
           "name": "message",
@@ -73,14 +108,21 @@ export type UipEndpoint = {
               {
                 "kind": "const",
                 "value": [
-                  101,
-                  110,
-                  100,
-                  112,
-                  111,
-                  105,
-                  110,
-                  116
+                  69,
+                  78,
+                  68,
+                  80,
+                  79,
+                  73,
+                  78,
+                  84,
+                  95,
+                  67,
+                  79,
+                  78,
+                  70,
+                  73,
+                  71
                 ]
               }
             ]
@@ -98,15 +140,19 @@ export type UipEndpoint = {
       ],
       "args": [
         {
+          "name": "admin",
+          "type": "pubkey"
+        },
+        {
           "name": "targetConsensusRate",
-          "type": "u32"
+          "type": "u64"
         },
         {
-          "name": "totalActiveSigners",
-          "type": "u32"
+          "name": "targetSuperConsensusRate",
+          "type": "u64"
         },
         {
-          "name": "signers",
+          "name": "allowedSigners",
           "type": {
             "vec": {
               "array": [
@@ -117,7 +163,18 @@ export type UipEndpoint = {
           }
         },
         {
-          "name": "executors",
+          "name": "allowedSuperSigners",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                20
+              ]
+            }
+          }
+        },
+        {
+          "name": "allowedExecutors",
           "type": {
             "vec": "pubkey"
           }
@@ -179,7 +236,7 @@ export type UipEndpoint = {
         {
           "name": "utsConnector",
           "writable": true,
-          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
+          "address": "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
         },
         {
           "name": "programSigner",
@@ -193,16 +250,16 @@ export type UipEndpoint = {
               {
                 "kind": "const",
                 "value": [
-                  117,
-                  105,
-                  112,
+                  85,
+                  73,
+                  80,
                   95,
-                  115,
-                  105,
-                  103,
-                  110,
-                  101,
-                  114
+                  83,
+                  73,
+                  71,
+                  78,
+                  69,
+                  82
                 ]
               }
             ],
@@ -223,7 +280,7 @@ export type UipEndpoint = {
           "type": "pubkey"
         },
         {
-          "name": "ccmFee",
+          "name": "totalFee",
           "type": "u64"
         },
         {
@@ -278,16 +335,16 @@ export type UipEndpoint = {
               {
                 "kind": "const",
                 "value": [
-                  117,
-                  105,
-                  112,
+                  85,
+                  73,
+                  80,
                   95,
-                  115,
-                  105,
-                  103,
-                  110,
-                  101,
-                  114
+                  83,
+                  73,
+                  71,
+                  78,
+                  69,
+                  82
                 ]
               }
             ],
@@ -324,6 +381,44 @@ export type UipEndpoint = {
       ]
     },
     {
+      "name": "registerSuperTransmitter",
+      "docs": [
+        "Register a super transmitter."
+      ],
+      "discriminator": [
+        13
+      ],
+      "accounts": [
+        {
+          "name": "endpointConfig",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "endpointConfig"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "superSigner",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        }
+      ]
+    },
+    {
       "name": "replenish",
       "docs": [
         "Instruct the executors to resend the message in case it failed, paying an",
@@ -342,7 +437,7 @@ export type UipEndpoint = {
         {
           "name": "utsConnector",
           "writable": true,
-          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
+          "address": "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
         },
         {
           "name": "systemProgram",
@@ -387,7 +482,7 @@ export type UipEndpoint = {
         {
           "name": "utsConnector",
           "writable": true,
-          "address": "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
+          "address": "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
         },
         {
           "name": "systemProgram",
@@ -451,6 +546,16 @@ export type UipEndpoint = {
               }
             }
           }
+        },
+        {
+          "name": "superSignatures",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "signatureEcdsa"
+              }
+            }
+          }
         }
       ],
       "returns": "bool"
@@ -474,24 +579,24 @@ export type UipEndpoint = {
               {
                 "kind": "const",
                 "value": [
-                  105,
-                  109,
-                  112,
-                  111,
-                  115,
-                  115,
-                  105,
-                  98,
-                  108,
-                  101,
+                  73,
+                  77,
+                  80,
+                  79,
+                  83,
+                  83,
+                  73,
+                  66,
+                  76,
+                  69,
                   95,
-                  109,
-                  101,
-                  115,
-                  115,
-                  97,
-                  103,
-                  101
+                  77,
+                  69,
+                  83,
+                  83,
+                  65,
+                  71,
+                  69
                 ]
               }
             ]
@@ -537,24 +642,24 @@ export type UipEndpoint = {
               {
                 "kind": "const",
                 "value": [
-                  105,
-                  109,
-                  112,
-                  111,
-                  115,
-                  115,
-                  105,
-                  98,
-                  108,
-                  101,
+                  73,
+                  77,
+                  80,
+                  79,
+                  83,
+                  83,
+                  73,
+                  66,
+                  76,
+                  69,
                   95,
-                  109,
-                  101,
-                  115,
-                  115,
-                  97,
-                  103,
-                  101
+                  77,
+                  69,
+                  83,
+                  83,
+                  65,
+                  71,
+                  69
                 ]
               }
             ]
@@ -608,6 +713,34 @@ export type UipEndpoint = {
       "args": []
     },
     {
+      "name": "updateTargetSuperConsensusRate",
+      "docs": [
+        "Update target super consensus rate."
+      ],
+      "discriminator": [
+        15
+      ],
+      "accounts": [
+        {
+          "name": "endpointConfig",
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "endpointConfig"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "targetSuperConsensusRate",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "updateUtsConfig",
       "docs": [
         "Update the UTS config account. Must be called whenever `UTS_CONNECTOR`",
@@ -625,16 +758,16 @@ export type UipEndpoint = {
               {
                 "kind": "const",
                 "value": [
-                  117,
-                  116,
-                  115,
+                  85,
+                  84,
+                  83,
                   95,
-                  99,
-                  111,
-                  110,
-                  102,
-                  105,
-                  103
+                  67,
+                  79,
+                  78,
+                  70,
+                  73,
+                  71
                 ]
               }
             ]
@@ -681,27 +814,21 @@ export type UipEndpoint = {
   ],
   "events": [
     {
-      "name": "consensusReached",
-      "discriminator": [
-        2
-      ]
-    },
-    {
       "name": "extensionRegistered",
-      "discriminator": [
-        5
-      ]
-    },
-    {
-      "name": "messageExecuted",
       "discriminator": [
         4
       ]
     },
     {
-      "name": "messageExecutionStarted",
+      "name": "messageExecuted",
       "discriminator": [
         3
+      ]
+    },
+    {
+      "name": "messageExecutionStarted",
+      "discriminator": [
+        2
       ]
     },
     {
@@ -771,6 +898,31 @@ export type UipEndpoint = {
       "code": 397184011,
       "name": "invalidConfigurationSource",
       "msg": "The message source is invalid for configuration"
+    },
+    {
+      "code": 397184012,
+      "name": "messageNotLoaded",
+      "msg": "The message is not loaded"
+    },
+    {
+      "code": 397184013,
+      "name": "duplicateTransmitter",
+      "msg": "A transmitter address is duplicated"
+    },
+    {
+      "code": 397184014,
+      "name": "transmitterNotFound",
+      "msg": "Transmitter address is not found"
+    },
+    {
+      "code": 397184015,
+      "name": "feeTooLow",
+      "msg": "Fee is too low"
+    },
+    {
+      "code": 397184016,
+      "name": "endpointPaused",
+      "msg": "Endpoint is paused"
     }
   ],
   "types": [
@@ -795,29 +947,6 @@ export type UipEndpoint = {
       }
     },
     {
-      "name": "consensusReached",
-      "docs": [
-        "Emitted when consensus is reached on an incoming."
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "msgHash",
-            "docs": [
-              "Hash of the message."
-            ],
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
       "name": "endpointConfig",
       "docs": [
         "The configuration account for the protocol."
@@ -826,23 +955,30 @@ export type UipEndpoint = {
         "kind": "struct",
         "fields": [
           {
+            "name": "admin",
+            "docs": [
+              "Administrator public key."
+            ],
+            "type": "pubkey"
+          },
+          {
             "name": "targetConsensusRate",
             "docs": [
               "Transmitter consensus rate required for execution."
             ],
-            "type": "u32"
+            "type": "u64"
           },
           {
-            "name": "totalActiveSigners",
+            "name": "targetSuperConsensusRate",
             "docs": [
-              "Total number of currently active signers, used for consensus calculation."
+              "Transmitter consensus rate required for execution."
             ],
-            "type": "u32"
+            "type": "u64"
           },
           {
-            "name": "signers",
+            "name": "allowedSigners",
             "docs": [
-              "Signer addresses (allowed to sign a message)."
+              "Executor addreses that are allowed to sign a message."
             ],
             "type": {
               "vec": {
@@ -854,9 +990,23 @@ export type UipEndpoint = {
             }
           },
           {
-            "name": "executors",
+            "name": "allowedSuperSigners",
             "docs": [
-              "Executor addresses (allowed to execute a message)."
+              "Supertransmitter addreses that are allowed to sign a message."
+            ],
+            "type": {
+              "vec": {
+                "array": [
+                  "u8",
+                  20
+                ]
+              }
+            }
+          },
+          {
+            "name": "allowedExecutors",
+            "docs": [
+              "Addresses that are allowed to execute a message."
             ],
             "type": {
               "vec": "pubkey"
@@ -1061,6 +1211,13 @@ export type UipEndpoint = {
             "type": "pubkey"
           },
           {
+            "name": "loadedAt",
+            "docs": [
+              "Timestamp when the message was loaded."
+            ],
+            "type": "i64"
+          },
+          {
             "name": "hash",
             "docs": [
               "Precomputed message hash."
@@ -1071,13 +1228,6 @@ export type UipEndpoint = {
                 32
               ]
             }
-          },
-          {
-            "name": "loadedAt",
-            "docs": [
-              "Timestamp when the message was loaded."
-            ],
-            "type": "i64"
           },
           {
             "name": "msgData",
@@ -1093,7 +1243,21 @@ export type UipEndpoint = {
           {
             "name": "signers",
             "docs": [
-              "List of signers that signed the message."
+              "List of executors that signed the message."
+            ],
+            "type": {
+              "vec": {
+                "array": [
+                  "u8",
+                  20
+                ]
+              }
+            }
+          },
+          {
+            "name": "superSigners",
+            "docs": [
+              "List of supertransmitters that signed the message."
             ],
             "type": {
               "vec": {
@@ -1123,7 +1287,7 @@ export type UipEndpoint = {
             "type": "u128"
           },
           {
-            "name": "ccmFee",
+            "name": "totalFee",
             "docs": [
               "Fee for cross-chain communication."
             ],
@@ -1231,7 +1395,7 @@ export type UipEndpoint = {
         "kind": "struct",
         "fields": [
           {
-            "name": "ccmFee",
+            "name": "totalFee",
             "docs": [
               "The fee initially paid for message delivery."
             ],
@@ -1422,6 +1586,11 @@ export type UipEndpoint = {
       "name": "consensusRateDenom",
       "type": "u64",
       "value": "10000"
+    },
+    {
+      "name": "minFee",
+      "type": "u64",
+      "value": "30"
     }
   ]
 };

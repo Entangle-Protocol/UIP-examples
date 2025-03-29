@@ -17,13 +17,13 @@ pub struct Bridge<'info> {
     #[account(mut)]
     token_account: AccountInfo<'info>,
     /// CHECK: it's checked to be the EXA mint
-    #[account(mut, seeds = [b"exa_mint"], bump)]
+    #[account(mut, seeds = [b"EXA_MINT"], bump)]
     exa_mint: AccountInfo<'info>,
     /// CHECK: checked in the CPI
     #[account(mut)]
     uts_connector: AccountInfo<'info>,
     /// CHECK: checked in CPI
-    #[account(seeds = [b"uip_signer"], bump)]
+    #[account(seeds = [b"UIP_SIGNER"], bump)]
     program_signer: AccountInfo<'info>,
     /// CHECK: it's checked to be the SPL token program
     #[account(address = spl_token::ID)]

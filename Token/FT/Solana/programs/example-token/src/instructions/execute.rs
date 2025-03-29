@@ -70,10 +70,10 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
 struct BridgeMint<'info> {
     #[account(mut)]
     payer: Signer<'info>,
-    #[account(seeds = [b"config"], bump)]
+    #[account(seeds = [b"CONFIG"], bump)]
     config: Account<'info, ExampleTokenConfig>,
     /// CHECK: it's checked to be the EXA mint
-    #[account(mut, seeds = [b"exa_mint"], bump)]
+    #[account(mut, seeds = [b"EXA_MINT"], bump)]
     exa_mint: AccountInfo<'info>,
     /// CHECK: it's checked to be the `to` ATA
     #[account(mut)]
@@ -134,7 +134,7 @@ fn bridge_mint(ctx: Context<BridgeMint>, input: BridgeMintInput) -> Result<()> {
             token_account.to_account_info(),
             config.to_account_info(),
         ],
-        &[&[b"config", &[ctx.bumps.config]]],
+        &[&[b"CONFIG", &[ctx.bumps.config]]],
     )?;
 
     Ok(())

@@ -32,10 +32,10 @@ pub unsafe extern "C" fn get_instruction_info(
     let MessageDataRef { msg_hash, .. } = deserialize_message_data(msg_data).unwrap();
 
     let (messenger_pda, _) =
-        Pubkey::find_program_address(&[b"messenger"], &messenger::ID.to_bytes().into());
+        Pubkey::find_program_address(&[b"MESSENGER"], &messenger::ID.to_bytes().into());
     result.accounts[0] = AccountMeta::new(messenger_pda, false);
     let (message_pda, _) =
-        Pubkey::find_program_address(&[b"message", msg_hash], &messenger::ID.to_bytes().into());
+        Pubkey::find_program_address(&[b"MESSAGE", msg_hash], &messenger::ID.to_bytes().into());
     result.accounts[1] = AccountMeta::new(message_pda, false);
     result.accounts[2] = AccountMeta::new_readonly(system_program::ID, false);
     result.accounts_len = 3;

@@ -8,7 +8,7 @@ pub struct Initialize<'info> {
         init,
         space = 8 + Messenger::space(allowed_senders.as_ref()),
         payer = payer,
-        seeds = [b"messenger"],
+        seeds = [b"MESSENGER"],
         bump
     )]
     messenger: Account<'info, Messenger>,

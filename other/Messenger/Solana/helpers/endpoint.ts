@@ -22,24 +22,24 @@ export type SignatureEcdsa = IdlTypes<UipEndpoint>["signatureEcdsa"];
 export type TransmitterParams = IdlTypes<UipEndpoint>["transmitterParams"];
 
 export const ENDPOINT_CONFIG: PublicKey = PublicKey.findProgramAddressSync(
-  [Buffer.from("endpoint_config")],
+  [Buffer.from("ENDPOINT_CONFIG")],
   UIP_PROGRAM.programId,
 )[0];
 
 const IMPOSSIBLE_MESSAGE: PublicKey = PublicKey.findProgramAddressSync(
-  [Buffer.from("impossible_message")],
+  [Buffer.from("IMPOSSIBLE_MESSAGE")],
   UIP_PROGRAM.programId,
 )[0];
 
 export const findMessage = (msg: MessageData) =>
   PublicKey.findProgramAddressSync(
-    [Buffer.from("message"), msgHashFull(msg)],
+    [Buffer.from("MESSAGE"), msgHashFull(msg)],
     UIP_PROGRAM.programId,
   )[0];
 
 export const findExtension = (program: PublicKey) =>
   PublicKey.findProgramAddressSync([
-    Buffer.from("extension"),
+    Buffer.from("EXTENSION"),
     program.toBuffer(),
   ], UIP_PROGRAM.programId)[0];
 

@@ -24,14 +24,14 @@ export type Destination = IdlTypes<Messenger>["destination"];
 export const MAX_TEXT_LEN_ONE_TX = 796;
 
 export const MESSENGER = PublicKey.findProgramAddressSync(
-  [Buffer.from("messenger")],
+  [Buffer.from("MESSENGER")],
   MESSENGER_PROGRAM.programId,
 )[0];
 
 export const findMessage = (msgHash: number[] | Buffer) =>
   PublicKey.findProgramAddressSync(
     [
-      Buffer.from("message"),
+      Buffer.from("MESSAGE"),
       Buffer.from(msgHash),
     ],
     MESSENGER_PROGRAM.programId,
@@ -205,7 +205,7 @@ async function sendMessageManyTx(
       { pubkey: await fetchUtsConnector(), isSigner: false, isWritable: true },
       {
         pubkey: PublicKey.findProgramAddressSync(
-          [Buffer.from("uip_signer")],
+          [Buffer.from("UIP_SIGNER")],
           MESSENGER_PROGRAM.programId,
         )[0],
         isSigner: false,

@@ -14,7 +14,7 @@ pub struct SendMessage<'info> {
     #[account(mut)]
     uts_connector: AccountInfo<'info>,
     /// CHECK: checked in CPI
-    #[account(seeds = [b"uip_signer"], bump)]
+    #[account(seeds = [b"UIP_SIGNER"], bump)]
     program_signer: AccountInfo<'info>,
     system_program: Program<'info, System>,
     uip_program: Program<'info, UipEndpoint>,

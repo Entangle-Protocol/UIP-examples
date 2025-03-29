@@ -9,7 +9,7 @@ pub struct SetAllowedSenders<'info> {
         realloc = 8 + Messenger::space(allowed_senders.as_ref()),
         realloc::zero = false,
         realloc::payer = payer,
-        seeds = [b"messenger"],
+        seeds = [b"MESSENGER"],
         bump,
         has_one = admin,
     )]

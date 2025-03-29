@@ -19,7 +19,7 @@ export type Chunk = IdlTypes<ChunkLoader>["chunk"];
 
 export const findChunkHolder = (owner: PublicKey, chunkId: number) =>
   PublicKey.findProgramAddressSync([
-    Buffer.from("chunk_holder"),
+    Buffer.from("CHUNK_HOLDER"),
     owner.toBuffer(),
     new BN(chunkId).toArrayLike(Buffer, "le", 4),
   ], CHUNK_LOADER_PROGRAM.programId)[0];
