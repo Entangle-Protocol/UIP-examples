@@ -24,13 +24,15 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         ..
     } = parse_uip_message(&ctx.accounts.uip_msg, &uip_msg_data, &crate::ID)?;
 
+    #[cfg(not(feature = "mainnet"))]
     let allowed_origins = [
         (&SOLANA_DEVNET_CHAIN_ID, &crate::ID.to_bytes()[..]),
-        (&SOLANA_MAINNET_CHAIN_ID, &crate::ID.to_bytes()[..]),
         (&POLYGON_AMOY_CHAIN_ID, &POLYGON_AMOY_ADDRESS),
         (&MANTLE_SEPOLIA_CHAIN_ID, &MANTLE_SEPOLIA_ADDRESS),
         (&TEIB_CHAIN_ID, &TEIB_ADDRESS),
     ];
+    #[cfg(feature = "mainnet")]
+    let allowed_origins = [(&SOLANA_MAINNET_CHAIN_ID, &crate::ID.to_bytes()[..])];
     require!(
         allowed_origins.contains(&(&src_chain_id, sender_addr)),
         ExampleTokenError::SenderSmartContractNotAllowed

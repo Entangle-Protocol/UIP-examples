@@ -16,4 +16,8 @@ pub enum MessengerError {
     /// 6002 0x1772
     #[msg("Sender smart contract is not allowed")]
     SenderSmartContractNotAllowed,
+
+    /// 6003 0x1773
+    #[msg("Destination smart contract is not allowed")]
+    DestinationSmartContractNotAllowed,
 }

@@ -1,4 +1,4 @@
-use crate::{addresses::*, state::*};
+use crate::{addresses::*, error::*, state::*};
 use alloy_sol_types::{
     sol_data::{Bytes, Uint},
     SolType,
@@ -76,6 +76,20 @@ pub fn bridge(
         to,
         ruint::Uint::<256, 4>::from(amount),
     ));
+
+    match destination {
+        Destination::SolanaMainnet => {
+            #[cfg(not(feature = "mainnet"))]
+            return err!(ExampleTokenError::DestinationSmartContractNotAllowed);
+        }
+        Destination::SolanaDevnet
+        | Destination::PolygonAmoy
+        | Destination::MantleSepolia
+        | Destination::Teib => {
+            #[cfg(feature = "mainnet")]
+            return err!(ExampleTokenError::DestinationSmartContractNotAllowed);
+        }
+    }
 
     let (dest_chain_id, dest_addr) = match destination {
         Destination::SolanaMainnet => (SOLANA_MAINNET_CHAIN_ID, &crate::ID.to_bytes()),

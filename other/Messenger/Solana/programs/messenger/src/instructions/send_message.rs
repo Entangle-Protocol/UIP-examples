@@ -1,4 +1,4 @@
-use crate::addresses::*;
+use crate::{addresses::*, error::*};
 use alloy_sol_types::{
     sol_data::{self, Bytes},
     SolType,
@@ -45,6 +45,24 @@ pub fn send_message(
 ) -> Result<()> {
     let text = sol_data::String::abi_encode(&text);
     let payload = <(Bytes, Bytes)>::abi_encode_params(&(text, ctx.accounts.sender.key()));
+
+    match destination {
+        Destination::SolanaMainnet | Destination::Ethereum | Destination::Sonic => {
+            #[cfg(not(feature = "mainnet"))]
+            return err!(MessengerError::DestinationSmartContractNotAllowed);
+        }
+        Destination::SolanaDevnet
+        | Destination::EthereumSepolia
+        | Destination::PolygonAmoy
+        | Destination::MantleSepolia
+        | Destination::Teib
+        | Destination::BaseSepolia
+        | Destination::SonicBlazeTestnet
+        | Destination::AvalancheFuji => {
+            #[cfg(feature = "mainnet")]
+            return err!(MessengerError::DestinationSmartContractNotAllowed);
+        }
+    }
 
     let (dest_chain_id, dest_addr) = match destination {
         Destination::SolanaMainnet => (SOLANA_MAINNET_CHAIN_ID, crate::ID.to_bytes()),

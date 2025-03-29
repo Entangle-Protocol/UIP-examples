@@ -176,9 +176,9 @@ describe("example token", () => {
   const customGasLimit = new BN(1_000_000);
   const srcOpTxId = new Array<Array<number>>();
   const amount = new BN(1_000_000);
-  const destination: Destination = connection.rpcEndpoint.includes("devnet")
-    ? { solanaDevnet: {} }
-    : { solanaMainnet: {} };
+  const destination: Destination = connection.rpcEndpoint.includes("mainnet")
+    ? { solanaMainnet: {} }
+    : { solanaDevnet: {} };
 
   test("bridge", async () => {
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {

@@ -123,9 +123,9 @@ describe("messenger", () => {
   const text = "Hello, world!";
   let selectorSlot: number[];
   let payload: Buffer;
-  const destination: Destination = connection.rpcEndpoint.includes("devnet")
-    ? { solanaDevnet: {} }
-    : { solanaMainnet: {} };
+  const destination: Destination = connection.rpcEndpoint.includes("mainnet")
+    ? { solanaMainnet: {} }
+    : { solanaDevnet: {} };
 
   test("sendMessage", async () => {
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {
