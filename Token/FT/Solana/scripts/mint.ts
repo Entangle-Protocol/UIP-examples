@@ -1,7 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { EXA_MINT, mint } from "../helpers/exampleToken";
-import { readKeypairFromFile } from "../helpers/utils";
 import { BN } from "bn.js";
 import { getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
@@ -19,8 +18,6 @@ async function main(): Promise<void> {
   anchor.setProvider(provider);
   const payer = (provider.wallet as NodeWallet).payer;
 
-  const admin = readKeypairFromFile("keys/admin.json");
-
   await getOrCreateAssociatedTokenAccount(
     provider.connection,
     payer,
@@ -29,7 +26,7 @@ async function main(): Promise<void> {
   );
 
   const { transactionSignature } = await mint({
-    admin,
+    admin: payer,
     amount,
     owner,
   });

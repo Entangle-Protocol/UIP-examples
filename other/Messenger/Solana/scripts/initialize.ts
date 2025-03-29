@@ -7,7 +7,6 @@ import {
   setAllowedSenders,
 } from "../helpers/messenger";
 import { hexToBytes } from "../helpers/endpoint";
-import { readKeypairFromFile } from "../helpers/utils";
 
 async function main(): Promise<void> {
   if (process.argv.length < 2 + 1) {
@@ -25,12 +24,10 @@ async function main(): Promise<void> {
   anchor.setProvider(provider);
   const payer = (provider.wallet as NodeWallet).payer;
 
-  const admin = readKeypairFromFile("keys/admin.json");
-
   try {
     const { transactionSignature } = await initialize({
       payer,
-      admin: admin.publicKey,
+      admin: payer.publicKey,
       allowedSenders,
     });
     console.log("Initialize transaction signature:", transactionSignature);
@@ -38,7 +35,7 @@ async function main(): Promise<void> {
     expect(e.toString()).toInclude("already in use");
     const { transactionSignature } = await setAllowedSenders({
       payer,
-      admin,
+      admin: payer,
       allowedSenders,
     });
     console.log(
@@ -48,7 +45,7 @@ async function main(): Promise<void> {
   }
 
   const { transactionSignature } = await registerExtension({
-    admin,
+    admin: payer,
     payer,
     ipfsCid,
   });
