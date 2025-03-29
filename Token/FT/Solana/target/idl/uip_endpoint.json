@@ -16,7 +16,14 @@
         "Deregister a super transmitter."
       ],
       "discriminator": [
-        14
+        100,
+        114,
+        103,
+        95,
+        115,
+        117,
+        112,
+        114
       ],
       "accounts": [
         {
@@ -56,7 +63,14 @@
         "of those."
       ],
       "discriminator": [
-        8
+        101,
+        120,
+        101,
+        99,
+        117,
+        116,
+        101,
+        0
       ],
       "accounts": [
         {
@@ -91,7 +105,14 @@
         "Initialize the endpoint configuration."
       ],
       "discriminator": [
-        1
+        105,
+        110,
+        105,
+        116,
+        105,
+        97,
+        108,
+        122
       ],
       "accounts": [
         {
@@ -185,7 +206,14 @@
         "using the chunk loader program."
       ],
       "discriminator": [
-        6
+        108,
+        111,
+        97,
+        100,
+        95,
+        109,
+        115,
+        103
       ],
       "accounts": [
         {
@@ -219,7 +247,14 @@
         "Propose a message for execution on another chain."
       ],
       "discriminator": [
-        3
+        112,
+        114,
+        111,
+        112,
+        111,
+        115,
+        101,
+        0
       ],
       "accounts": [
         {
@@ -314,7 +349,14 @@
         "Register a protocol extension IPFS CID."
       ],
       "discriminator": [
-        2
+        114,
+        101,
+        103,
+        95,
+        101,
+        120,
+        116,
+        110
       ],
       "accounts": [
         {
@@ -380,7 +422,14 @@
         "Register a super transmitter."
       ],
       "discriminator": [
-        13
+        114,
+        101,
+        103,
+        95,
+        115,
+        117,
+        112,
+        114
       ],
       "accounts": [
         {
@@ -420,7 +469,14 @@
         "transfer the system message to EIB."
       ],
       "discriminator": [
-        11
+        114,
+        101,
+        115,
+        108,
+        101,
+        110,
+        115,
+        104
       ],
       "accounts": [
         {
@@ -465,7 +521,14 @@
         "is used to transfer the system message to EIB."
       ],
       "discriminator": [
-        10
+        114,
+        101,
+        115,
+        101,
+        110,
+        100,
+        0,
+        0
       ],
       "accounts": [
         {
@@ -510,7 +573,14 @@
         "updated accordingly."
       ],
       "discriminator": [
-        7
+        115,
+        105,
+        103,
+        110,
+        95,
+        109,
+        115,
+        103
       ],
       "accounts": [
         {
@@ -561,7 +631,14 @@
         "on-chain and only works for `msg_data` that fits in 1 tx."
       ],
       "discriminator": [
-        4
+        115,
+        105,
+        109,
+        95,
+        101,
+        120,
+        101,
+        99
       ],
       "accounts": [
         {
@@ -624,7 +701,14 @@
         "fields, filling the rest with the default values."
       ],
       "discriminator": [
-        5
+        115,
+        105,
+        109,
+        95,
+        101,
+        120,
+        95,
+        108
       ],
       "accounts": [
         {
@@ -692,7 +776,14 @@
         "or if the message lifetime has been passed since loading it."
       ],
       "discriminator": [
-        9
+        117,
+        110,
+        108,
+        111,
+        97,
+        100,
+        95,
+        109
       ],
       "accounts": [
         {
@@ -712,7 +803,14 @@
         "Update target super consensus rate."
       ],
       "discriminator": [
-        15
+        117,
+        112,
+        100,
+        95,
+        115,
+        99,
+        110,
+        115
       ],
       "accounts": [
         {
@@ -741,7 +839,14 @@
         "address changes."
       ],
       "discriminator": [
-        12
+        117,
+        112,
+        100,
+        95,
+        117,
+        116,
+        115,
+        99
       ],
       "accounts": [
         {
@@ -784,25 +889,53 @@
     {
       "name": "EndpointConfig",
       "discriminator": [
-        1
+        99,
+        111,
+        110,
+        102,
+        105,
+        103,
+        0,
+        0
       ]
     },
     {
       "name": "Extension",
       "discriminator": [
-        2
+        101,
+        120,
+        116,
+        101,
+        110,
+        115,
+        105,
+        111
       ]
     },
     {
       "name": "Message",
       "discriminator": [
-        3
+        109,
+        101,
+        115,
+        115,
+        97,
+        103,
+        101,
+        0
       ]
     },
     {
       "name": "UtsConfig",
       "discriminator": [
-        4
+        117,
+        116,
+        115,
+        95,
+        99,
+        111,
+        110,
+        102
       ]
     }
   ],
@@ -810,25 +943,53 @@
     {
       "name": "ExtensionRegistered",
       "discriminator": [
-        4
+        101,
+        120,
+        116,
+        110,
+        95,
+        114,
+        101,
+        103
       ]
     },
     {
       "name": "MessageExecuted",
       "discriminator": [
-        3
+        101,
+        120,
+        101,
+        99,
+        117,
+        116,
+        101,
+        100
       ]
     },
     {
       "name": "MessageExecutionStarted",
       "discriminator": [
-        2
+        101,
+        120,
+        101,
+        99,
+        95,
+        115,
+        116,
+        97
       ]
     },
     {
       "name": "MessageProposed",
       "discriminator": [
-        1
+        112,
+        114,
+        111,
+        112,
+        111,
+        115,
+        101,
+        100
       ]
     }
   ],

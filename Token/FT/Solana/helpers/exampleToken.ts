@@ -100,14 +100,14 @@ export type BridgeInput = {
   destination: Destination;
   to: Buffer;
   amount: BN;
-  ccmFee: BN;
+  uipFee: BN;
   customGasLimit: BN;
   sender: Keypair;
 };
 
 export async function bridge(
   {
-    ccmFee,
+    uipFee,
     to,
     amount,
     customGasLimit,
@@ -116,7 +116,7 @@ export async function bridge(
   }: BridgeInput,
 ): Promise<{ transactionSignature: TransactionSignature }> {
   const transactionSignature = await EXAMPLE_TOKEN_PROGRAM.methods
-    .bridge(destination, to, amount, ccmFee, customGasLimit)
+    .bridge(destination, to, amount, uipFee, customGasLimit)
     .accounts({
       utsConnector: await fetchUtsConnector(),
       sender: sender.publicKey,

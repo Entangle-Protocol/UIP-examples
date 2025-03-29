@@ -37,7 +37,7 @@ pub enum Destination {
 pub fn send_message(
     ctx: Context<SendMessage>,
     destination: Destination,
-    ccm_fee: u64,
+    uip_fee: u64,
     custom_gas_limit: u128,
     text: String,
 ) -> Result<()> {
@@ -65,7 +65,7 @@ pub fn send_message(
         .system_program(ctx.accounts.system_program.to_account_info())
         .program_signer_bump(ctx.bumps.program_signer)
         .sender(&crate::ID)
-        .ccm_fee(ccm_fee)
+        .total_fee(uip_fee)
         .dest_chain_id(dest_chain_id)
         .dest_addr(&dest_addr)
         .payload(&payload)

@@ -32,20 +32,20 @@ pub mod messenger {
     }
 
     /// Sends a cross-chain message to a specified destination, paying the
-    /// specified `ccm_fee` fee.
+    /// specified `uip_fee`.
     pub fn send_message(
         ctx: Context<SendMessage>,
         destination: Destination,
-        ccm_fee: u64,
+        uip_fee: u64,
         custom_gas_limit: u128,
         text: String,
     ) -> Result<()> {
-        instructions::send_message(ctx, destination, ccm_fee, custom_gas_limit, text)
+        instructions::send_message(ctx, destination, uip_fee, custom_gas_limit, text)
     }
 
     /// Executes an incoming cross-chain message, saving the received message in
     /// a `CrossChainMessage` account.
-    #[instruction(discriminator = [240])]
+    #[instruction(discriminator = b"execute\0")]
     pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()> {
         instructions::execute(ctx)
     }

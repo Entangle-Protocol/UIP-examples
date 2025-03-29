@@ -151,6 +151,7 @@ export type ExecuteFullInput = {
   executor: Keypair;
   msgData: MessageData;
   signatures: SignatureEcdsa[];
+  superSignatures: SignatureEcdsa[];
   accounts: AccountMeta[];
   spendingLimit: BN;
   computeUnits?: number;
@@ -163,6 +164,7 @@ export async function executeFull(
     executor,
     msgData,
     signatures,
+    superSignatures,
     accounts,
     spendingLimit,
     computeUnits,
@@ -191,7 +193,7 @@ export async function executeFull(
 
   preInstructions.push(
     await UIP_PROGRAM.methods
-      .signMessage(signatures)
+      .signMessage(signatures, superSignatures)
       .accounts({
         endpointConfig: ENDPOINT_CONFIG,
         message,
@@ -257,7 +259,7 @@ type MessageDataEth = {
 
 type ProposalEth = {
   destChainId: bigint;
-  ccmFee: bigint;
+  totalFee: bigint;
   selectorSlot: BytesLike;
   senderAddr: BytesLike;
   destAddr: BytesLike;
@@ -294,7 +296,7 @@ function msgHash(msgData: MessageDataEth) {
     ],
     [
       msgData.initialProposal.destChainId,
-      msgData.initialProposal.ccmFee,
+      msgData.initialProposal.totalFee,
       msgData.initialProposal.selectorSlot,
       msgData.initialProposal.senderAddr.length,
       msgData.initialProposal.senderAddr,
@@ -318,7 +320,7 @@ function convertMsgData(msgData: MessageData): MessageDataEth {
   return {
     initialProposal: {
       destChainId: BigInt(SOLANA_CHAIN_ID.toString()),
-      ccmFee: BigInt(msgData.initialProposal.ccmFee.toString()),
+      totalFee: BigInt(msgData.initialProposal.totalFee.toString()),
       selectorSlot: Buffer.from(msgData.initialProposal.selectorSlot),
       senderAddr: msgData.initialProposal.senderAddr,
       destAddr: msgData.initialProposal.destAddr.toBuffer(),
@@ -375,6 +377,6 @@ export function encodeTransmitterParams(
 
 export async function fetchUtsConnector(): Promise<PublicKey> {
   return await UIP_PROGRAM.account.utsConfig.fetch(
-    new PublicKey("oGoTxL4LiedkCW6nW9Wgaqq9gU8EAK5AUL5crhTpucy"),
+    new PublicKey("CTspuKSu7eRXzKqtYzR83H5VCZMWVRC4uRLfrA5Cy8WX"),
   ).then((c) => c.utsConnector);
 }

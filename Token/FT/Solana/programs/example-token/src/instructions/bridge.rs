@@ -47,7 +47,7 @@ pub fn bridge(
     destination: Destination,
     to: Vec<u8>,
     amount: u64,
-    ccm_fee: u64,
+    uip_fee: u64,
     custom_gas_limit: u128,
 ) -> Result<()> {
     let sender = &ctx.accounts.sender;
@@ -92,7 +92,7 @@ pub fn bridge(
         .system_program(ctx.accounts.system_program.to_account_info())
         .program_signer_bump(ctx.bumps.program_signer)
         .sender(&crate::ID)
-        .ccm_fee(ccm_fee)
+        .total_fee(uip_fee)
         .dest_chain_id(dest_chain_id)
         .dest_addr(dest_addr)
         .payload(&payload)

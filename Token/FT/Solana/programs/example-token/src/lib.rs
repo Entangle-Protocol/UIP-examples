@@ -32,21 +32,20 @@ pub mod example_token {
         instructions::register_extension(ctx, ipfs_cid)
     }
 
-    /// Sends tokens to a specified destination, paying the specified `ccm_fee`
-    /// fee.
+    /// Sends tokens to a specified destination, paying the specified `uip_fee`.
     pub fn bridge(
         ctx: Context<Bridge>,
         destination: Destination,
         to: Vec<u8>,
         amount: u64,
-        ccm_fee: u64,
+        uip_fee: u64,
         custom_gas_limit: u128,
     ) -> Result<()> {
-        instructions::bridge(ctx, destination, to, amount, ccm_fee, custom_gas_limit)
+        instructions::bridge(ctx, destination, to, amount, uip_fee, custom_gas_limit)
     }
 
     /// Executes an incoming cross-chain message.
-    #[instruction(discriminator = [240])]
+    #[instruction(discriminator = b"execute\0")]
     pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()> {
         instructions::execute(ctx)
     }

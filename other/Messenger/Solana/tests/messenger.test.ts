@@ -47,6 +47,9 @@ const sender = new Keypair();
 const signer = new Wallet(
   "0x74e3ffad2b87174dc1d806edf1a01e3b017cf1be05d1894d329826f10fa1d72f",
 );
+const superSigner = new Wallet(
+  "0xf496bcca0a4896011dbdbe2ec80417ed759a6a9cc72477b3a65b8d99b066b150",
+);
 const transmitterParams = {
   proposalCommitment: { confirmed: {} },
   customGasLimit: new BN(2),
@@ -113,7 +116,7 @@ describe("messenger", () => {
   });
 
   const destAddr = MESSENGER_PROGRAM.programId.toBuffer();
-  const ccmFee = new BN(80085);
+  const uipFee = new BN(80085);
   const customGasLimit = new BN(1_000_000);
   const srcBlockNumber = new BN(randomInt(256));
   const srcOpTxId = new Array<Array<number>>();
@@ -147,7 +150,7 @@ describe("messenger", () => {
 
     const { transactionSignature } = await sendMessageOneTx({
       destination,
-      ccmFee,
+      uipFee,
       customGasLimit,
       text,
       sender,
@@ -163,7 +166,7 @@ describe("messenger", () => {
       const text = "a".repeat(len);
       await sendMessageOneTx({
         destination,
-        ccmFee,
+        uipFee,
         customGasLimit,
         text,
         sender,
@@ -208,7 +211,7 @@ describe("messenger", () => {
 
     await sendMessage({
       destination,
-      ccmFee,
+      uipFee,
       customGasLimit,
       text: bigText,
       sender,
@@ -221,7 +224,7 @@ describe("messenger", () => {
   test("receiveMessage", async () => {
     const text = "hello everyone!";
     const destAddr = MESSENGER_PROGRAM.programId.toBuffer();
-    const ccmFee = new BN(80085);
+    const uipFee = new BN(80085);
     const srcBlockNumber = new BN(randomInt(256));
     const srcChainId = SOLANA_CHAIN_ID;
     const srcOpTxId = new Array<Array<number>>();
@@ -249,7 +252,7 @@ describe("messenger", () => {
     });
 
     const { transactionSignature } = await sendMessage({
-      ccmFee,
+      uipFee,
       customGasLimit,
       destination,
       text,
@@ -267,7 +270,7 @@ describe("messenger", () => {
       initialProposal: {
         senderAddr: MESSENGER_PROGRAM.programId.toBuffer(),
         destAddr: new PublicKey(destAddr),
-        ccmFee,
+        totalFee: uipFee,
         payload,
         reserved: Buffer.from([]),
         transmitterParams: transmitterParamsEncoded,
@@ -281,6 +284,7 @@ describe("messenger", () => {
     };
 
     const signatures = [signMsg(signer, msgData)];
+    const superSignatures = [signMsg(superSigner, msgData)];
 
     const accounts = [
       { pubkey: MESSENGER, isSigner: false, isWritable: true },
@@ -296,6 +300,7 @@ describe("messenger", () => {
       executor,
       msgData,
       signatures,
+      superSignatures,
       accounts,
       spendingLimit: new BN(100_000),
     };
@@ -376,7 +381,7 @@ describe("messenger", () => {
     });
 
     const { transactionSignature } = await sendMessage({
-      ccmFee,
+      uipFee,
       customGasLimit,
       destination,
       text,
@@ -395,7 +400,7 @@ describe("messenger", () => {
       initialProposal: {
         senderAddr,
         destAddr: new PublicKey(destAddr),
-        ccmFee,
+        totalFee: uipFee,
         payload,
         reserved: Buffer.from([]),
         transmitterParams: transmitterParamsEncoded,
@@ -409,10 +414,12 @@ describe("messenger", () => {
     };
 
     const signatures = [signMsg(signer, msgData)];
+    const superSignatures = [signMsg(superSigner, msgData)];
     expect(executeFull({
       executor,
       msgData,
       signatures,
+      superSignatures,
       accounts: [
         { pubkey: MESSENGER, isSigner: false, isWritable: true },
         {
@@ -435,6 +442,7 @@ describe("messenger", () => {
       executor,
       msgData,
       signatures,
+      superSignatures,
       accounts: [
         { pubkey: MESSENGER, isSigner: false, isWritable: true },
         {

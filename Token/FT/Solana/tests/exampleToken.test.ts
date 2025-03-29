@@ -50,6 +50,9 @@ const receiver = new Keypair();
 const signer = new Wallet(
   "0x74e3ffad2b87174dc1d806edf1a01e3b017cf1be05d1894d329826f10fa1d72f",
 );
+const superSigner = new Wallet(
+  "0xf496bcca0a4896011dbdbe2ec80417ed759a6a9cc72477b3a65b8d99b066b150",
+);
 const transmitterParams = {
   proposalCommitment: { confirmed: {} },
   customGasLimit: new BN(2),
@@ -169,7 +172,7 @@ describe("example token", () => {
     );
   });
 
-  const ccmFee = new BN(80085);
+  const uipFee = new BN(80085);
   const customGasLimit = new BN(1_000_000);
   const srcOpTxId = new Array<Array<number>>();
   const amount = new BN(1_000_000);
@@ -203,7 +206,7 @@ describe("example token", () => {
 
     const { transactionSignature } = await bridge({
       destination,
-      ccmFee,
+      uipFee,
       customGasLimit,
       sender,
       amount,
@@ -229,7 +232,7 @@ describe("example token", () => {
 
   test("receive", async () => {
     const destAddr = EXAMPLE_TOKEN_PROGRAM.programId.toBuffer();
-    const ccmFee = new BN(80085);
+    const uipFee = new BN(80085);
     const srcBlockNumber = new BN(randomInt(256));
     const srcChainId = SOLANA_CHAIN_ID;
     const srcOpTxId = new Array<Array<number>>();
@@ -257,7 +260,7 @@ describe("example token", () => {
     });
 
     const { transactionSignature } = await bridge({
-      ccmFee,
+      uipFee,
       customGasLimit,
       destination,
       sender,
@@ -275,7 +278,7 @@ describe("example token", () => {
       initialProposal: {
         senderAddr: EXAMPLE_TOKEN_PROGRAM.programId.toBuffer(),
         destAddr: new PublicKey(destAddr),
-        ccmFee,
+        totalFee: uipFee,
         payload,
         reserved: Buffer.from([]),
         transmitterParams: transmitterParamsEncoded,
@@ -289,6 +292,7 @@ describe("example token", () => {
     };
 
     const signatures = [signMsg(signer, msgData)];
+    const superSignatures = [signMsg(superSigner, msgData)];
 
     const accounts = [
       { pubkey: EXAMPLE_TOKEN_CONFIG, isSigner: false, isWritable: false },
@@ -315,6 +319,7 @@ describe("example token", () => {
       executor,
       msgData,
       signatures,
+      superSignatures,
       accounts,
       spendingLimit: new BN(100_000),
     };

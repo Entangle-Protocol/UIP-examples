@@ -114,7 +114,7 @@ export async function setAllowedSenders(
 
 export type SendMessageInput = {
   destination: Destination;
-  ccmFee: BN;
+  uipFee: BN;
   customGasLimit: BN;
   text: string;
   sender: Keypair;
@@ -133,7 +133,7 @@ export async function sendMessage(
 
 export async function sendMessageOneTx(
   {
-    ccmFee,
+    uipFee,
     customGasLimit,
     destination,
     text,
@@ -141,7 +141,7 @@ export async function sendMessageOneTx(
   }: SendMessageInput,
 ): Promise<{ transactionSignature: TransactionSignature }> {
   const transactionSignature = await MESSENGER_PROGRAM.methods
-    .sendMessage(destination, ccmFee, customGasLimit, text)
+    .sendMessage(destination, uipFee, customGasLimit, text)
     .accounts({
       utsConnector: await fetchUtsConnector(),
       sender: sender.publicKey,
@@ -153,7 +153,7 @@ export async function sendMessageOneTx(
 
 async function sendMessageManyTx(
   {
-    ccmFee,
+    uipFee,
     customGasLimit,
     destination,
     text,
@@ -162,7 +162,7 @@ async function sendMessageManyTx(
   }: SendMessageInput,
 ): Promise<{ transactionSignature: TransactionSignature }> {
   const data = encodeSendMessageParams({
-    ccmFee,
+    uipFee,
     customGasLimit,
     destination,
     text,
@@ -283,14 +283,14 @@ const SEND_MESSAGE_DISCRIMINATOR = [57, 40, 34, 178, 189, 10, 65, 26];
 
 type SendMessgeParams = {
   destination: Destination;
-  ccmFee: BN;
+  uipFee: BN;
   customGasLimit: BN;
   text: string;
 };
 
 export function encodeSendMessageParams({
   destination,
-  ccmFee,
+  uipFee,
   customGasLimit,
   text,
 }: SendMessgeParams): Buffer {
@@ -322,7 +322,7 @@ export function encodeSendMessageParams({
   res.set([destinationNum], offset);
   offset += 1;
 
-  res.set(ccmFee.toArrayLike(Buffer, "le", 8), offset);
+  res.set(uipFee.toArrayLike(Buffer, "le", 8), offset);
   offset += 8;
 
   res.set(customGasLimit.toArrayLike(Buffer, "le", 16), offset);

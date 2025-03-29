@@ -22,7 +22,14 @@ export type UipEndpoint = {
         "Deregister a super transmitter."
       ],
       "discriminator": [
-        14
+        100,
+        114,
+        103,
+        95,
+        115,
+        117,
+        112,
+        114
       ],
       "accounts": [
         {
@@ -62,7 +69,14 @@ export type UipEndpoint = {
         "of those."
       ],
       "discriminator": [
-        8
+        101,
+        120,
+        101,
+        99,
+        117,
+        116,
+        101,
+        0
       ],
       "accounts": [
         {
@@ -97,7 +111,14 @@ export type UipEndpoint = {
         "Initialize the endpoint configuration."
       ],
       "discriminator": [
-        1
+        105,
+        110,
+        105,
+        116,
+        105,
+        97,
+        108,
+        122
       ],
       "accounts": [
         {
@@ -191,7 +212,14 @@ export type UipEndpoint = {
         "using the chunk loader program."
       ],
       "discriminator": [
-        6
+        108,
+        111,
+        97,
+        100,
+        95,
+        109,
+        115,
+        103
       ],
       "accounts": [
         {
@@ -225,7 +253,14 @@ export type UipEndpoint = {
         "Propose a message for execution on another chain."
       ],
       "discriminator": [
-        3
+        112,
+        114,
+        111,
+        112,
+        111,
+        115,
+        101,
+        0
       ],
       "accounts": [
         {
@@ -320,7 +355,14 @@ export type UipEndpoint = {
         "Register a protocol extension IPFS CID."
       ],
       "discriminator": [
-        2
+        114,
+        101,
+        103,
+        95,
+        101,
+        120,
+        116,
+        110
       ],
       "accounts": [
         {
@@ -386,7 +428,14 @@ export type UipEndpoint = {
         "Register a super transmitter."
       ],
       "discriminator": [
-        13
+        114,
+        101,
+        103,
+        95,
+        115,
+        117,
+        112,
+        114
       ],
       "accounts": [
         {
@@ -426,7 +475,14 @@ export type UipEndpoint = {
         "transfer the system message to EIB."
       ],
       "discriminator": [
-        11
+        114,
+        101,
+        115,
+        108,
+        101,
+        110,
+        115,
+        104
       ],
       "accounts": [
         {
@@ -471,7 +527,14 @@ export type UipEndpoint = {
         "is used to transfer the system message to EIB."
       ],
       "discriminator": [
-        10
+        114,
+        101,
+        115,
+        101,
+        110,
+        100,
+        0,
+        0
       ],
       "accounts": [
         {
@@ -516,7 +579,14 @@ export type UipEndpoint = {
         "updated accordingly."
       ],
       "discriminator": [
-        7
+        115,
+        105,
+        103,
+        110,
+        95,
+        109,
+        115,
+        103
       ],
       "accounts": [
         {
@@ -567,7 +637,14 @@ export type UipEndpoint = {
         "on-chain and only works for `msg_data` that fits in 1 tx."
       ],
       "discriminator": [
-        4
+        115,
+        105,
+        109,
+        95,
+        101,
+        120,
+        101,
+        99
       ],
       "accounts": [
         {
@@ -630,7 +707,14 @@ export type UipEndpoint = {
         "fields, filling the rest with the default values."
       ],
       "discriminator": [
-        5
+        115,
+        105,
+        109,
+        95,
+        101,
+        120,
+        95,
+        108
       ],
       "accounts": [
         {
@@ -698,7 +782,14 @@ export type UipEndpoint = {
         "or if the message lifetime has been passed since loading it."
       ],
       "discriminator": [
-        9
+        117,
+        110,
+        108,
+        111,
+        97,
+        100,
+        95,
+        109
       ],
       "accounts": [
         {
@@ -718,7 +809,14 @@ export type UipEndpoint = {
         "Update target super consensus rate."
       ],
       "discriminator": [
-        15
+        117,
+        112,
+        100,
+        95,
+        115,
+        99,
+        110,
+        115
       ],
       "accounts": [
         {
@@ -747,7 +845,14 @@ export type UipEndpoint = {
         "address changes."
       ],
       "discriminator": [
-        12
+        117,
+        112,
+        100,
+        95,
+        117,
+        116,
+        115,
+        99
       ],
       "accounts": [
         {
@@ -790,25 +895,53 @@ export type UipEndpoint = {
     {
       "name": "endpointConfig",
       "discriminator": [
-        1
+        99,
+        111,
+        110,
+        102,
+        105,
+        103,
+        0,
+        0
       ]
     },
     {
       "name": "extension",
       "discriminator": [
-        2
+        101,
+        120,
+        116,
+        101,
+        110,
+        115,
+        105,
+        111
       ]
     },
     {
       "name": "message",
       "discriminator": [
-        3
+        109,
+        101,
+        115,
+        115,
+        97,
+        103,
+        101,
+        0
       ]
     },
     {
       "name": "utsConfig",
       "discriminator": [
-        4
+        117,
+        116,
+        115,
+        95,
+        99,
+        111,
+        110,
+        102
       ]
     }
   ],
@@ -816,25 +949,53 @@ export type UipEndpoint = {
     {
       "name": "extensionRegistered",
       "discriminator": [
-        4
+        101,
+        120,
+        116,
+        110,
+        95,
+        114,
+        101,
+        103
       ]
     },
     {
       "name": "messageExecuted",
       "discriminator": [
-        3
+        101,
+        120,
+        101,
+        99,
+        117,
+        116,
+        101,
+        100
       ]
     },
     {
       "name": "messageExecutionStarted",
       "discriminator": [
-        2
+        101,
+        120,
+        101,
+        99,
+        95,
+        115,
+        116,
+        97
       ]
     },
     {
       "name": "messageProposed",
       "discriminator": [
-        1
+        112,
+        114,
+        111,
+        112,
+        111,
+        115,
+        101,
+        100
       ]
     }
   ],

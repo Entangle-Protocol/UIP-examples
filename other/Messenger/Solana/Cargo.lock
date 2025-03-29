@@ -2763,7 +2763,7 @@ dependencies = [
 [[package]]
 name = "uip-solana-sdk"
 version = "0.1.0"
-source = "git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop#f740c72cc1b1427b4c55f2b1d6a69c594f3ec63d"
+source = "git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop#52cdc914e1bf390e5ca9d59b3e7d02fabfd2ca42"
 dependencies = [
  "anchor-lang",
  "bon",

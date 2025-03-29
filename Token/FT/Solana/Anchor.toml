@@ -17,12 +17,12 @@ url = "https://api.devnet.solana.com"
 address = "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX"
 [[test.validator.clone]]
 # UTS config
-address = "oGoTxL4LiedkCW6nW9Wgaqq9gU8EAK5AUL5crhTpucy"
+address = "CTspuKSu7eRXzKqtYzR83H5VCZMWVRC4uRLfrA5Cy8WX"
 [[test.validator.clone]]
 # UTS connector
-address = "7sxJfPBs1XPiAVsZDAURmiKKd6LkBZcNMXYqi4aVNKJi"
+address = "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
 [[test.validator.account]]
-address = "ENRSBZkbQsre1guoPDrpKkTtyaJQuLfCQMgESpjUuVAg"
+address = "CMFjqmzBd59mHnHZgGz9c1ppZPN8VFnWZ8UtxPVUEJLq"
 filename = "tests/accounts/uip-config.json"
 
 [registry]

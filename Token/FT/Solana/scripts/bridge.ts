@@ -8,14 +8,14 @@ import { PublicKey } from "@solana/web3.js";
 async function main(): Promise<void> {
   if (process.argv.length < 2 + 6) {
     console.error(
-      "Usage: sendMessage <#times> <dst-chain> <ccm-fee> <custom-gas-limit> <to> <base-amount>",
+      "Usage: sendMessage <#times> <dst-chain> <uip-fee> <custom-gas-limit> <to> <base-amount>",
     );
     process.exit(1);
   }
 
   const times = Number(process.argv[2]);
   const dstChain = process.argv[3];
-  const ccmFee = new BN(process.argv[4]);
+  const uipFee = new BN(process.argv[4]);
   const customGasLimit = new BN(process.argv[5]);
   let to: Buffer;
   if (process.argv[6].startsWith("0x")) {
@@ -56,7 +56,7 @@ async function main(): Promise<void> {
     while (true) {
       try {
         const { transactionSignature } = await bridge({
-          ccmFee,
+          uipFee,
           customGasLimit,
           destination,
           sender: payer,
