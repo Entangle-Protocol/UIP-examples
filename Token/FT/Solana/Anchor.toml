@@ -23,7 +23,7 @@ address = "CTspuKSu7eRXzKqtYzR83H5VCZMWVRC4uRLfrA5Cy8WX"
 address = "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
 [[test.validator.account]]
 address = "CMFjqmzBd59mHnHZgGz9c1ppZPN8VFnWZ8UtxPVUEJLq"
-filename = "tests/accounts/uip-config.json"
+filename = "tests/accounts/uip_config.json"
 
 [registry]
 url = "https://api.apr.dev"
