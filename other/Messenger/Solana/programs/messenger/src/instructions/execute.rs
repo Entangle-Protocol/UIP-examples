@@ -22,10 +22,12 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
     let allowed_origins = [
         (&SOLANA_DEVNET_CHAIN_ID, &crate::ID.to_bytes()[..]),
         (&SOLANA_MAINNET_CHAIN_ID, &crate::ID.to_bytes()[..]),
+        (&ETHEREUM_CHAIN_ID, &ETHEREUM_ADDRESS),
         (&ETHEREUM_SEPOLIA_CHAIN_ID, &ETHEREUM_SEPOLIA_ADDRESS),
         (&POLYGON_AMOY_CHAIN_ID, &POLYGON_AMOY_ADDRESS),
         (&MANTLE_SEPOLIA_CHAIN_ID, &MANTLE_SEPOLIA_ADDRESS),
         (&TEIB_CHAIN_ID, &TEIB_ADDRESS),
+        (&SONIC_MAINNET_CHAIN_ID, &SONIC_ADDRESS),
         (&SONIC_BLAZE_TESTNET_CHAIN_ID, &SONIC_BLAZE_TESTNET_ADDRESS),
         (&AVALANCHE_FUJI_CHAIN_ID, &AVALANCHE_FUJI_ADDRESS),
     ];

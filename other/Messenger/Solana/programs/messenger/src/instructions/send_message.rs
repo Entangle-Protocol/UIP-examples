@@ -32,6 +32,8 @@ pub enum Destination {
     BaseSepolia,
     SonicBlazeTestnet,
     AvalancheFuji,
+    Ethereum,
+    Sonic,
 }
 
 pub fn send_message(
@@ -47,11 +49,13 @@ pub fn send_message(
     let (dest_chain_id, dest_addr) = match destination {
         Destination::SolanaMainnet => (SOLANA_MAINNET_CHAIN_ID, crate::ID.to_bytes()),
         Destination::SolanaDevnet => (SOLANA_DEVNET_CHAIN_ID, crate::ID.to_bytes()),
+        Destination::Ethereum => (ETHEREUM_CHAIN_ID, ETHEREUM_ADDRESS),
         Destination::EthereumSepolia => (ETHEREUM_SEPOLIA_CHAIN_ID, ETHEREUM_SEPOLIA_ADDRESS),
         Destination::PolygonAmoy => (POLYGON_AMOY_CHAIN_ID, POLYGON_AMOY_ADDRESS),
         Destination::MantleSepolia => (MANTLE_SEPOLIA_CHAIN_ID, MANTLE_SEPOLIA_ADDRESS),
         Destination::Teib => (TEIB_CHAIN_ID, TEIB_ADDRESS),
         Destination::BaseSepolia => (BASE_SEPOLIA_CHAIN_ID, BASE_SEPOLIA_ADDRESS),
+        Destination::Sonic => (SONIC_MAINNET_CHAIN_ID, SONIC_ADDRESS),
         Destination::SonicBlazeTestnet => {
             (SONIC_BLAZE_TESTNET_CHAIN_ID, SONIC_BLAZE_TESTNET_ADDRESS)
         }
