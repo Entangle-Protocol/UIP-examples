@@ -18,6 +18,7 @@ import {
   initialize,
   mint,
   registerExtension,
+  updateAdmin,
 } from "../helpers/exampleToken";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
@@ -376,5 +377,28 @@ describe("example token", () => {
       Number(simulationLamports) + 5000,
     );
     expect(simulationLamports).toEqual(liteSimulationLamports);
+  });
+
+  test("update admin", async () => {
+    await updateAdmin({
+      admin,
+      newAdmin: payer.publicKey,
+    });
+
+    const config = await EXAMPLE_TOKEN_PROGRAM.account.exampleTokenConfig.fetch(
+      EXAMPLE_TOKEN_CONFIG,
+    );
+    expect(config.admin).toEqual(payer.publicKey);
+
+    await updateAdmin({
+      admin: payer,
+      newAdmin: admin.publicKey,
+    });
+
+    const config2 = await EXAMPLE_TOKEN_PROGRAM.account.exampleTokenConfig
+      .fetch(
+        EXAMPLE_TOKEN_CONFIG,
+      );
+    expect(config2.admin).toEqual(admin.publicKey);
   });
 });

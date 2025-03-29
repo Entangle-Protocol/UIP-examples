@@ -127,3 +127,22 @@ export async function bridge(
     .rpc();
   return { transactionSignature };
 }
+
+export type UpdateAdmin = {
+  admin: Keypair;
+  newAdmin: PublicKey;
+};
+
+export async function updateAdmin(
+  { admin, newAdmin }: UpdateAdmin,
+): Promise<{ transactionSignature: TransactionSignature }> {
+  const transactionSignature = await EXAMPLE_TOKEN_PROGRAM.methods
+    .updateAdmin(newAdmin)
+    .accountsStrict({
+      config: EXAMPLE_TOKEN_CONFIG,
+      admin: admin.publicKey,
+    })
+    .signers([admin])
+    .rpc();
+  return { transactionSignature };
+}

@@ -86,6 +86,25 @@ export async function registerExtension(
   return { transactionSignature };
 }
 
+export type UpdateAdmin = {
+  admin: Keypair;
+  newAdmin: PublicKey;
+};
+
+export async function updateAdmin(
+  { admin, newAdmin }: UpdateAdmin,
+): Promise<{ transactionSignature: TransactionSignature }> {
+  const transactionSignature = await MESSENGER_PROGRAM.methods
+    .updateAdmin(newAdmin)
+    .accountsStrict({
+      messenger: MESSENGER,
+      admin: admin.publicKey,
+    })
+    .signers([admin])
+    .rpc();
+  return { transactionSignature };
+}
+
 export type SetAllowedSendersInput = {
   payer: Keypair;
   admin: Keypair;

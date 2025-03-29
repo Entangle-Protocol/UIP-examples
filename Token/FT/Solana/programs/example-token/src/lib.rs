@@ -49,4 +49,10 @@ pub mod example_token {
     pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()> {
         instructions::execute(ctx)
     }
+
+    /// Update the messenger admin.
+    #[instruction(discriminator = b"upd_admn")]
+    pub fn update_admin(ctx: Context<UpdateAdmin>, new_admin: Pubkey) -> Result<()> {
+        instructions::update_admin(ctx, new_admin)
+    }
 }

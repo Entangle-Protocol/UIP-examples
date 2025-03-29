@@ -23,6 +23,7 @@ import {
   sendMessage,
   sendMessageOneTx,
   setAllowedSenders,
+  updateAdmin,
 } from "../helpers/messenger";
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
@@ -454,5 +455,27 @@ describe("messenger", () => {
       ],
       spendingLimit: new BN(3_000_000),
     });
+  });
+
+  test("update admin", async () => {
+    await updateAdmin({
+      admin,
+      newAdmin: payer.publicKey,
+    });
+
+    const messenger = await MESSENGER_PROGRAM.account.messenger.fetch(
+      MESSENGER,
+    );
+    expect(messenger.admin).toEqual(payer.publicKey);
+
+    await updateAdmin({
+      admin: payer,
+      newAdmin: admin.publicKey,
+    });
+
+    const messenger2 = await MESSENGER_PROGRAM.account.messenger.fetch(
+      MESSENGER,
+    );
+    expect(messenger2.admin).toEqual(admin.publicKey);
   });
 });

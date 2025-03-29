@@ -50,6 +50,12 @@ pub mod messenger {
         instructions::execute(ctx)
     }
 
+    /// Update the messenger admin.
+    #[instruction(discriminator = b"upd_admn")]
+    pub fn update_admin(ctx: Context<UpdateAdmin>, new_admin: Pubkey) -> Result<()> {
+        instructions::update_admin(ctx, new_admin)
+    }
+
     /// Set the list of senders whose messages can be received.
     pub fn set_allowed_senders(
         ctx: Context<SetAllowedSenders>,
