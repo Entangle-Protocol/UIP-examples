@@ -45,7 +45,7 @@ pub mod messenger {
 
     /// Executes an incoming cross-chain message, saving the received message in
     /// a `CrossChainMessage` account.
-    #[instruction(discriminator = b"execute\0")]
+    #[instruction(discriminator = uip_solana_sdk::EXECUTE_DISCRIMINATOR)]
     pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()> {
         instructions::execute(ctx)
     }
