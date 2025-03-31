@@ -40,7 +40,7 @@ The repository contains scripts to interact with the deployed contract.
 the contract is deployed to configurate the Messenger and register the
 extension. Example:
   ```sh
-  anchor run initialize --provider.cluster devnet -- bafkreic2gkgjwm6ypjxtyixmdyzvreho36n76ncykkmrth66vtddstbzs4
+  anchor run initialize --provider.cluster devnet -- bafkreibmfdgizgrindzlyq3r4gu4ydl7egzgyoj3qki74dsauvmjm4scta
   ```
 * [SendMessage script](./scripts/sendMessage.ts) that can be used to
 send a message to another chain. Example:
