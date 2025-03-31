@@ -65,13 +65,17 @@ async function main(): Promise<void> {
         });
         console.log(`${i + 1} signature:`, transactionSignature);
         break;
-      } catch (error) {
-        console.error(`${i + 1} failed:`, error);
+      } catch (err) {
+        console.error(`${i + 1} failed:`, err);
+        if (err.toString().includes("Transaction was not confirmed")) {
+          break;
+        }
       }
     }
   });
 
   await Promise.all(promises);
+  process.exit();
 }
 
 main();
