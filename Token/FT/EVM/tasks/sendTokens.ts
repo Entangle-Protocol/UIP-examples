@@ -25,7 +25,7 @@ task("sendTokens", "Initiates token transfer through the bridge")
         }
 
         const blockFinalizationOption = taskParams.finalization || 0
-        let customGasLimit = taskParams.gaslimit || 60000n
+        let customGasLimit = taskParams.gaslimit || 150000n
 
         if (taskParams.tochainid == 5003) {
             customGasLimit = 40000000n
@@ -102,7 +102,7 @@ task("sendTokens", "Initiates token transfer through the bridge")
             blockFinalizationOption,
             customGasLimit,
             {   
-                value: estimatedFees + ((estimatedFees * 10n) / 100n),
+                value: estimatedFees + ((estimatedFees * 20n) / 100n),
             }
         );
         await tx.wait();
