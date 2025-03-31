@@ -2,7 +2,14 @@ import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import '@openzeppelin/hardhat-upgrades';
 import "./tasks/sendTokens";
-import "./tasks/setOrigin";
+import "./tasks/estimateFee";
+import "./tasks/getBalance";
+import "./tasks/getMsgData";
+import "./tasks/getMsgExecutionStatus";
+import "./tasks/getMsgStatusByHash";
+import "./tasks/getProposal";
+import "./tasks/getReward"
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -70,6 +77,27 @@ const config: HardhatUserConfig = {
             mnemonic: process.env.MNEMONIC || "",
         },
         chainId: 5003
+    },
+    base_sepolia: {
+        url: "https://base-sepolia.drpc.org",
+        accounts: {
+            mnemonic: process.env.MNEMONIC || "",
+        },
+        chainId: 84532
+    },
+    sonic_blaze: {
+        url: process.env.SONIC_BLAZE || "",
+        accounts: {
+            mnemonic: process.env.NEW_MNEMONIC || "",
+        },
+        chainId: 57054
+    },
+    avalanche_fuji: {
+        url: process.env.AVALANCHE_FUJI || "",
+        accounts: {
+            mnemonic: process.env.NEW_MNEMONIC || "",
+        },
+        chainId: 43113
     }
   }
 };

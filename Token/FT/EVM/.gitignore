@@ -10,6 +10,9 @@ addresses/mantle_sepolia
 addresses/polygon_amoy
 addresses/teib
 addresses/ethereum_sepolia
+addresses/base_sepolia
+addresses/avalanche_fuji
+addresses/sonic_blaze
 
 /.openzeppelin
 

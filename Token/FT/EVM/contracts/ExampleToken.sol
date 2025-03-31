@@ -108,7 +108,7 @@ contract ExampleToken is
 
         endpoint.propose{ value: msg.value }(
             toChainId,
-            SelectorLib.encodeDefaultSelector(bytes4(keccak256("execute(bytes calldata)"))),
+            SelectorLib.encodeDefaultSelector(bytes4(keccak256("execute(bytes)"))),
             encodedParams,
             destAddress,
             abi.encode(abi.encode(from), to, amount)
