@@ -1,5 +1,6 @@
 import { task } from "hardhat/config";
 import { SEPARATOR } from "../utils/constants";
+import { networks } from "../scripts/utils";
 import { BytesLike, toUtf8Bytes } from "ethers";
 import { loadDeploymentAddress } from "../utils/utils";
 import { FeesEvm, FeesSolana, UIPProvider } from "@entangle-labs/uip-sdk";
@@ -17,6 +18,11 @@ task("sendMessage", "Proposes an operation")
 
         const provider = new UIPProvider("https://evm-testnet.entangle.fi");
         const feesEvm = new FeesEvm(provider);
+
+        if (!(networks.get(network.config.chainId!)?.includes("mainnet"))) {
+            feesEvm.mode = "testnet"
+            feesEvm.EIBName = "teib"
+        }
         
         const netname = network.name
         console.log(`Using network: ${netname}`)

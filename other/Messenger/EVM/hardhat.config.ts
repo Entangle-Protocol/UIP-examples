@@ -93,6 +93,20 @@ const config: HardhatUserConfig = {
                 mnemonic: ""
             },
             chainId: 43113
+        },
+        ethereum_mainnet: {
+            url: "https://ethereum-rpc.publicnode.com",
+            accounts: {
+                mnemonic: ""
+            },
+            chainId: 1
+        },
+        sonic_mainnet: {
+            url: "https://sonic.drpc.org",
+            accounts: {
+                mnemonic: ""
+            },
+            chainId: 146
         }
     }
 };
