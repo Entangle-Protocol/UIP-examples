@@ -1,7 +1,7 @@
 import { task } from "hardhat/config";
 
 task("getTxData", "Get transaction data")
-    .addParam("tx", "transaction hash")
+    .addParam("hash", "transaction hash")
     .setAction(async (taskArgs, { network, ethers }) => {
         // get network name 
         const netname = network.name

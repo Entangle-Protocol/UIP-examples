@@ -31,6 +31,28 @@ function saveDeploymentAddress(
     console.log("=================================== \n\n\n")
 }
 
+function loadDeploymentAddress(network: string, contractName: string, silent: boolean = false) {
+    const filePath = `./addresses/${network}/${contractName}.json`;
+    console.log(`Deployment address loaded from
+        ${filePath}   
+    `)
+    return JSON.parse(fs.readFileSync(filePath, "utf8")).address;
+}
+
+const networks = new Map<number, string>([
+    [33133, "teib"],
+    [11155111, "ethereum_sepolia"],
+    [80002, "polygon_amoy"],
+    [5003, "mantle_sepolia"],
+    [84532, "base_sepolia"],
+    [57054, "sonic_blaze"],
+    [43113, "avalanche_fuji"],
+    [1, "ethereum_mainnet"],
+    [146, "sonic_mainnet"]
+])
+
 export { 
     saveDeploymentAddress,
+    loadDeploymentAddress,
+    networks
 };
