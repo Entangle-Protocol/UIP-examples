@@ -1,10 +1,17 @@
 import hre, { ethers, upgrades } from "hardhat";
-import { saveDeploymentAddress } from "./utils";
+import { saveDeploymentAddress, networks } from "./utils";
 
 export async function main() {
     const netname = hre.network.name;
     console.log("Deploying Token Bridge to", netname);
-    const endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${netname}/Endpoint.json`);
+    let endpoint;
+    
+    if (!(networks.get(hre.network.config.chainId!)?.includes("mainnet"))) {
+        endpoint = require(`@entangle-labs/uip-contracts/addresses/mainnet/${netname}/Endpoint.json`)
+    } else {
+        endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${netname}/Endpoint.json`)
+    }
+
 
     const name = "Test Bridge Token";
     const symbol = "TBT";

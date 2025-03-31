@@ -98,6 +98,20 @@ const config: HardhatUserConfig = {
             mnemonic: process.env.NEW_MNEMONIC || "",
         },
         chainId: 43113
+    },
+    ethereum_mainnet: {
+        url: process.env.ETHEREUM_MAINNET || "",
+        accounts: {
+            mnemonic: process.env.NEW_MNEMONIC || "",
+        },
+        chainId: 1
+    },
+    sonic_mainnet: {
+        url: process.env.SONIC_MAINNET || "",
+        accounts: {
+            mnemonic: process.env.NEW_MNEMONIC || "",
+        },
+        chainId: 146
     }
   }
 };
