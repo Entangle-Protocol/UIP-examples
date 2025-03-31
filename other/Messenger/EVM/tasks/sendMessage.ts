@@ -33,7 +33,7 @@ task("sendMessage", "Proposes an operation")
         let customGasLimit = taskArgs.gaslimit || 272200
 
         if (taskArgs.destchainid == 5003) {
-            customGasLimit = 40000000
+            customGasLimit = 4000000000
         }
 
         const address = await loadDeploymentAddress(netname, "MessengerProtocol");
