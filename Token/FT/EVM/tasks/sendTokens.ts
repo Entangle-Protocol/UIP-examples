@@ -2,8 +2,7 @@ import { task } from "hardhat/config";
 import { loadDeploymentAddress } from "../scripts/utils";
 import { FeesEvm, FeesSolana, UIPProvider } from "@entangle-labs/uip-sdk";
 import { networks } from "../scripts/utils";
-import { Connection, PublicKey, sendAndConfirmRawTransaction, SystemProgram } from "@solana/web3.js";
-
+import { Connection, PublicKey, SystemProgram } from "@solana/web3.js";
 
 task("sendTokens", "Initiates token transfer through the bridge")
     .addParam("tochainid", "Destination chain id")
@@ -90,11 +89,11 @@ task("sendTokens", "Initiates token transfer through the bridge")
         }
 
         if (estimatedFees == undefined) {
-            console.log("Estimate fee returned with error")
-            return
+            console.log("Estimate fee returned with error");
+            return;
         }
 
-        console.log("estimate fee = ", estimatedFees)
+        console.log("estimated fees = ", estimatedFees);
 
         const tx = await tokenBridge.bridge(
             taskParams.tochainid,

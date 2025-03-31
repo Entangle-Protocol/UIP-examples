@@ -4,12 +4,9 @@ import { getMessageStatus } from "./msgStatus";
 
 task("getMsgStatusByHash", "Returns message status by given message hash")
     .addParam("hash", "message hash")
-    .setAction(async (taskArgs, {network, ethers}) => {
+    .setAction(async (taskArgs, { ethers }) => {
         const [signer] = await ethers.getSigners();
         console.log(`signer: ${signer.address}`);
-
-        const netname = network.name
-        console.log(`Using network: ${netname}`)
 
         const filePath = "./node_modules/@entangle-labs/uip-contracts/addresses/testnet/teib/MessageData.json"
         const address = JSON.parse(fs.readFileSync(filePath, "utf8")).address;
