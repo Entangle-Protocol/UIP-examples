@@ -8,7 +8,7 @@ async function deployMessenger() {
     console.log(`ChainID ${netname}: ${hre.network.config.chainId}`)
 
     let endpoint
-    if (!(networks.get(hre.network.config.chainId!)?.includes("mainnet"))) {
+    if (networks.get(hre.network.config.chainId!)?.includes("mainnet")) {
         endpoint = require(`@entangle-labs/uip-contracts/addresses/mainnet/${netname}/Endpoint.json`)
     } else {
         endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${netname}/Endpoint.json`)
