@@ -4,7 +4,6 @@ import {
   findExtension,
   findMessage,
   signMsg,
-  simulateExecute,
   simulateExecuteLite,
   UIP_PROGRAM,
   unloadMessage,
@@ -237,7 +236,7 @@ describe("example token", () => {
     const srcBlockNumber = new BN(randomInt(256));
     const srcChainId = SOLANA_CHAIN_ID;
     const srcOpTxId = new Array<Array<number>>();
-    let selectorSlot = new Array<number>();
+    let selector = new Array<number>();
     let payload: Buffer = Buffer.alloc(0);
 
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {
@@ -246,7 +245,7 @@ describe("example token", () => {
         (event) => {
           try {
             expect(event.sender).toEqual(EXAMPLE_TOKEN_PROGRAM.programId);
-            selectorSlot = event.selectorSlot;
+            selector = event.selector;
             payload = event.payload;
             resolve();
           } catch (error) {
@@ -283,7 +282,7 @@ describe("example token", () => {
         payload,
         reserved: Buffer.from([]),
         transmitterParams: transmitterParamsEncoded,
-        selectorSlot,
+        selector,
       },
       srcChainData: {
         srcBlockNumber,
@@ -324,12 +323,6 @@ describe("example token", () => {
       accounts,
       spendingLimit: new BN(100_000),
     };
-
-    const simulationLamports = await simulateExecute({
-      payer: admin.publicKey,
-      accounts,
-      msgData,
-    });
 
     const liteSimulationLamports = await simulateExecuteLite({
       payer: admin.publicKey,
@@ -374,9 +367,8 @@ describe("example token", () => {
     const balanceAfter = await connection.getBalance(executor.publicKey);
 
     expect(balanceBefore - balanceAfter).toEqual(
-      Number(simulationLamports) + 5000,
+      Number(liteSimulationLamports) + 5000,
     );
-    expect(simulationLamports).toEqual(liteSimulationLamports);
   });
 
   test("update admin", async () => {
