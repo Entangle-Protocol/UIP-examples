@@ -20,9 +20,9 @@ async function main(): Promise<void> {
     .argv;
 
   const ipfsCid: string = argv["extension"];
-  const allowedSenders: Buffer[] = (argv["allowed-senders"] || []).map(
-    (addr: string) => hexToBytes(addr),
-  );
+  const allowedSenders: Buffer[] = argv["allowed-senders"]
+    ? argv["allowed-senders"].map((addr: string) => hexToBytes(addr))
+    : null;
 
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
