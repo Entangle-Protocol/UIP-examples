@@ -1,21 +1,44 @@
+import yargs from "yargs";
 import * as anchor from "@coral-xyz/anchor";
 import { Destination, sendMessage } from "../helpers/messenger";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { BN } from "bn.js";
 
 async function main(): Promise<void> {
-  if (process.argv.length < 2 + 5) {
-    console.error(
-      "Usage: sendMessage <#times> <dst-chain> <uip-fee> <custom-gas-limit> <text>",
-    );
-    process.exit(1);
-  }
+  const argv = yargs(process.argv.slice(2))
+    .option("times", {
+      type: "string",
+      demandOption: true,
+      description:
+        "The number of times to send the message. Every message except the first one will have its index added as suffix.",
+    })
+    .option("dst-chain", {
+      type: "string",
+      demandOption: true,
+      description: "Destination chain identifier",
+    })
+    .option("fee", {
+      type: "string",
+      demandOption: true,
+      description: "Fee to pay for sending the message",
+    })
+    .option("custom-gas-limit", {
+      type: "string",
+      demandOption: true,
+      description: "Custom gas limit",
+    })
+    .option("text", {
+      type: "string",
+      demandOption: true,
+      description: "The text to send",
+    })
+    .argv;
 
-  const times = Number(process.argv[2]);
-  const dstChain = process.argv[3];
-  const uipFee = new BN(process.argv[4]);
-  const customGasLimit = new BN(process.argv[5]);
-  const baseText = process.argv.slice(6).join(" ");
+  const times = Number(argv["times"]);
+  const dstChain = argv["dst-chain"];
+  const uipFee = new BN(argv["fee"]);
+  const customGasLimit = new BN(argv["custom-gas-limit"]);
+  const baseText = argv["text"];
 
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);

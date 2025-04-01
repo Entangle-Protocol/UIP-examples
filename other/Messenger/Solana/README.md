@@ -40,12 +40,18 @@ The repository contains scripts to interact with the deployed contract.
 the contract is deployed to configurate the Messenger and register the
 extension. Example:
   ```sh
-  anchor run initialize --provider.cluster devnet -- bafkreibmfdgizgrindzlyq3r4gu4ydl7egzgyoj3qki74dsauvmjm4scta
+  anchor run initialize --provider.cluster devnet -- \
+    --extension bafkreibmfdgizgrindzlyq3r4gu4ydl7egzgyoj3qki74dsauvmjm4scta
   ```
 * [SendMessage script](./scripts/sendMessage.ts) that can be used to
 send a message to another chain. Example:
   ```sh
-  anchor run --provider.cluster devnet send-message -- 1 ethereum-sepolia 100 100000 "Hi from Solana!"
+  anchor run --provider.cluster devnet send-message -- \
+    --times 1 \
+    --dst-chain ethereum-sepolia \
+    --fee 10000000 \
+    --custom-gas-limit 300000 \
+    --text "Hi from Solana!"
   ```
 * [GetMessagesBySender script](./scripts/getMessagesBySender.ts) that
 can be used to verify the delivery of a user's messages. Example:

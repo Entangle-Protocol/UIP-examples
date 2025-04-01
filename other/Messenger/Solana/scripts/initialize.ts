@@ -1,3 +1,4 @@
+import yargs from "yargs";
 import * as anchor from "@coral-xyz/anchor";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { expect } from "bun:test";
@@ -9,16 +10,19 @@ import {
 import { hexToBytes } from "../helpers/endpoint";
 
 async function main(): Promise<void> {
-  if (process.argv.length < 2 + 1) {
-    console.error("Usage: initialize <ipfs-cid> <allowed-senders-hex>...");
-    process.exit(1);
-  }
+  const argv = yargs(process.argv.slice(2))
+    .option("extension", {
+      type: "string",
+      demandOption: true,
+      description: "Extension IPFS CID",
+    })
+    .array("allowed-senders")
+    .argv;
 
-  const ipfsCid = process.argv[2];
-  let allowedSenders: Array<Buffer> | null = null;
-  if (process.argv.length > 2 + 1) {
-    allowedSenders = process.argv.slice(3).map(hexToBytes);
-  }
+  const ipfsCid: string = argv["extension"];
+  const allowedSenders: Buffer[] = (argv["allowed-senders"] || []).map(
+    (addr: string) => hexToBytes(addr),
+  );
 
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
