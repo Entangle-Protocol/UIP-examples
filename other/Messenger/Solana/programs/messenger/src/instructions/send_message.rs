@@ -11,6 +11,8 @@ pub struct SendMessage<'info> {
     #[account(mut)]
     sender: Signer<'info>,
     /// CHECK: checked in the CPI
+    endpoint_config: AccountInfo<'info>,
+    /// CHECK: checked in the CPI
     #[account(mut)]
     uts_connector: AccountInfo<'info>,
     /// CHECK: checked in CPI
@@ -82,6 +84,7 @@ pub fn send_message(
 
     UipEndpoint::propose()
         .payer(ctx.accounts.sender.to_account_info())
+        .endpoint_config(ctx.accounts.endpoint_config.to_account_info())
         .uts_connector(ctx.accounts.uts_connector.to_account_info())
         .program_signer(ctx.accounts.program_signer.to_account_info())
         .system_program(ctx.accounts.system_program.to_account_info())

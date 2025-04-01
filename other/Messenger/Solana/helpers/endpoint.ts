@@ -43,55 +43,6 @@ export const findExtension = (program: PublicKey) =>
     program.toBuffer(),
   ], UIP_PROGRAM.programId)[0];
 
-export type SimulateExecuteInput = {
-  msgData: MessageData;
-  payer: PublicKey;
-  accounts: AccountMeta[];
-  computeUnits?: number;
-};
-
-export async function simulateExecute(
-  {
-    payer,
-    msgData,
-    accounts,
-    computeUnits,
-  }: SimulateExecuteInput,
-): Promise<bigint> {
-  const preInstructions = new Array<TransactionInstruction>();
-  if (computeUnits != undefined) {
-    preInstructions.push(ComputeBudgetProgram.setComputeUnitLimit({
-      units: computeUnits,
-    }));
-  }
-
-  const tx = await UIP_PROGRAM.methods
-    .simulateExecute(msgData)
-    .accountsStrict({
-      message: IMPOSSIBLE_MESSAGE,
-      payer,
-      dstProgram: msgData.initialProposal.destAddr,
-    })
-    .remainingAccounts(accounts)
-    .preInstructions(preInstructions)
-    .transaction();
-
-  const simulation = await simulateTransaction(
-    UIP_PROGRAM.provider.connection,
-    tx,
-    payer,
-  );
-
-  if (simulation.value.returnData) {
-    const binary = Buffer.from(simulation.value.returnData.data[0], "base64");
-    return decodeI128Le(binary);
-  } else {
-    throw new Error(
-      `Failed to simulate the transaction\n${JSON.stringify(simulation)}`,
-    );
-  }
-}
-
 export type SimulateExecuteLiteInput = {
   payload: Buffer;
   srcChainId: BN;
@@ -158,7 +109,7 @@ export type ExecuteFullInput = {
   computePrice?: number;
 };
 
-// loads, signs and executes
+// loads, checks consensus and executes
 export async function executeFull(
   {
     executor,
@@ -170,7 +121,7 @@ export async function executeFull(
     computeUnits,
   }: ExecuteFullInput,
 ): Promise<{ transactionSignature: TransactionSignature; message: PublicKey }> {
-  const preInstructions = new Array<TransactionInstruction>();
+  const preInstructions = [];
   if (computeUnits != undefined) {
     preInstructions.push(ComputeBudgetProgram.setComputeUnitLimit({
       units: computeUnits,
@@ -183,7 +134,8 @@ export async function executeFull(
     await UIP_PROGRAM.methods
       .loadMessage(msgData)
       .accountsStrict({
-        payer: executor.publicKey,
+        executor: executor.publicKey,
+        endpointConfig: ENDPOINT_CONFIG,
         message,
         systemProgram: SystemProgram.programId,
       })
@@ -193,11 +145,11 @@ export async function executeFull(
 
   preInstructions.push(
     await UIP_PROGRAM.methods
-      .signMessage(signatures, superSignatures)
+      .checkConsensus(signatures, superSignatures)
       .accounts({
+        executor: executor.publicKey,
         endpointConfig: ENDPOINT_CONFIG,
         message,
-        payer: executor.publicKey,
       })
       .instruction(),
   );
@@ -245,8 +197,9 @@ export async function unloadMessage(
   const transactionSignature = await UIP_PROGRAM.methods
     .unloadMessage()
     .accountsStrict({
-      message,
       payer: payer.publicKey,
+      endpointConfig: ENDPOINT_CONFIG,
+      message,
     })
     .rpc();
   return { transactionSignature };
@@ -321,7 +274,7 @@ function convertMsgData(msgData: MessageData): MessageDataEth {
     initialProposal: {
       destChainId: BigInt(SOLANA_CHAIN_ID.toString()),
       totalFee: BigInt(msgData.initialProposal.totalFee.toString()),
-      selectorSlot: Buffer.from(msgData.initialProposal.selectorSlot),
+      selectorSlot: Buffer.from(msgData.initialProposal.selector),
       senderAddr: msgData.initialProposal.senderAddr,
       destAddr: msgData.initialProposal.destAddr.toBuffer(),
       payload: msgData.initialProposal.payload,

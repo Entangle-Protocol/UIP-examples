@@ -6,7 +6,6 @@ import {
   hexToBytes,
   msgHashFull,
   signMsg,
-  simulateExecute,
   simulateExecuteLite,
   UIP_PROGRAM,
   unloadMessage,
@@ -122,7 +121,7 @@ describe("messenger", () => {
   const srcBlockNumber = new BN(randomInt(256));
   const srcOpTxId = new Array<Array<number>>();
   const text = "Hello, world!";
-  let selectorSlot: number[];
+  let selector: number[];
   let payload: Buffer;
   const destination: Destination = connection.rpcEndpoint.includes("mainnet")
     ? { solanaMainnet: {} }
@@ -135,7 +134,7 @@ describe("messenger", () => {
         (event) => {
           try {
             expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
-            selectorSlot = event.selectorSlot;
+            selector = event.selector;
             payload = event.payload;
             resolve();
           } catch (error) {
@@ -229,7 +228,7 @@ describe("messenger", () => {
     const srcBlockNumber = new BN(randomInt(256));
     const srcChainId = SOLANA_CHAIN_ID;
     const srcOpTxId = new Array<Array<number>>();
-    let selectorSlot = new Array<number>();
+    let selector = new Array<number>();
     let payload: Buffer = Buffer.alloc(0);
 
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {
@@ -238,7 +237,7 @@ describe("messenger", () => {
         (event) => {
           try {
             expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
-            selectorSlot = event.selectorSlot;
+            selector = event.selector;
             payload = event.payload;
             resolve();
           } catch (error) {
@@ -275,7 +274,7 @@ describe("messenger", () => {
         payload,
         reserved: Buffer.from([]),
         transmitterParams: transmitterParamsEncoded,
-        selectorSlot,
+        selector,
       },
       srcChainData: {
         srcBlockNumber,
@@ -317,11 +316,6 @@ describe("messenger", () => {
       },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
     ];
-    const simulationLamports = await simulateExecute({
-      payer: admin.publicKey,
-      accounts: accountsSimulation,
-      msgData,
-    });
 
     const liteSimulationLamports = await simulateExecuteLite({
       payer: admin.publicKey,
@@ -342,9 +336,8 @@ describe("messenger", () => {
     const balanceAfter = await connection.getBalance(executor.publicKey);
 
     expect(balanceBefore - balanceAfter).toEqual(
-      Number(simulationLamports) + 5000,
+      Number(liteSimulationLamports) + 5000,
     );
-    expect(simulationLamports).toEqual(liteSimulationLamports);
 
     const messagesBySender = await getMessagesBySender(
       connection,
@@ -367,7 +360,7 @@ describe("messenger", () => {
         (event) => {
           try {
             expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
-            selectorSlot = event.selectorSlot;
+            selector = event.selector;
             payload = event.payload;
             resolve();
           } catch (error) {
@@ -405,7 +398,7 @@ describe("messenger", () => {
         payload,
         reserved: Buffer.from([]),
         transmitterParams: transmitterParamsEncoded,
-        selectorSlot,
+        selector,
       },
       srcChainData: {
         srcBlockNumber,

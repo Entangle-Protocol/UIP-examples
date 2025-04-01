@@ -17,44 +17,66 @@ export type UipEndpoint = {
   ],
   "instructions": [
     {
-      "name": "deregisterSuperTransmitter",
+      "name": "checkConsensus",
       "docs": [
-        "Deregister a super transmitter."
+        "The second stage of message processing: collecting and verifying signatures",
+        "from executors.",
+        "",
+        "This function checks if enough valid signatures have been gathered to reach",
+        "consensus on the message. If consensus is reached, the message status is",
+        "updated accordingly."
       ],
       "discriminator": [
-        100,
-        114,
-        103,
+        99,
+        104,
+        107,
         95,
+        99,
+        110,
         115,
-        117,
-        112,
-        114
+        110
       ],
       "accounts": [
         {
-          "name": "endpointConfig",
+          "name": "executor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "endpointConfig"
+        },
+        {
+          "name": "message",
           "writable": true
         },
         {
-          "name": "admin",
-          "signer": true,
-          "relations": [
-            "endpointConfig"
-          ]
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "superSigner",
+          "name": "signatures",
           "type": {
-            "array": [
-              "u8",
-              20
-            ]
+            "vec": {
+              "defined": {
+                "name": "signatureEcdsa"
+              }
+            }
+          }
+        },
+        {
+          "name": "superSignatures",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "signatureEcdsa"
+              }
+            }
           }
         }
-      ]
+      ],
+      "returns": "bool"
     },
     {
       "name": "execute",
@@ -80,6 +102,11 @@ export type UipEndpoint = {
       ],
       "accounts": [
         {
+          "name": "executor",
+          "writable": true,
+          "signer": true
+        },
+        {
           "name": "endpointConfig",
           "docs": [
             "Should only be mutable during configuration to make the config colder."
@@ -88,11 +115,6 @@ export type UipEndpoint = {
         {
           "name": "message",
           "writable": true
-        },
-        {
-          "name": "executor",
-          "writable": true,
-          "signer": true
         },
         {
           "name": "dstProgram"
@@ -122,6 +144,11 @@ export type UipEndpoint = {
       ],
       "accounts": [
         {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
           "name": "endpointConfig",
           "writable": true,
           "pda": {
@@ -150,28 +177,11 @@ export type UipEndpoint = {
           }
         },
         {
-          "name": "payer",
-          "writable": true,
-          "signer": true
-        },
-        {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
-        {
-          "name": "admin",
-          "type": "pubkey"
-        },
-        {
-          "name": "targetConsensusRate",
-          "type": "u64"
-        },
-        {
-          "name": "targetSuperConsensusRate",
-          "type": "u64"
-        },
         {
           "name": "allowedSigners",
           "type": {
@@ -199,6 +209,56 @@ export type UipEndpoint = {
           "type": {
             "vec": "pubkey"
           }
+        },
+        {
+          "name": "admin",
+          "type": "pubkey"
+        },
+        {
+          "name": "utsConnector",
+          "type": "pubkey"
+        },
+        {
+          "name": "chainId",
+          "type": "u128"
+        },
+        {
+          "name": "eibChainId",
+          "type": "u128"
+        },
+        {
+          "name": "rotator",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "repeater",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "minFee",
+          "type": "u64"
+        },
+        {
+          "name": "messageLifetimeSec",
+          "type": "u64"
+        },
+        {
+          "name": "targetConsensusRate",
+          "type": "u64"
+        },
+        {
+          "name": "targetSuperConsensusRate",
+          "type": "u64"
         }
       ]
     },
@@ -223,13 +283,16 @@ export type UipEndpoint = {
       ],
       "accounts": [
         {
-          "name": "message",
-          "writable": true
-        },
-        {
-          "name": "payer",
+          "name": "executor",
           "writable": true,
           "signer": true
+        },
+        {
+          "name": "endpointConfig"
+        },
+        {
+          "name": "message",
+          "writable": true
         },
         {
           "name": "systemProgram",
@@ -269,9 +332,11 @@ export type UipEndpoint = {
           "signer": true
         },
         {
+          "name": "endpointConfig"
+        },
+        {
           "name": "utsConnector",
-          "writable": true,
-          "address": "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
+          "writable": true
         },
         {
           "name": "programSigner",
@@ -331,7 +396,7 @@ export type UipEndpoint = {
           }
         },
         {
-          "name": "selectorSlot",
+          "name": "selector",
           "type": {
             "array": [
               "u8",
@@ -366,6 +431,11 @@ export type UipEndpoint = {
       ],
       "accounts": [
         {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
           "name": "extension",
           "writable": true
         },
@@ -397,11 +467,6 @@ export type UipEndpoint = {
           }
         },
         {
-          "name": "payer",
-          "writable": true,
-          "signer": true
-        },
-        {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
@@ -417,51 +482,6 @@ export type UipEndpoint = {
             "array": [
               "u8",
               36
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "registerSuperTransmitter",
-      "docs": [
-        "Register a super transmitter."
-      ],
-      "discriminator": [
-        114,
-        101,
-        103,
-        95,
-        115,
-        117,
-        112,
-        114
-      ],
-      "accounts": [
-        {
-          "name": "endpointConfig",
-          "writable": true
-        },
-        {
-          "name": "payer",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "admin",
-          "signer": true,
-          "relations": [
-            "endpointConfig"
-          ]
-        }
-      ],
-      "args": [
-        {
-          "name": "superSigner",
-          "type": {
-            "array": [
-              "u8",
-              20
             ]
           }
         }
@@ -491,9 +511,11 @@ export type UipEndpoint = {
           "signer": true
         },
         {
+          "name": "endpointConfig"
+        },
+        {
           "name": "utsConnector",
-          "writable": true,
-          "address": "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
+          "writable": true
         },
         {
           "name": "systemProgram",
@@ -543,9 +565,11 @@ export type UipEndpoint = {
           "signer": true
         },
         {
+          "name": "endpointConfig"
+        },
+        {
           "name": "utsConnector",
-          "writable": true,
-          "address": "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
+          "writable": true
         },
         {
           "name": "systemProgram",
@@ -569,142 +593,10 @@ export type UipEndpoint = {
       ]
     },
     {
-      "name": "signMessage",
-      "docs": [
-        "The second stage of message processing: collecting and verifying signatures",
-        "from executors.",
-        "",
-        "This function checks if enough valid signatures have been gathered to reach",
-        "consensus on the message. If consensus is reached, the message status is",
-        "updated accordingly."
-      ],
-      "discriminator": [
-        115,
-        105,
-        103,
-        110,
-        95,
-        109,
-        115,
-        103
-      ],
-      "accounts": [
-        {
-          "name": "message",
-          "writable": true
-        },
-        {
-          "name": "endpointConfig"
-        },
-        {
-          "name": "payer",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
-      "args": [
-        {
-          "name": "signatures",
-          "type": {
-            "vec": {
-              "defined": {
-                "name": "signatureEcdsa"
-              }
-            }
-          }
-        },
-        {
-          "name": "superSignatures",
-          "type": {
-            "vec": {
-              "defined": {
-                "name": "signatureEcdsa"
-              }
-            }
-          }
-        }
-      ],
-      "returns": "bool"
-    },
-    {
-      "name": "simulateExecute",
-      "docs": [
-        "Simulate an execute operation to evaluate its cost. Cannot be executed",
-        "on-chain and only works for `msg_data` that fits in 1 tx."
-      ],
-      "discriminator": [
-        115,
-        105,
-        109,
-        95,
-        101,
-        120,
-        101,
-        99
-      ],
-      "accounts": [
-        {
-          "name": "message",
-          "writable": true,
-          "signer": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  73,
-                  77,
-                  80,
-                  79,
-                  83,
-                  83,
-                  73,
-                  66,
-                  76,
-                  69,
-                  95,
-                  77,
-                  69,
-                  83,
-                  83,
-                  65,
-                  71,
-                  69
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "name": "payer",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "dstProgram"
-        }
-      ],
-      "args": [
-        {
-          "name": "msgData",
-          "type": {
-            "defined": {
-              "name": "messageData"
-            }
-          }
-        }
-      ],
-      "returns": "i128"
-    },
-    {
       "name": "simulateExecuteLite",
       "docs": [
-        "Same as [`simulate_execute`], but takes only the strictly necessary msg_data",
-        "fields, filling the rest with the default values."
+        "Simulate an execute operation to evaluate its cost. Cannot be executed",
+        "on an actual chain."
       ],
       "discriminator": [
         115,
@@ -718,6 +610,11 @@ export type UipEndpoint = {
       ],
       "accounts": [
         {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
           "name": "message",
           "writable": true,
           "signer": true,
@@ -748,11 +645,6 @@ export type UipEndpoint = {
               }
             ]
           }
-        },
-        {
-          "name": "payer",
-          "writable": true,
-          "signer": true
         },
         {
           "name": "dstProgram"
@@ -793,35 +685,39 @@ export type UipEndpoint = {
       ],
       "accounts": [
         {
-          "name": "message",
+          "name": "payer",
           "writable": true
         },
         {
-          "name": "payer",
+          "name": "endpointConfig"
+        },
+        {
+          "name": "message",
           "writable": true
         }
       ],
       "args": []
     },
     {
-      "name": "updateTargetSuperConsensusRate",
+      "name": "updateConfig",
       "docs": [
-        "Update target super consensus rate."
+        "Update the endpoint config."
       ],
       "discriminator": [
         117,
         112,
         100,
         95,
-        115,
         99,
+        111,
         110,
-        115
+        102
       ],
       "accounts": [
         {
-          "name": "endpointConfig",
-          "writable": true
+          "name": "payer",
+          "writable": true,
+          "signer": true
         },
         {
           "name": "admin",
@@ -829,19 +725,60 @@ export type UipEndpoint = {
           "relations": [
             "endpointConfig"
           ]
+        },
+        {
+          "name": "endpointConfig",
+          "writable": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
-          "name": "targetSuperConsensusRate",
-          "type": "u64"
+          "name": "newAdmin",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "newMinFee",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "newTargetSuperConsensusRate",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "newAllowedSuperSigners",
+          "type": {
+            "option": {
+              "vec": {
+                "array": [
+                  "u8",
+                  20
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name": "newUtsConnector",
+          "type": {
+            "option": "pubkey"
+          }
         }
       ]
     },
     {
       "name": "updateUtsConfig",
       "docs": [
-        "Update the UTS config account. Must be called whenever `UTS_CONNECTOR`",
+        "Update the UTS config account. Must be called whenever the UTS connector",
         "address changes."
       ],
       "discriminator": [
@@ -855,6 +792,14 @@ export type UipEndpoint = {
         99
       ],
       "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "endpointConfig"
+        },
         {
           "name": "utsConfig",
           "writable": true,
@@ -877,11 +822,6 @@ export type UipEndpoint = {
               }
             ]
           }
-        },
-        {
-          "name": "payer",
-          "writable": true,
-          "signer": true
         },
         {
           "name": "systemProgram",
@@ -1121,6 +1061,80 @@ export type UipEndpoint = {
               "Administrator public key."
             ],
             "type": "pubkey"
+          },
+          {
+            "name": "utsConnector",
+            "docs": [
+              "The UTS connector to send fee to."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "chainId",
+            "docs": [
+              "Solana chain id."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "eibChainId",
+            "docs": [
+              "Matching EIB chain id."
+            ],
+            "type": "u128"
+          },
+          {
+            "name": "rotator",
+            "docs": [
+              "Rotator address."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "repeater",
+            "docs": [
+              "Repeater address."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "minFee",
+            "docs": [
+              "Minimum propose fee."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "messageLifetimeSec",
+            "docs": [
+              "The period after which a message that wasn't executed can be closed to",
+              "reclaim lamports (in seconds)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "isProposePaused",
+            "docs": [
+              "If incoming proposals are paused."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "isExecutePaused",
+            "docs": [
+              "If incoming executes are paused."
+            ],
+            "type": "bool"
           },
           {
             "name": "targetConsensusRate",
@@ -1462,9 +1476,9 @@ export type UipEndpoint = {
             "type": "pubkey"
           },
           {
-            "name": "selectorSlot",
+            "name": "selector",
             "docs": [
-              "Target function selector slot."
+              "Raw target function selector."
             ],
             "type": {
               "array": [
@@ -1563,7 +1577,7 @@ export type UipEndpoint = {
             "type": "u128"
           },
           {
-            "name": "selectorSlot",
+            "name": "selector",
             "docs": [
               "The encoded target function selector."
             ],
@@ -1747,11 +1761,6 @@ export type UipEndpoint = {
       "name": "consensusRateDenom",
       "type": "u64",
       "value": "10000"
-    },
-    {
-      "name": "minFee",
-      "type": "u64",
-      "value": "30"
     }
   ]
 };

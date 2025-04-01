@@ -9,7 +9,12 @@ import {
 } from "@solana/web3.js";
 import { Messenger } from "../target/types/messenger";
 import BN from "bn.js";
-import { fetchUtsConnector, findExtension, UIP_PROGRAM } from "./endpoint";
+import {
+  ENDPOINT_CONFIG,
+  fetchUtsConnector,
+  findExtension,
+  UIP_PROGRAM,
+} from "./endpoint";
 import { CID } from "multiformats";
 import { encodeU32Le } from "./utils";
 import { loadChunk, MAX_CHUNK_LEN, passToCpi } from "./chunkLoader";
@@ -21,7 +26,7 @@ export const MESSENGER_PROGRAM: Program<Messenger> = anchor.workspace.Messenger;
 export type Message = IdlTypes<Messenger>["crossChainMessage"];
 export type Destination = IdlTypes<Messenger>["destination"];
 
-export const MAX_TEXT_LEN_ONE_TX = 796;
+export const MAX_TEXT_LEN_ONE_TX = 763;
 
 export const MESSENGER = PublicKey.findProgramAddressSync(
   [Buffer.from("MESSENGER")],
@@ -162,6 +167,7 @@ export async function sendMessageOneTx(
   const transactionSignature = await MESSENGER_PROGRAM.methods
     .sendMessage(destination, uipFee, customGasLimit, text)
     .accounts({
+      endpointConfig: ENDPOINT_CONFIG,
       utsConnector: await fetchUtsConnector(),
       sender: sender.publicKey,
     })
@@ -221,6 +227,7 @@ async function sendMessageManyTx(
     chunkId,
     accounts: [
       { pubkey: sender.publicKey, isSigner: true, isWritable: true },
+      { pubkey: ENDPOINT_CONFIG, isSigner: false, isWritable: false },
       { pubkey: await fetchUtsConnector(), isSigner: false, isWritable: true },
       {
         pubkey: PublicKey.findProgramAddressSync(
