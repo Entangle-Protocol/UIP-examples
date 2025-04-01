@@ -26,8 +26,4 @@ ruint = "1.12"
 solana-invoke = "0.2"
 spl-associated-token-account = { version = "6", features = ["no-entrypoint"] }
 spl-token = { version = "7", features = ["no-entrypoint"] }
-
-[dependencies.uip-solana-sdk]
-git = "ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git"
-branch = "develop"
-features = ["anchor-lang"]
+uip-solana-sdk = { version = "0.1", features = ["anchor-lang"] }

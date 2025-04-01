@@ -21,8 +21,4 @@ mainnet = []
 alloy-sol-types = "0.7"
 anchor-lang = "0.31.0"
 hex-literal = "0.4"
-
-[dependencies.uip-solana-sdk]
-git = "ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git"
-branch = "develop"
-features = ["anchor-lang"]
+uip-solana-sdk = { version = "0.1", features = ["anchor-lang"] }
