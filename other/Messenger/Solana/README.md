@@ -72,8 +72,8 @@ mv messenger-keypair.json target/deploy/messenger-keypair.json
 Next, replace the program address in `programs/messenger/src/lib.rs` and
 `Anchor.toml` with the public key of the generated keypair.
 
-Then run `anchor build` (for devnet) or `anchor build --mainnet` (for mainnet).
-After that, you are ready to deploy your program:
+Then run `anchor build` (for devnet) or `anchor build -- --features mainnet`
+(for mainnet). After that, you are ready to deploy your program:
 
 ```sh
 solana program deploy --url devnet \
