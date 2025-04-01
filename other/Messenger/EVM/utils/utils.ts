@@ -13,10 +13,13 @@ async function hexToString(hex: any) {
     
     let bytes = [];
     for (let i = 0; i < hex.length; i += 2) {
-        bytes.push(String.fromCharCode(parseInt(hex.substr(i, 2), 16)));
+        const char = parseInt(hex.substr(i, 2), 16)
+        if (char >= 32 && char <= 126) {
+            bytes.push(String.fromCharCode(char));
+        }
     }
     
-    return bytes.join('');
+    return bytes.join('').trim();
 }
 
 export {

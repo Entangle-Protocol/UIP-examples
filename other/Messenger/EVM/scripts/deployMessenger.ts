@@ -19,20 +19,15 @@ async function deployMessenger() {
     console.log(`Signer: ${await signer.getAddress()}`)
     console.log(`Signer native balance: ${signerBalance}\n`)
     
-    const args = [await signer.getAddress(), endpoint.address]
     console.log(`Deploying MessengerProtocol`)
-    console.log(`With args: ${args}\n`)
+    console.log(`With args: ${await signer.getAddress()}, ${endpoint.address}\n`)
     const factory = await ethers.getContractFactory("MessengerProtocol")
-    const instance = await upgrades.deployProxy(factory, args, {
-        kind: "uups"
-    })
+    const instance = await factory.deploy(await signer.getAddress(), endpoint.address)
     
     await instance.waitForDeployment()
 
-    const implAddress = await upgrades.erc1967.getImplementationAddress(await instance.getAddress());
     console.log(`MessengerProtocol deployed to: ${await instance.getAddress()}`)
-    console.log(`MessengerProtocol implementation deployed to: ${implAddress}\n`)
-    saveDeploymentAddress(hre.network.name, "MessengerProtocol", await instance.getAddress(), implAddress)
+    saveDeploymentAddress(hre.network.name, "MessengerProtocol", await instance.getAddress())
 }
 
 

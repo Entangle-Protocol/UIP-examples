@@ -4,7 +4,6 @@ function saveDeploymentAddress(
     network: string,
     contractName: string,
     address: string,
-    impl: string
 ) {
     const folderPath = `./addresses/${network}`;
     const filePath = `./addresses/${network}/${contractName}.json`;
@@ -17,13 +16,12 @@ function saveDeploymentAddress(
     if (!fs.existsSync(filePath)) {
         fs.writeFileSync(
             filePath,
-            JSON.stringify({ address: address, impl: impl }, null, 2)
+            JSON.stringify({ address: address }, null, 2)
         );
     } else {
         // read file then update and save
         const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
         data.address = address;
-        data.impl = impl;
         fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
     }
     

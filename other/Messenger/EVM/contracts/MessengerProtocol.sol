@@ -1,17 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import {Initializable, AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {IEndpoint} from "@entangle-labs/uip-contracts/contracts/interfaces/endpoint/IEndpoint.sol";
 import {TransmitterParamsLib} from "@entangle-labs/uip-contracts/contracts/lib/TransmitterParamsLib.sol";
 import {MessageReceiver} from "@entangle-labs/uip-contracts/contracts/MessageReceiver.sol";
 import {SelectorLib} from "./lib/SelectorLib.sol";
 
 contract MessengerProtocol is
-    Initializable,
-    UUPSUpgradeable,
-    AccessControlUpgradeable,
     MessageReceiver
 {
     // ==============================
@@ -27,7 +22,6 @@ contract MessengerProtocol is
     // ==============================
     //        ROLES & CONST
     // ==============================
-    bytes32 public constant ADMIN = keccak256("ADMIN");
     bytes4  public constant DEFAULT_SELECTOR = bytes4(keccak256("execute(bytes calldata)"));
     bytes32 public constant ERROR_MSG_HASH =
         0x530008cb6b9f448ff819fbbb1a14a5fc15a8f9255317261cd6388cfc927c6363;
@@ -36,6 +30,7 @@ contract MessengerProtocol is
     //          STORAGE
     // ==============================
     address public endpoint;
+    address public owner;
     mapping(bytes => uint256) messagesReceived;
     mapping(bytes => bytes[]) messages;
 
@@ -47,15 +42,17 @@ contract MessengerProtocol is
         _;
     }
 
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
+
     // ==============================
     //          FUNCTIONS
     // ==============================
-    function initialize(address admin, address newendpoint) public initializer {
-        __UUPSUpgradeable_init();
-        __AccessControl_init();
-        _setRoleAdmin(ADMIN, ADMIN);
-        _grantRole(ADMIN, admin);
+    constructor(address admin, address newendpoint) {
         endpoint = newendpoint;
+        owner = admin;
     }
 
     function sendMessage(
@@ -78,7 +75,7 @@ contract MessengerProtocol is
             ),
             encodedParams,
             destAddress,
-            abi.encode(abi.encode(_msg), abi.encode(_msgSender()))
+            abi.encode(abi.encode(_msg), abi.encode(msg.sender))
         );
     }
 
@@ -135,9 +132,7 @@ contract MessengerProtocol is
     }
 
     // ======    ADMIN   ======
-    function changeEndpoint(address _newendpoint) external onlyRole(ADMIN) {
+    function changeEndpoint(address _newendpoint) external onlyOwner {
         endpoint = _newendpoint;
     }
-
-    function _authorizeUpgrade(address) internal override onlyRole(ADMIN) {}
 }
