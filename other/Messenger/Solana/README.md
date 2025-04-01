@@ -58,3 +58,27 @@ can be used to verify the delivery of a user's messages. Example:
   ```sh
   anchor run --provider.cluster devnet get-messages-by-sender -- 0xb3b029c49ea026bacc0901a071cf8fd0d5bde9af
   ```
+
+## Deploying your own messenger
+
+To deploy your own instance of a messenger, generate the program keypair and
+put it in `target/deploy`:
+
+```sh
+solana-keygen grind --starts-with mes:1 --num-threads 6 --ignore-case
+mv messenger-keypair.json target/deploy/messenger-keypair.json
+```
+
+Next, replace the program address in `programs/messenger/src/lib.rs` and
+`Anchor.toml` with the public key of the generated keypair.
+
+Then run `anchor build` (for devnet) or `anchor build --mainnet` (for mainnet).
+After that you can deploy your program and run:
+
+```sh
+solana program deploy -ud \
+  --upgrade-authority ~/.config/solana/id.json \
+  --program-id target/deploy/messenger-keypair.json target/deploy/messenger.so
+```
+
+Then [the initialization script](#Scripts) can be executed.
