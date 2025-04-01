@@ -76,7 +76,7 @@ Then run `anchor build` (for devnet) or `anchor build --mainnet` (for mainnet).
 After that you can deploy your program and run:
 
 ```sh
-solana program deploy -ud \
+solana program deploy --url devnet \
   --upgrade-authority ~/.config/solana/id.json \
   --program-id target/deploy/messenger-keypair.json target/deploy/messenger.so
 ```
