@@ -34,7 +34,7 @@ Then it needs to be uploaded to IPFS.
 
 ## Scripts
 
-The repository contains scripts to interact with the deployed contract.
+The repository contains scripts for interacting with the deployed contract.
 
 * [Initialization script](./scripts/initialize.ts) that is run after
 the contract is deployed to configurate the Messenger and register the
@@ -61,7 +61,7 @@ can be used to verify the delivery of a user's messages. Example:
 
 ## Deploying your own messenger
 
-To deploy your own instance of a messenger, generate the program keypair and
+To deploy your own instance of the messenger, generate the program keypair and
 put it in `target/deploy`:
 
 ```sh
@@ -73,7 +73,7 @@ Next, replace the program address in `programs/messenger/src/lib.rs` and
 `Anchor.toml` with the public key of the generated keypair.
 
 Then run `anchor build` (for devnet) or `anchor build --mainnet` (for mainnet).
-After that you can deploy your program and run:
+After that, you are ready to deploy your program:
 
 ```sh
 solana program deploy --url devnet \
