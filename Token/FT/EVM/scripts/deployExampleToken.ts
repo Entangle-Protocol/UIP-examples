@@ -6,12 +6,11 @@ export async function main() {
     console.log("Deploying Token Bridge to", netname);
     let endpoint;
     
-    if (!(networks.get(hre.network.config.chainId!)?.includes("mainnet"))) {
+    if ((networks.get(hre.network.config.chainId!)?.includes("mainnet"))) {
         endpoint = require(`@entangle-labs/uip-contracts/addresses/mainnet/${netname}/Endpoint.json`)
     } else {
         endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${netname}/Endpoint.json`)
     }
-
 
     const name = "Test Bridge Token";
     const symbol = "TBT";
