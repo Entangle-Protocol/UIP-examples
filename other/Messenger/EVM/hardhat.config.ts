@@ -48,14 +48,14 @@ const config: HardhatUserConfig = {
         teib: {
             url: "https://evm-testnet.entangle.fi",
             accounts: {
-                mnemonic: "",
+                mnemonic: ""
             },
             chainId: 33133
         },
         ethereum_sepolia: {
             url: "https://ethereum-sepolia-rpc.publicnode.com",
             accounts: {
-                mnemonic: "",
+                mnemonic: ""
             },
             chainId: 11155111
         },
@@ -107,6 +107,13 @@ const config: HardhatUserConfig = {
                 mnemonic: ""
             },
             chainId: 146
+        },
+        avalanche_mainnet: {
+            url: "https://avalanche-c-chain-rpc.publicnode.com",
+            accounts: {
+                mnemonic: ""
+            },
+            chainId: 43114
         }
     }
 };

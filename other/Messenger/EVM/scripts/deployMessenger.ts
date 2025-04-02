@@ -3,12 +3,15 @@ import { saveDeploymentAddress } from "./utils";
 import { networks } from "./utils";
 
 async function deployMessenger() {
-    const netname = hre.network.name
+    let netname = hre.network.name
+    if (netname.includes("mainnet")) {
+        netname = netname.split("_")[0]
+    }
     console.log(`Using network: ${netname}\n`)
     console.log(`ChainID ${netname}: ${hre.network.config.chainId}`)
 
     let endpoint
-    if (networks.get(hre.network.config.chainId!)?.includes("mainnet")) {
+    if (hre.network.name.includes("mainnet")) {
         endpoint = require(`@entangle-labs/uip-contracts/addresses/mainnet/${netname}/Endpoint.json`)
     } else {
         endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${netname}/Endpoint.json`)
