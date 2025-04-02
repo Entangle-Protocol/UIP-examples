@@ -1239,7 +1239,7 @@ dependencies = [
  "solana-invoke",
  "spl-associated-token-account",
  "spl-token",
- "uip-solana-sdk 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "uip-solana-sdk",
 ]
 
 [[package]]
@@ -1249,7 +1249,7 @@ dependencies = [
  "alloy-sol-types",
  "example-token",
  "solana-program",
- "uip-solana-sdk 0.1.0 (git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop)",
+ "uip-solana-sdk",
 ]
 
 [[package]]
@@ -3741,18 +3741,6 @@ name = "uip-solana-sdk"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ad8e38037b929890fd6646ba4d90e4ab3cf7a1f46fcfb0f17cb2571c55f19dc"
-dependencies = [
- "anchor-lang",
- "bon",
- "bytemuck",
- "solana-invoke",
- "solana-program",
-]
-
-[[package]]
-name = "uip-solana-sdk"
-version = "0.1.0"
-source = "git+ssh://git@gitlab.ent-dx.com/entangle/ccm-2.0/photon-messaging-solana.git?branch=develop#fbe018f2cd1b808115c59da1ad87287e172c648e"
 dependencies = [
  "anchor-lang",
  "bon",
