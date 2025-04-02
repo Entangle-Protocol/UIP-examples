@@ -36,6 +36,7 @@ pub enum Destination {
     AvalancheFuji,
     Ethereum,
     Sonic,
+    Avalanche,
 }
 
 pub fn send_message(
@@ -49,7 +50,10 @@ pub fn send_message(
     let payload = <(Bytes, Bytes)>::abi_encode_params(&(text, ctx.accounts.sender.key()));
 
     match destination {
-        Destination::SolanaMainnet | Destination::Ethereum | Destination::Sonic => {
+        Destination::SolanaMainnet
+        | Destination::Ethereum
+        | Destination::Sonic
+        | Destination::Avalanche => {
             #[cfg(not(feature = "mainnet"))]
             return err!(MessengerError::DestinationSmartContractNotAllowed);
         }
@@ -79,6 +83,7 @@ pub fn send_message(
         Destination::SonicBlazeTestnet => {
             (SONIC_BLAZE_TESTNET_CHAIN_ID, SONIC_BLAZE_TESTNET_ADDRESS)
         }
+        Destination::Avalanche => (AVALANCHE_C_CHAIN_CHAIN_ID, AVALANCHE_C_CHAIN_ADDRESS),
         Destination::AvalancheFuji => (AVALANCHE_FUJI_CHAIN_ID, AVALANCHE_FUJI_ADDRESS),
     };
 

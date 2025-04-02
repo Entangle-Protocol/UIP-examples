@@ -34,6 +34,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         (&SOLANA_MAINNET_CHAIN_ID, &crate::ID.to_bytes()[..]),
         (&ETHEREUM_CHAIN_ID, &ETHEREUM_ADDRESS),
         (&SONIC_MAINNET_CHAIN_ID, &SONIC_ADDRESS),
+        (&AVALANCHE_C_CHAIN_CHAIN_ID, &AVALANCHE_C_CHAIN_ADDRESS),
     ];
 
     require!(
