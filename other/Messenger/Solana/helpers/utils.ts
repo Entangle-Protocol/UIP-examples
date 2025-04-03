@@ -15,16 +15,22 @@ import { BN } from "@coral-xyz/anchor";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { readFileSync } from "fs";
 
-export const SOLANA_MAINNET_CHAIN_ID = new BN("11100000000000000501");
-export const SOLANA_DEVNET_CHAIN_ID = new BN("100000000000000000000");
-export const SEPOLIA_CHAIN_ID = new BN("11155111");
-export const POLYGON_AMOY_CHAIN_ID = new BN("80002");
-export const POLYGON_CHAIN_ID = new BN("137");
-export const EIB_CHAIN_ID = new BN("33033");
-export const TEIB_CHAIN_ID = new BN("33133");
-export const BASE_SEPOLIA_CHAIN_ID = new BN("84532");
-export const SONIC_BLAZE_TESTNET_CHAIN_ID = new BN("57054");
-export const AVALANCHE_FUJI_CHAIN_ID = new BN("43113");
+const SOLANA_MAINNET_CHAIN_ID = new BN("11100000000000000501");
+const SOLANA_DEVNET_CHAIN_ID = new BN("100000000000000000000");
+const ETHEREUM_CHAIN_ID = new BN("1");
+const ETHEREUM_SEPOLIA_CHAIN_ID = new BN("11155111");
+const POLYGON_CHAIN_ID = new BN("137");
+const POLYGON_AMOY_CHAIN_ID = new BN("80002");
+const MANTLE_CHAIN_ID = new BN("5000");
+const MANTLE_SEPOLIA_CHAIN_ID = new BN("5003");
+const EIB_CHAIN_ID = new BN("33033");
+const TEIB_CHAIN_ID = new BN("33133");
+const BASE_CHAIN_ID = new BN("8453");
+const BASE_SEPOLIA_CHAIN_ID = new BN("84532");
+const SONIC_MAINNET_CHAIN_ID = new BN("146");
+const SONIC_BLAZE_TESTNET_CHAIN_ID = new BN("57054");
+const AVALANCHE_C_CHAIN_CHAIN_ID = new BN("43114");
+const AVALANCHE_FUJI_CHAIN_ID = new BN("43113");
 
 // export const SOLANA_CHAIN_ID =
 //   anchor.AnchorProvider.env().connection.rpcEndpoint.includes("devnet")
@@ -134,22 +140,36 @@ export function readKeypairFromFile(filepath: string): Keypair {
 }
 
 export function formatChainId(chainId: BN): string {
-  if (chainId.eq(SOLANA_DEVNET_CHAIN_ID)) {
-    return "Solana devnet";
-  } else if (chainId.eq(SOLANA_MAINNET_CHAIN_ID)) {
-    return "Solana mainnet";
-  } else if (chainId.eq(SEPOLIA_CHAIN_ID)) {
-    return "Sepolia";
+  if (chainId.eq(SOLANA_MAINNET_CHAIN_ID)) {
+    return "Solana Mainnet";
+  } else if (chainId.eq(SOLANA_DEVNET_CHAIN_ID)) {
+    return "Solana Devnet";
+  } else if (chainId.eq(ETHEREUM_CHAIN_ID)) {
+    return "Ethereum";
+  } else if (chainId.eq(ETHEREUM_SEPOLIA_CHAIN_ID)) {
+    return "Ethereum Sepolia";
+  } else if (chainId.eq(POLYGON_CHAIN_ID)) {
+    return "Polygon";
   } else if (chainId.eq(POLYGON_AMOY_CHAIN_ID)) {
-    return "Polygon amoy";
-  } else if (chainId.eq(TEIB_CHAIN_ID)) {
-    return "TEIB";
+    return "Polygon Amoy";
+  } else if (chainId.eq(MANTLE_CHAIN_ID)) {
+    return "Mantle";
+  } else if (chainId.eq(MANTLE_SEPOLIA_CHAIN_ID)) {
+    return "Mantle Sepolia";
   } else if (chainId.eq(EIB_CHAIN_ID)) {
     return "EIB";
+  } else if (chainId.eq(TEIB_CHAIN_ID)) {
+    return "TEIB";
+  } else if (chainId.eq(BASE_CHAIN_ID)) {
+    return "Base";
   } else if (chainId.eq(BASE_SEPOLIA_CHAIN_ID)) {
     return "Base Sepolia";
+  } else if (chainId.eq(SONIC_MAINNET_CHAIN_ID)) {
+    return "Sonic Mainnet";
   } else if (chainId.eq(SONIC_BLAZE_TESTNET_CHAIN_ID)) {
     return "Sonic Blaze Testnet";
+  } else if (chainId.eq(AVALANCHE_C_CHAIN_CHAIN_ID)) {
+    return "Avalanche C-Chain";
   } else if (chainId.eq(AVALANCHE_FUJI_CHAIN_ID)) {
     return "Avalanche Fuji";
   } else {
