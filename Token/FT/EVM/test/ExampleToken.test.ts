@@ -96,7 +96,7 @@ describe("ExampleToken", () => {
                 0,
                 60000n
             , { value: 5 })
-        ).to.emit(exampleToken, "ExampleToken__Bridged");
+        ).to.emit(exampleToken, "TokensBridged");
     });
 
     it("Should successfully redeem tokens", async () => {
@@ -126,7 +126,7 @@ describe("ExampleToken", () => {
 
         await exampleToken.setEndpoint(Bob.address);
         await expect(exampleToken.connect(Bob).execute(data))
-            .to.emit(exampleToken, "ExampleToken__Received")
+            .to.emit(exampleToken, "TokensReceived")
             .withArgs(encodedAliceAddress, Bob.address, amount, SRC_CHAIN_ID);
 
         expect(await exampleToken.balanceOf(Bob.address)).to.equal(amount);
