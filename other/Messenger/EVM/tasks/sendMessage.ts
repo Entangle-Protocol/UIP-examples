@@ -89,9 +89,9 @@ task("sendMessage", "Proposes an operation")
                 destChain: BigInt(taskArgs.destchainid),
                 destAddr: new PublicKey("MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1"),
                 accounts: [
-                    { pubkey: new PublicKey("Ere3yTTR2TR8n1irGj15rhKqUrTauccdoZt7e5BZVVEC"), isSigner: false, isWritable: true},
+                    { pubkey: new PublicKey("4D5VH9HLUdXtPmDbBjzNHiPkktwu7P7EHi1KGvFkxTTT"), isSigner: false, isWritable: true},
                     {
-                        pubkey: new PublicKey("8bPE4PGRQy2nvVXgUA8yrXqLWCBpzozguvkBk2Gsuwrx"),
+                        pubkey: new PublicKey("GJVi1Nqwqq5ejGYYa5nFjuRTveVUAhS1ycMLunBhPEJp"),
                         isSigner: false,
                         isWritable: true
                     },
