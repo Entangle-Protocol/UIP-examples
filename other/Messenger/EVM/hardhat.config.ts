@@ -118,6 +118,13 @@ const config: HardhatUserConfig = {
                 mnemonic: process.env.MAINNET_MNEMONIC || ""
             },
             chainId: 43114
+        },
+        eib_mainnet: {
+            url: "https://json-rpc.entangle.fi",
+            accounts: {
+                mnemonic: process.env.MAINNET_MNEMONIC || ""
+            },
+            chainId: 33033
         }
     }
 };
