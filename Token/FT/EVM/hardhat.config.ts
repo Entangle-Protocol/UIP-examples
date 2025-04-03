@@ -80,7 +80,7 @@ const config: HardhatUserConfig = {
         chainId: 5003
     },
     base_sepolia: {
-        url: "https://base-sepolia.drpc.org",
+        url: process.env.BASE_SEPOLIA || "",
         accounts: {
             mnemonic: process.env.MNEMONIC || "",
         },

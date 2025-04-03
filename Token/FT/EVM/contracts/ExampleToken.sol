@@ -32,9 +32,9 @@ contract ExampleToken is
     // ==============================
     //          EVENTS
     // ==============================
-    event ExampleToken__NewEndpoint(address oldEndpoint, address newEndpoint);
-    event ExampleToken__Bridged(address from, bytes to, uint256 amount, uint256 toChainId);
-    event ExampleToken__Received(bytes from, address to, uint256 amount, uint256 srcChainId);
+    event NewEndpoint(address oldEndpoint, address newEndpoint);
+    event TokensBridged(address from, bytes to, uint256 amount, uint256 toChainId);
+    event TokensReceived(bytes from, address to, uint256 amount, uint256 srcChainId);
 
     bytes32 public constant ENDPOINT = keccak256("ENDPOINT");
     
@@ -114,7 +114,7 @@ contract ExampleToken is
             abi.encode(abi.encode(from), to, amount)
         );
 
-        emit ExampleToken__Bridged(from, to, amount, toChainId);
+        emit TokensBridged(from, to, amount, toChainId);
     }
 
     function execute(bytes calldata data) external override payable onlyRole(ENDPOINT) {
@@ -141,7 +141,7 @@ contract ExampleToken is
         address to = abi.decode(receiver, (address));
 
         _mint(to, amount);
-        emit ExampleToken__Received(sender, to, amount, srcChainId);
+        emit TokensReceived(sender, to, amount, srcChainId);
     }
 
     // ======    ADMIN   ======
@@ -155,7 +155,7 @@ contract ExampleToken is
         endpoint = IEndpoint(newEndpoint);
         _grantRole(ENDPOINT, newEndpoint);
 
-        emit ExampleToken__NewEndpoint(oldEndpoint, newEndpoint);
+        emit NewEndpoint(oldEndpoint, newEndpoint);
     }
 
     function setOrigins(uint256[] memory chainIds, bytes[] memory origins) public onlyRole(DEFAULT_ADMIN_ROLE) {

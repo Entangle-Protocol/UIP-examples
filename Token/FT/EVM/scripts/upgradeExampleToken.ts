@@ -1,6 +1,5 @@
 import hre, { ethers, upgrades } from "hardhat";
 import { loadDeploymentAddress, upgradeImplAddress } from "../scripts/utils";
-import fs from "fs";
 
 export async function main() {
     const netname = hre.network.name;

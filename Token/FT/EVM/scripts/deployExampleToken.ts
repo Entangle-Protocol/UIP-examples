@@ -7,9 +7,9 @@ export async function main() {
     let endpoint;
     
     if ((networks.get(hre.network.config.chainId!)?.includes("mainnet"))) {
-        endpoint = require(`@entangle-labs/uip-contracts/addresses/mainnet/${netname}/Endpoint.json`)
+        endpoint = require(`@entangle-labs/uip-contracts/addresses/mainnet/${netname}/Endpoint.json`);
     } else {
-        endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${netname}/Endpoint.json`)
+        endpoint = require(`@entangle-labs/uip-contracts/addresses/testnet/${netname}/Endpoint.json`);
     }
 
     const name = "Test Bridge Token";
@@ -18,7 +18,7 @@ export async function main() {
     const initialAmount = ethers.parseEther("100000");
     const args = [name, symbol, signer.address, signer.address, initialAmount];
 
-    const ExampleToken = await ethers.getContractFactory("ExampleToken")
+    const ExampleToken = await ethers.getContractFactory("ExampleToken");
     const exampleToken = await upgrades.deployProxy(ExampleToken, args, {
         kind: "uups",
         initializer: "initialize"
