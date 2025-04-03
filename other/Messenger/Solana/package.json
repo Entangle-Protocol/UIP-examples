@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "@types/yargs": "^17.0.33",
+    "yargs": "^17.7.2",
+    "@types/bun": "^1.1.14",
+    "@coral-xyz/anchor": "^0.31.0",
+    "@solana/spl-token": "^0.4.9",
+    "@types/bn.js": "^5.1.0",
+    "@types/bs58": "^4.0.4",
+    "ethers": "^6.13.4",
+    "multiformats": "^13.3.1",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,13 @@
+[package]
+name = "example-token-extension"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+alloy-sol-types = "0.7"
+example-token = { path = "../../programs/example-token", features = ["no-entrypoint"] }
+solana-program = ">=2.0,<2.2"
+uip-solana-sdk = "0.1"

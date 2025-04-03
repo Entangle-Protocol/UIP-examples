@@ -1,0 +1,44 @@
+[toolchain]
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+messenger = "MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1"
+
+[programs.devnet]
+messenger = "MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1"
+
+[test.validator]
+url = "https://api.devnet.solana.com"
+[[test.validator.clone]]
+# UIP program
+address = "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX"
+[[test.validator.clone]]
+# UTS config
+address = "CTspuKSu7eRXzKqtYzR83H5VCZMWVRC4uRLfrA5Cy8WX"
+[[test.validator.clone]]
+# UTS connector
+address = "vAukQz25gyuAHbdzEQS9GxMVZipVFu18MUoayKpETJz"
+[[test.validator.clone]]
+# Chunk Loader
+address = "ChUnQ7H46X5UeQJHVgZFBy3hGM95TwWsmvBRwQxVz3JG"
+[[test.validator.account]]
+address = "CMFjqmzBd59mHnHZgGz9c1ppZPN8VFnWZ8UtxPVUEJLq"
+filename = "tests/accounts/uip_config.json"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "bun test --timeout 0 tests"
+
+get-messages-by-sender = "bun run scripts/getMessagesBySender.ts"
+initialize = "bun run scripts/initialize.ts"
+send-message = "bun run scripts/sendMessage.ts"
+update-admin = "bun run scripts/updateAdmin.ts"
