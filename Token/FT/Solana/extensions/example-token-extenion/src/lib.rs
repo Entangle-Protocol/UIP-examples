@@ -53,7 +53,7 @@ pub unsafe extern "C" fn get_instruction_info(
     result.accounts[6] = AccountMeta::new_readonly(system_program::ID, false);
 
     result.accounts_len = 7;
-    result.compute_units = 0;
+    result.compute_units = 30_000;
     result.heap_frame = 0;
 }
 

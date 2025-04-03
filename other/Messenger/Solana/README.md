@@ -41,7 +41,7 @@ the contract is deployed to configurate the Messenger and register the
 extension. Example:
   ```sh
   anchor run initialize --provider.cluster devnet -- \
-    --extension bafkreibmfdgizgrindzlyq3r4gu4ydl7egzgyoj3qki74dsauvmjm4scta
+    --extension bafkreigepdb2xvspn6p4xekbc57jrhuh7t2gw3izcfgajia24ibikuec5y
   ```
 * [SendMessage script](./scripts/sendMessage.ts) that can be used to
 send a message to another chain. Example:

@@ -39,6 +39,6 @@ pub unsafe extern "C" fn get_instruction_info(
     result.accounts[1] = AccountMeta::new(message_pda, false);
     result.accounts[2] = AccountMeta::new_readonly(system_program::ID, false);
     result.accounts_len = 3;
-    result.compute_units = 0;
+    result.compute_units = 30_000;
     result.heap_frame = 0;
 }
