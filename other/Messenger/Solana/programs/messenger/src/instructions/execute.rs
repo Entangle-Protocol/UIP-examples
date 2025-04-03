@@ -35,6 +35,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         (&ETHEREUM_CHAIN_ID, &ETHEREUM_ADDRESS),
         (&SONIC_MAINNET_CHAIN_ID, &SONIC_ADDRESS),
         (&AVALANCHE_C_CHAIN_CHAIN_ID, &AVALANCHE_C_CHAIN_ADDRESS),
+        (&EIB_CHAIN_ID, &EIB_ADDRESS),
     ];
 
     require!(
