@@ -1,0 +1,32 @@
+node_modules
+package-lock.json
+.env
+
+addresses/localhost
+addresses/hardhat
+
+# DELETE
+addresses/mantle_sepolia
+addresses/polygon_amoy
+addresses/teib
+addresses/ethereum_sepolia
+addresses/base_sepolia
+addresses/avalanche_fuji
+addresses/sonic_blaze
+
+/.openzeppelin
+
+# Hardhat files
+/cache
+/artifacts
+
+# TypeChain files
+/typechain
+/typechain-types
+
+# solidity-coverage files
+/coverage
+/coverage.json
+
+# Hardhat Ignition default folder for deployments against a local node
+ignition/deployments/chain-31337
