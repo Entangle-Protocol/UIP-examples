@@ -17,8 +17,7 @@ import {
 } from "./endpoint";
 import { CID } from "multiformats";
 import { encodeU32Le } from "./utils";
-import { loadChunk, MAX_CHUNK_LEN, passToCpi } from "./chunkLoader";
-import { randomInt } from "crypto";
+import { loadByChunks, passToCpi } from "./chunkLoader";
 
 anchor.setProvider(anchor.AnchorProvider.env());
 export const MESSENGER_PROGRAM: Program<Messenger> = anchor.workspace.Messenger;
@@ -192,39 +191,12 @@ async function sendMessageManyTx(
     destination,
     text,
   });
-
-  const chunkId = randomInt(1 << 19);
-
-  const doLoadChunk = async (
-    index: number,
-    len?: number,
-  ) => {
-    await loadChunk({
-      owner: payer,
-      chunk: {
-        data: data.subarray(
-          index * MAX_CHUNK_LEN,
-          len ? index * MAX_CHUNK_LEN + len : undefined,
-        ),
-        index,
-      },
-      chunkId,
-    });
-  };
-
-  const num_extends = Math.floor(data.length / MAX_CHUNK_LEN);
-
-  const promises: Array<Promise<void>> = [];
-  for (let i = 0; i < num_extends; i++) {
-    promises.push(doLoadChunk(i, MAX_CHUNK_LEN));
-  }
-  promises.push(doLoadChunk(num_extends));
-  await Promise.all(promises);
+  const chunkHolderId = await loadByChunks({ owner: payer, data });
 
   return await passToCpi({
     owner: payer,
     program: MESSENGER_PROGRAM.programId,
-    chunkId,
+    chunkHolderId,
     accounts: [
       { pubkey: sender.publicKey, isSigner: true, isWritable: true },
       { pubkey: ENDPOINT_CONFIG, isSigner: false, isWritable: false },
@@ -249,6 +221,7 @@ async function sendMessageManyTx(
       },
     ],
     signers: [sender],
+    cpiComputeUnits: 30_000,
   });
 }
 

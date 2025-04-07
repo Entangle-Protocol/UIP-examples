@@ -8,6 +8,27 @@
   },
   "instructions": [
     {
+      "name": "close_chunks",
+      "discriminator": [
+        3
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "chunk_holder"
+          ]
+        },
+        {
+          "name": "chunk_holder",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "load_chunk",
       "discriminator": [
         1

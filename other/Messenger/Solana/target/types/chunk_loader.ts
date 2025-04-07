@@ -14,6 +14,27 @@ export type ChunkLoader = {
   },
   "instructions": [
     {
+      "name": "closeChunks",
+      "discriminator": [
+        3
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "chunkHolder"
+          ]
+        },
+        {
+          "name": "chunkHolder",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "loadChunk",
       "discriminator": [
         1

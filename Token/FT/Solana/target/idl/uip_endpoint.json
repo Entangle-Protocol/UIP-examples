@@ -680,7 +680,8 @@
       "accounts": [
         {
           "name": "payer",
-          "writable": true
+          "writable": true,
+          "signer": true
         },
         {
           "name": "endpoint_config"

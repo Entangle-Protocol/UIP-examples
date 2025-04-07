@@ -201,6 +201,7 @@ export async function unloadMessage(
       endpointConfig: ENDPOINT_CONFIG,
       message,
     })
+    .signers([payer])
     .rpc();
   return { transactionSignature };
 }

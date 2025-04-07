@@ -686,7 +686,8 @@ export type UipEndpoint = {
       "accounts": [
         {
           "name": "payer",
-          "writable": true
+          "writable": true,
+          "signer": true
         },
         {
           "name": "endpointConfig"
