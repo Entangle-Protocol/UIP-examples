@@ -51,7 +51,7 @@ send a message to another chain. Example:
     --dst-chain ethereum-sepolia \
     --fee 10000000 \
     --custom-gas-limit 300000 \
-    --text "Hi from Solana!"
+    --text "Hi from Solana"
   ```
 * [GetMessagesBySender script](./scripts/getMessagesBySender.ts) that
 can be used to verify the delivery of a user's messages. Example:
