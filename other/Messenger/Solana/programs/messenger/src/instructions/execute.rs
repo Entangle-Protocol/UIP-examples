@@ -36,6 +36,8 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         (&SONIC_MAINNET_CHAIN_ID, &SONIC_ADDRESS),
         (&AVALANCHE_C_CHAIN_CHAIN_ID, &AVALANCHE_C_CHAIN_ADDRESS),
         (&EIB_CHAIN_ID, &EIB_ADDRESS),
+        (&POLYGON_CHAIN_ID, &POLYGON_ADDRESS),
+        (&MANTA_PACIFIC_CHAIN_ID, &MANTA_PACIFIC_ADDRESS),
     ];
 
     require!(

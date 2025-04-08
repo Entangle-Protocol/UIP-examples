@@ -38,6 +38,8 @@ pub enum Destination {
     Sonic,
     Avalanche,
     Eib,
+    Polygon,
+    MantaPacific,
 }
 
 pub fn send_message(
@@ -55,7 +57,9 @@ pub fn send_message(
         | Destination::Ethereum
         | Destination::Sonic
         | Destination::Avalanche
-        | Destination::Eib => {
+        | Destination::Eib
+        | Destination::Polygon
+        | Destination::MantaPacific => {
             #[cfg(not(feature = "mainnet"))]
             return err!(MessengerError::DestinationSmartContractNotAllowed);
         }
@@ -77,6 +81,7 @@ pub fn send_message(
         Destination::SolanaDevnet => (SOLANA_DEVNET_CHAIN_ID, crate::ID.to_bytes()),
         Destination::Ethereum => (ETHEREUM_CHAIN_ID, ETHEREUM_ADDRESS),
         Destination::EthereumSepolia => (ETHEREUM_SEPOLIA_CHAIN_ID, ETHEREUM_SEPOLIA_ADDRESS),
+        Destination::Polygon => (POLYGON_CHAIN_ID, POLYGON_ADDRESS),
         Destination::PolygonAmoy => (POLYGON_AMOY_CHAIN_ID, POLYGON_AMOY_ADDRESS),
         Destination::MantleSepolia => (MANTLE_SEPOLIA_CHAIN_ID, MANTLE_SEPOLIA_ADDRESS),
         Destination::Eib => (EIB_CHAIN_ID, EIB_ADDRESS),
@@ -88,6 +93,7 @@ pub fn send_message(
         }
         Destination::Avalanche => (AVALANCHE_C_CHAIN_CHAIN_ID, AVALANCHE_C_CHAIN_ADDRESS),
         Destination::AvalancheFuji => (AVALANCHE_FUJI_CHAIN_ID, AVALANCHE_FUJI_ADDRESS),
+        Destination::MantaPacific => (MANTA_PACIFIC_CHAIN_ID, MANTA_PACIFIC_ADDRESS),
     };
 
     UipEndpoint::propose()

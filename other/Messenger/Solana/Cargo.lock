@@ -1426,7 +1426,7 @@ dependencies = [
  "alloy-sol-types",
  "anchor-lang",
  "hex-literal",
- "uip-solana-sdk",
+ "uip-solana-sdk 0.2.0",
 ]
 
 [[package]]
@@ -1436,7 +1436,7 @@ dependencies = [
  "borsh 0.10.4",
  "messenger",
  "solana-program",
- "uip-solana-sdk",
+ "uip-solana-sdk 0.1.0",
 ]
 
 [[package]]
@@ -2765,6 +2765,18 @@ name = "uip-solana-sdk"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ad8e38037b929890fd6646ba4d90e4ab3cf7a1f46fcfb0f17cb2571c55f19dc"
+dependencies = [
+ "bon",
+ "bytemuck",
+ "solana-invoke",
+ "solana-program",
+]
+
+[[package]]
+name = "uip-solana-sdk"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "132b664eeac7067b5020af7fb591d0c79f5fb6e1533755d654572ef688770bac"
 dependencies = [
  "anchor-lang",
  "bon",

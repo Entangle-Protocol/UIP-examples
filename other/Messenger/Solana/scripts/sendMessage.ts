@@ -58,6 +58,9 @@ async function main(): Promise<void> {
     case "ethereum-sepolia":
       destination = { ethereumSepolia: {} };
       break;
+    case "polygon":
+      destination = { polygon: {} };
+      break;
     case "polygon-amoy":
       destination = { polygonAmoy: {} };
       break;
@@ -85,9 +88,12 @@ async function main(): Promise<void> {
     case "avalanche-fuji":
       destination = { avalancheFuji: {} };
       break;
+    case "manta-pacific":
+      destination = { mantaPacific: {} };
+      break;
     default:
       throw new Error(
-        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon-amoy, mantle-sepolia, eib, teib, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic",
+        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon, polygon-amoy, mantle-sepolia, eib, teib, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic, manta-pacific",
       );
   }
 
