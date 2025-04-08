@@ -22,7 +22,6 @@ import {
 import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import {
-  airdrop,
   disperse,
   readKeypairFromFile,
   setupTests,
@@ -62,7 +61,6 @@ const transmitterParamsEncoded = encodeTransmitterParams(transmitterParams);
 const { connection, payer } = setupTests();
 
 beforeAll(async () => {
-  await airdrop(connection, payer.publicKey, 1_000_000_000);
   await disperse(
     connection,
     [proposer.publicKey, admin.publicKey, executor.publicKey, sender.publicKey],

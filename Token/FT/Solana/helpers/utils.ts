@@ -33,20 +33,6 @@ export function setupTests(): { connection: Connection; payer: Keypair } {
   return { connection, payer };
 }
 
-export async function airdrop(
-  connection: Connection,
-  to: PublicKey,
-  amount: number,
-): Promise<void> {
-  await connection.confirmTransaction({
-    signature: await connection.requestAirdrop(
-      to,
-      amount,
-    ),
-    ...(await connection.getLatestBlockhash()),
-  });
-}
-
 export async function disperse(
   connection: Connection,
   toPubkeys: PublicKey[],
