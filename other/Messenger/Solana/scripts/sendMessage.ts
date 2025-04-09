@@ -91,9 +91,12 @@ async function main(): Promise<void> {
     case "manta-pacific":
       destination = { mantaPacific: {} };
       break;
+    case "abstract":
+      destination = { abstract: {} };
+      break;
     default:
       throw new Error(
-        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon, polygon-amoy, mantle-sepolia, eib, teib, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic, manta-pacific",
+        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon, polygon-amoy, mantle-sepolia, eib, teib, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic, manta-pacific, abstract",
       );
   }
 

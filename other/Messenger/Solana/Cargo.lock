@@ -1426,7 +1426,7 @@ dependencies = [
  "alloy-sol-types",
  "anchor-lang",
  "hex-literal",
- "uip-solana-sdk 0.2.0",
+ "uip-solana-sdk 0.3.0",
 ]
 
 [[package]]
@@ -2774,9 +2774,9 @@ dependencies = [
 
 [[package]]
 name = "uip-solana-sdk"
-version = "0.2.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "132b664eeac7067b5020af7fb591d0c79f5fb6e1533755d654572ef688770bac"
+checksum = "aed358babe20b717a0210a9f7f9af3b69ad8329296d35ebc53b5d912f7b6fe77"
 dependencies = [
  "anchor-lang",
  "bon",
