@@ -79,22 +79,28 @@ task("sendMessage", "Proposes an operation")
                 Buffer.from(senderAddr.slice(2, ), "hex"),
             ])
 
+            const destAddr = new PublicKey(solanaPublicKey)
 
-            const feesSolana = new FeesSolana()
+            const MESSENGER = PublicKey.findProgramAddressSync(
+                [Buffer.from("MESSENGER")],
+                destAddr,
+            )[0];
+            const DEFAULT_MESSAGE = PublicKey.findProgramAddressSync(
+                [Buffer.from("MESSAGE"), Buffer.alloc(32)],
+                destAddr,
+            )[0];
+
+            const feesSolana = new FeesSolana(provider)
             estimateFee = await feesSolana.estimateExecutionSolana({
                 connection: new Connection('https://api.devnet.solana.com'),
                 payload: Buffer.from(payload.slice(2, ), 'hex'),
                 srcChain: BigInt(network.config.chainId!),
                 senderAddr: Buffer.from(senderAddr.slice(2, ), 'hex'),
                 destChain: BigInt(taskArgs.destchainid),
-                destAddr: new PublicKey("MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1"),
+                destAddr,
                 accounts: [
-                    { pubkey: new PublicKey("4D5VH9HLUdXtPmDbBjzNHiPkktwu7P7EHi1KGvFkxTTT"), isSigner: false, isWritable: true},
-                    {
-                        pubkey: new PublicKey("GJVi1Nqwqq5ejGYYa5nFjuRTveVUAhS1ycMLunBhPEJp"),
-                        isSigner: false,
-                        isWritable: true
-                    },
+                    { pubkey: MESSENGER, isSigner: false, isWritable: true },
+                    { pubkey: DEFAULT_MESSAGE, isSigner: false, isWritable: true },
                     { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
                 ]
             })

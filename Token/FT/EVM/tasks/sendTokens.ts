@@ -60,7 +60,7 @@ task("sendTokens", "Initiates token transfer through the bridge")
                 taskParams.amount
             ]);
 
-            const feesSolana = new FeesSolana();
+            const feesSolana = new FeesSolana(provider);
             estimatedFees = await feesSolana.estimateExecutionSolana({
                 connection: new Connection('https://api.devnet.solana.com'),
                 payload: Buffer.from(payload.slice(2, ), 'hex'),
