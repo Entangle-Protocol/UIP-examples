@@ -28,7 +28,7 @@ async function main(): Promise<void> {
       description: "Custom gas limit",
     })
     .option("text", {
-      type: "string",
+      type: "array",
       demandOption: true,
       description: "The text to send",
     })
@@ -38,7 +38,7 @@ async function main(): Promise<void> {
   const dstChain = argv["dst-chain"];
   const uipFee = new BN(argv["fee"]);
   const customGasLimit = new BN(argv["custom-gas-limit"]);
-  const baseText = argv["text"];
+  const baseText = argv["text"].join(" ");
 
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
