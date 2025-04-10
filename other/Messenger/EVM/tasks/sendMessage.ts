@@ -56,10 +56,10 @@ task("sendMessage", "Proposes an operation")
         } else {
             let solanaPublicKey;
 
-            if (taskArgs.destaddress == 32) {
-                solanaPublicKey = Buffer.from(require("bs58").decode(taskArgs.destaddress));
+            if (taskArgs.destaddress.startsWith("0x")) {
+                solanaPublicKey = Buffer.from(taskArgs.destaddress.slice(2), 'hex');
             } else {
-                solanaPublicKey = Buffer.from(taskArgs.destaddress, 'hex');
+                solanaPublicKey = require("bs58").decode(taskArgs.destaddress);
             }
             if (solanaPublicKey.length !== 32) {
                 throw new Error("Invalid Solana address");
