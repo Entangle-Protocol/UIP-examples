@@ -6,6 +6,7 @@ import {
   ComputeBudgetProgram,
   Keypair,
   PublicKey,
+  sendAndConfirmTransaction,
   SystemProgram,
   TransactionInstruction,
   TransactionSignature,
@@ -167,18 +168,12 @@ export async function executeFull(
     .signers([executor])
     .transaction();
 
-  tx.signatures = [];
   tx.feePayer = executor.publicKey;
-
-  const transactionSignature = await UIP_PROGRAM.provider.connection
-    .sendTransaction(tx, [executor]);
-  const latestBlockHash = await UIP_PROGRAM.provider.connection
-    .getLatestBlockhash();
-  await UIP_PROGRAM.provider.connection.confirmTransaction({
-    blockhash: latestBlockHash.blockhash,
-    lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-    signature: transactionSignature,
-  });
+  const transactionSignature = await sendAndConfirmTransaction(
+    UIP_PROGRAM.provider.connection,
+    tx,
+    [executor],
+  );
 
   return { transactionSignature, message };
 }
