@@ -21,12 +21,12 @@ export type MessageData = IdlTypes<UipEndpoint>["messageData"];
 export type SignatureEcdsa = IdlTypes<UipEndpoint>["signatureEcdsa"];
 export type TransmitterParams = IdlTypes<UipEndpoint>["transmitterParams"];
 
-export const ENDPOINT_CONFIG: PublicKey = PublicKey.findProgramAddressSync(
+export const ENDPOINT_CONFIG = PublicKey.findProgramAddressSync(
   [Buffer.from("ENDPOINT_CONFIG")],
   UIP_PROGRAM.programId,
 )[0];
 
-const IMPOSSIBLE_MESSAGE: PublicKey = PublicKey.findProgramAddressSync(
+const IMPOSSIBLE_MESSAGE = PublicKey.findProgramAddressSync(
   [Buffer.from("IMPOSSIBLE_MESSAGE")],
   UIP_PROGRAM.programId,
 )[0];

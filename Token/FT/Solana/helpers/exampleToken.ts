@@ -3,12 +3,7 @@ import * as anchor from "@coral-xyz/anchor";
 import { Keypair, PublicKey, TransactionSignature } from "@solana/web3.js";
 import { ExampleToken } from "../target/types/example_token";
 import BN from "bn.js";
-import {
-  ENDPOINT_CONFIG,
-  fetchUtsConnector,
-  findExtension,
-  UIP_PROGRAM,
-} from "./endpoint";
+import { ENDPOINT_CONFIG, fetchUtsConnector, findExtension } from "./endpoint";
 import { CID } from "multiformats";
 import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 
