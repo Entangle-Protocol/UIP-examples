@@ -152,7 +152,6 @@ describe("messenger", () => {
       customGasLimit,
       text,
       sender,
-      payer,
     });
     const txId = bs58.decode(transactionSignature);
     srcOpTxId[0] = Array.from(txId.subarray(0, 32));
@@ -168,7 +167,6 @@ describe("messenger", () => {
         customGasLimit,
         text,
         sender,
-        payer,
       });
     };
     await testLongMessage(MAX_TEXT_LEN_ONE_TX);
@@ -213,7 +211,6 @@ describe("messenger", () => {
       customGasLimit,
       text: bigText,
       sender,
-      payer,
     });
 
     await eventPromise;
@@ -255,7 +252,6 @@ describe("messenger", () => {
       destination,
       text,
       sender,
-      payer,
     });
 
     const txId = bs58.decode(transactionSignature);
@@ -378,7 +374,6 @@ describe("messenger", () => {
       destination,
       text,
       sender,
-      payer,
     });
     const txId = bs58.decode(transactionSignature);
     srcOpTxId[0] = Array.from(txId.subarray(0, 32));

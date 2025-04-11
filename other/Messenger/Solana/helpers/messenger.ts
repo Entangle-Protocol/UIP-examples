@@ -141,7 +141,6 @@ export type SendMessageInput = {
   customGasLimit: BN;
   text: string;
   sender: Keypair;
-  payer: Keypair;
 };
 
 export async function sendMessage(
@@ -182,7 +181,6 @@ async function sendMessageManyTx(
     destination,
     text,
     sender,
-    payer,
   }: SendMessageInput,
 ): Promise<{ transactionSignature: TransactionSignature }> {
   const data = encodeSendMessageParams({
@@ -191,10 +189,10 @@ async function sendMessageManyTx(
     destination,
     text,
   });
-  const chunkHolderId = await loadByChunks({ owner: payer, data });
+  const chunkHolderId = await loadByChunks({ owner: sender, data });
 
   return await passToCpi({
-    owner: payer,
+    owner: sender,
     program: MESSENGER_PROGRAM.programId,
     chunkHolderId,
     accounts: [
