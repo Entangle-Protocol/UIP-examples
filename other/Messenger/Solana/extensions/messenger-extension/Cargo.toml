@@ -10,4 +10,4 @@ crate-type = ["cdylib"]
 borsh = "0.10.4"
 messenger = { path = "../../programs/messenger", features = ["no-entrypoint"] }
 solana-program = ">=2.0,<2.2"
-uip-solana-sdk = "0.1"
+uip-solana-sdk = "0.4"

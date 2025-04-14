@@ -94,9 +94,12 @@ async function main(): Promise<void> {
     case "abstract":
       destination = { abstract: {} };
       break;
+    case "berachain":
+      destination = { berachain: {} };
+      break;
     default:
       throw new Error(
-        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon, polygon-amoy, mantle-sepolia, eib, teib, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic, manta-pacific, abstract",
+        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon, polygon-amoy, mantle-sepolia, eib, teib, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic, manta-pacific, abstract, berachain",
       );
   }
 
@@ -114,7 +117,6 @@ async function main(): Promise<void> {
           destination,
           sender: payer,
           text,
-          payer,
         });
         console.log(`${i + 1} signature:`, transactionSignature);
         break;
