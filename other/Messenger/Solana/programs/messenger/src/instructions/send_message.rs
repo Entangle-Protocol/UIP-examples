@@ -42,6 +42,7 @@ pub enum Destination {
     MantaPacific,
     Abstract,
     Berachain,
+    Mantle,
 }
 
 pub fn send_message(
@@ -63,7 +64,8 @@ pub fn send_message(
         | Destination::Polygon
         | Destination::MantaPacific
         | Destination::Abstract
-        | Destination::Berachain => {
+        | Destination::Berachain
+        | Destination::Mantle => {
             #[cfg(not(feature = "mainnet"))]
             return err!(MessengerError::DestinationSmartContractNotAllowed);
         }
@@ -87,6 +89,7 @@ pub fn send_message(
         Destination::EthereumSepolia => (ETHEREUM_SEPOLIA_CHAIN_ID, ETHEREUM_SEPOLIA_ADDRESS),
         Destination::Polygon => (POLYGON_CHAIN_ID, POLYGON_ADDRESS),
         Destination::PolygonAmoy => (POLYGON_AMOY_CHAIN_ID, POLYGON_AMOY_ADDRESS),
+        Destination::Mantle => (MANTLE_CHAIN_ID, MANTLE_ADDRESS),
         Destination::MantleSepolia => (MANTLE_SEPOLIA_CHAIN_ID, MANTLE_SEPOLIA_ADDRESS),
         Destination::Eib => (EIB_CHAIN_ID, EIB_ADDRESS),
         Destination::Teib => (TEIB_CHAIN_ID, TEIB_ADDRESS),

@@ -40,6 +40,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         (&MANTA_PACIFIC_CHAIN_ID, &MANTA_PACIFIC_ADDRESS),
         (&ABSTRACT_CHAIN_ID, &ABSTRACT_ADDRESS),
         (&BERACHAIN_CHAIN_ID, &BERACHAIN_ADDRESS),
+        (&MANTLE_CHAIN_ID, &MANTLE_ADDRESS),
     ];
 
     require!(
