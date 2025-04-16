@@ -100,9 +100,15 @@ async function main(): Promise<void> {
     case "berachain":
       destination = { berachain: {} };
       break;
+    case "bsc":
+      destination = { bsc: {} };
+      break;
+    case "immutable":
+      destination = { immutable: {} };
+      break;
     default:
       throw new Error(
-        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon, polygon-amoy, mantle, mantle-sepolia, eib, teib, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic, manta-pacific, abstract, berachain",
+        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon, polygon-amoy, mantle, mantle-sepolia, eib, teib, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic, manta-pacific, abstract, berachain, bsc, immutable",
       );
   }
 

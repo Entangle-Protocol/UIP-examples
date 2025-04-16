@@ -43,6 +43,8 @@ pub enum Destination {
     Abstract,
     Berachain,
     Mantle,
+    Bsc,
+    Immutable,
 }
 
 pub fn send_message(
@@ -65,7 +67,9 @@ pub fn send_message(
         | Destination::MantaPacific
         | Destination::Abstract
         | Destination::Berachain
-        | Destination::Mantle => {
+        | Destination::Mantle
+        | Destination::Bsc
+        | Destination::Immutable => {
             #[cfg(not(feature = "mainnet"))]
             return err!(MessengerError::DestinationSmartContractNotAllowed);
         }
@@ -103,6 +107,8 @@ pub fn send_message(
         Destination::MantaPacific => (MANTA_PACIFIC_CHAIN_ID, MANTA_PACIFIC_ADDRESS),
         Destination::Abstract => (ABSTRACT_CHAIN_ID, ABSTRACT_ADDRESS),
         Destination::Berachain => (BERACHAIN_CHAIN_ID, BERACHAIN_ADDRESS),
+        Destination::Bsc => (BSC_CHAIN_ID, BSC_ADDRESS),
+        Destination::Immutable => (IMMUTABLE_CHAIN_ID, IMMUTABLE_ADDRESS),
     };
 
     UipEndpoint::propose()
