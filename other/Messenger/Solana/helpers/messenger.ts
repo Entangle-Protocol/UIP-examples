@@ -1,23 +1,22 @@
 import { IdlTypes, Program } from "@coral-xyz/anchor";
 import * as anchor from "@coral-xyz/anchor";
-import {
-  Connection,
-  Keypair,
-  PublicKey,
-  SystemProgram,
-  TransactionSignature,
-} from "@solana/web3.js";
+import { Connection, PublicKey, SystemProgram } from "@solana/web3.js";
 import { Messenger } from "../target/types/messenger";
 import BN from "bn.js";
 import {
   ENDPOINT_CONFIG,
-  fetchUtsConnector,
+  fetchUtsConfig,
   findExtension,
-  UIP_PROGRAM,
-} from "./endpoint";
+  PROGRAM_ID as ENDPOINT_PROGRAM_ID,
+} from "@lincot/uip-solana-sdk";
 import { CID } from "multiformats";
 import { encodeU32Le } from "./utils";
-import { loadByChunks, passToCpi } from "./chunkLoader";
+import {
+  InstructionWithCu,
+  loadByChunks,
+  passToCpi,
+} from "@lincot/solana-chunk-loader";
+import { randomInt } from "crypto";
 
 anchor.setProvider(anchor.AnchorProvider.env());
 export const MESSENGER_PROGRAM: Program<Messenger> = anchor.workspace.Messenger;
@@ -25,7 +24,7 @@ export const MESSENGER_PROGRAM: Program<Messenger> = anchor.workspace.Messenger;
 export type Message = IdlTypes<Messenger>["crossChainMessage"];
 export type Destination = IdlTypes<Messenger>["destination"];
 
-export const MAX_TEXT_LEN_ONE_TX = 763;
+export const MAX_TEXT_LEN_ONE_TX = 817;
 
 export const MESSENGER = PublicKey.findProgramAddressSync(
   [Buffer.from("MESSENGER")],
@@ -42,7 +41,7 @@ export const findMessage = (msgHash: number[] | Buffer) =>
   )[0];
 
 export type InitializeInput = {
-  payer: Keypair;
+  payer: PublicKey;
   admin: PublicKey;
   allowedSenders: Buffer[] | null;
 };
@@ -53,20 +52,17 @@ export async function initialize(
     admin,
     allowedSenders,
   }: InitializeInput,
-): Promise<{ transactionSignature: TransactionSignature }> {
-  const transactionSignature = await MESSENGER_PROGRAM.methods
+): Promise<InstructionWithCu> {
+  const instruction = await MESSENGER_PROGRAM.methods
     .initialize(allowedSenders, admin)
-    .accounts({
-      payer: payer.publicKey,
-    })
-    .signers([payer])
-    .rpc();
-  return { transactionSignature };
+    .accounts({ payer })
+    .instruction();
+  return { instruction, cuLimit: 50_000 };
 }
 
 export type RegisterExtensionInput = {
-  admin: Keypair;
-  payer: Keypair;
+  admin: PublicKey;
+  payer: PublicKey;
   ipfsCid: string;
 };
 
@@ -76,42 +72,40 @@ export async function registerExtension(
     payer,
     ipfsCid,
   }: RegisterExtensionInput,
-): Promise<{ transactionSignature: TransactionSignature }> {
-  const transactionSignature = await MESSENGER_PROGRAM.methods
+): Promise<InstructionWithCu> {
+  const instruction = await MESSENGER_PROGRAM.methods
     .registerExtension(Array.from(CID.parse(ipfsCid).toV1().bytes))
     .accounts({
-      payer: payer.publicKey,
+      payer,
       extension: findExtension(MESSENGER_PROGRAM.programId),
-      admin: admin.publicKey,
+      admin,
       messenger: MESSENGER,
     })
-    .signers([payer, admin])
-    .rpc();
-  return { transactionSignature };
+    .instruction();
+  return { instruction, cuLimit: 30_000 };
 }
 
 export type UpdateAdmin = {
-  admin: Keypair;
+  admin: PublicKey;
   newAdmin: PublicKey;
 };
 
 export async function updateAdmin(
   { admin, newAdmin }: UpdateAdmin,
-): Promise<{ transactionSignature: TransactionSignature }> {
-  const transactionSignature = await MESSENGER_PROGRAM.methods
+): Promise<InstructionWithCu> {
+  const instruction = await MESSENGER_PROGRAM.methods
     .updateAdmin(newAdmin)
     .accountsStrict({
       messenger: MESSENGER,
-      admin: admin.publicKey,
+      admin,
     })
-    .signers([admin])
-    .rpc();
-  return { transactionSignature };
+    .instruction();
+  return { instruction, cuLimit: 20_000 };
 }
 
 export type SetAllowedSendersInput = {
-  payer: Keypair;
-  admin: Keypair;
+  payer: PublicKey;
+  admin: PublicKey;
   allowedSenders: Buffer[] | null;
 };
 
@@ -121,33 +115,35 @@ export async function setAllowedSenders(
     admin,
     allowedSenders,
   }: SetAllowedSendersInput,
-): Promise<{ transactionSignature: TransactionSignature }> {
-  const transactionSignature = await MESSENGER_PROGRAM.methods
+): Promise<InstructionWithCu> {
+  const instruction = await MESSENGER_PROGRAM.methods
     .setAllowedSenders(allowedSenders)
     .accountsStrict({
-      payer: payer.publicKey,
-      admin: admin.publicKey,
+      payer,
+      admin,
       messenger: MESSENGER,
       systemProgram: SystemProgram.programId,
     })
-    .signers([payer, admin])
-    .rpc();
-  return { transactionSignature };
+    .instruction();
+  return { instruction, cuLimit: 30_000 };
 }
 
 export type SendMessageInput = {
+  connection: Connection;
   destination: Destination;
   uipFee: BN;
   customGasLimit: BN;
   text: string;
-  sender: Keypair;
+  sender: PublicKey;
 };
 
 export async function sendMessage(
   input: SendMessageInput,
-): Promise<{ transactionSignature: TransactionSignature }> {
+): Promise<
+  { preInstructions: InstructionWithCu[]; instruction: InstructionWithCu }
+> {
   if (input.text.length <= MAX_TEXT_LEN_ONE_TX) {
-    return await sendMessageOneTx(input);
+    return { preInstructions: [], instruction: await sendMessageOneTx(input) };
   } else {
     return await sendMessageManyTx(input);
   }
@@ -155,50 +151,64 @@ export async function sendMessage(
 
 export async function sendMessageOneTx(
   {
+    connection,
     uipFee,
     customGasLimit,
     destination,
     text,
     sender,
   }: SendMessageInput,
-): Promise<{ transactionSignature: TransactionSignature }> {
-  const transactionSignature = await MESSENGER_PROGRAM.methods
+): Promise<InstructionWithCu> {
+  const instruction = await MESSENGER_PROGRAM.methods
     .sendMessage(destination, uipFee, customGasLimit, text)
     .accounts({
       endpointConfig: ENDPOINT_CONFIG,
-      utsConnector: await fetchUtsConnector(),
-      sender: sender.publicKey,
+      utsConnector: await fetchUtsConfig(connection).then((x) =>
+        x.utsConnector
+      ),
+      sender,
     })
-    .signers([sender])
-    .rpc();
-  return { transactionSignature };
+    .instruction();
+  return { instruction, cuLimit: 50_000 };
 }
 
 async function sendMessageManyTx(
   {
+    connection,
     uipFee,
     customGasLimit,
     destination,
     text,
     sender,
   }: SendMessageInput,
-): Promise<{ transactionSignature: TransactionSignature }> {
+): Promise<
+  { preInstructions: InstructionWithCu[]; instruction: InstructionWithCu }
+> {
   const data = encodeSendMessageParams({
     uipFee,
     customGasLimit,
     destination,
     text,
   });
-  const chunkHolderId = await loadByChunks({ owner: sender, data });
+  const chunkHolderId = randomInt(1 << 19);
+  const preInstructions = await loadByChunks({
+    owner: sender,
+    data,
+    chunkHolderId,
+  });
 
-  return await passToCpi({
+  const instruction = await passToCpi({
     owner: sender,
     program: MESSENGER_PROGRAM.programId,
     chunkHolderId,
     accounts: [
-      { pubkey: sender.publicKey, isSigner: true, isWritable: true },
+      { pubkey: sender, isSigner: true, isWritable: true },
       { pubkey: ENDPOINT_CONFIG, isSigner: false, isWritable: false },
-      { pubkey: await fetchUtsConnector(), isSigner: false, isWritable: true },
+      {
+        pubkey: await fetchUtsConfig(connection).then((x) => x.utsConnector),
+        isSigner: false,
+        isWritable: true,
+      },
       {
         pubkey: PublicKey.findProgramAddressSync(
           [Buffer.from("UIP_SIGNER")],
@@ -213,14 +223,15 @@ async function sendMessageManyTx(
         isWritable: false,
       },
       {
-        pubkey: UIP_PROGRAM.programId,
+        pubkey: ENDPOINT_PROGRAM_ID,
         isSigner: false,
         isWritable: false,
       },
     ],
-    signers: [sender],
     cpiComputeUnits: 30_000,
   });
+
+  return { preInstructions, instruction };
 }
 
 export async function getMessagesBySender(

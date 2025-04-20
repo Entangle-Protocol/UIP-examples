@@ -1,15 +1,18 @@
 import {
+  checkConsensus,
   encodeTransmitterParams,
-  executeFull,
+  execute,
+  fetchExtension,
   findExtension,
   findMessage,
-  hexToBytes,
+  loadMessage,
   msgHashFull,
+  onMessageProposed,
+  sendSimulateExecuteLite,
+  setProvider as setEndpointProvider,
   signMsg,
-  simulateExecuteLite,
-  UIP_PROGRAM,
   unloadMessage,
-} from "../helpers/endpoint";
+} from "@lincot/uip-solana-sdk";
 import {
   Destination,
   findMessage as findMessengerMessage,
@@ -24,13 +27,21 @@ import {
   setAllowedSenders,
   updateAdmin,
 } from "../helpers/messenger";
-import { Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
+import {
+  Keypair,
+  PublicKey,
+  Signer,
+  SystemProgram,
+  TransactionSignature,
+} from "@solana/web3.js";
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import {
   disperse,
+  hexToBytes,
   readKeypairFromFile,
+  sendAndConfirmVersionedTx,
   setupTests,
-  SOLANA_CHAIN_ID,
+  solanaChainId,
   transferEverything,
 } from "../helpers/utils";
 import BN from "bn.js";
@@ -38,6 +49,7 @@ import bs58 from "bs58";
 import { ethers, Wallet } from "ethers";
 import { randomInt } from "crypto";
 import { CID } from "multiformats";
+import { InstructionWithCu, toTransaction } from "@lincot/solana-chunk-loader";
 
 const admin = readKeypairFromFile("keys/admin.json");
 const executor = readKeypairFromFile("keys/executor.json");
@@ -55,7 +67,33 @@ const transmitterParams = {
 };
 const transmitterParamsEncoded = encodeTransmitterParams(transmitterParams);
 
-const { connection, payer } = setupTests();
+const { provider, payer } = setupTests();
+const connection = provider.connection;
+setEndpointProvider(provider);
+
+const sendTx = async (
+  ixs: InstructionWithCu[],
+  signers: Signer[] = [payer],
+): Promise<TransactionSignature> => {
+  const tx = toTransaction(
+    ixs,
+    await connection.getLatestBlockhash().then((x) => x.blockhash),
+    payer,
+  );
+  return await sendAndConfirmVersionedTx(
+    connection,
+    tx,
+    signers,
+    signers[0].publicKey,
+  );
+};
+
+const sendIx = async (
+  ix: InstructionWithCu,
+  signers: Signer[] = [payer],
+): Promise<TransactionSignature> => {
+  return sendTx([ix], signers);
+};
 
 beforeAll(async () => {
   await disperse(
@@ -73,18 +111,23 @@ afterAll(async () => {
 describe("messenger", () => {
   test("initialize", async () => {
     try {
-      await initializeMessenger({
-        payer,
-        admin: admin.publicKey,
-        allowedSenders: null,
-      });
+      await sendIx(
+        await initializeMessenger({
+          payer: payer.publicKey,
+          admin: admin.publicKey,
+          allowedSenders: null,
+        }),
+      );
     } catch (e) {
       expect(e.toString()).toInclude("already in use");
-      await setAllowedSenders({
-        payer,
-        admin,
-        allowedSenders: null,
-      });
+      await sendIx(
+        await setAllowedSenders({
+          payer: payer.publicKey,
+          admin: admin.publicKey,
+          allowedSenders: null,
+        }),
+        [payer, admin],
+      );
     }
 
     const messenger = await MESSENGER_PROGRAM.account.messenger.fetch(
@@ -98,13 +141,17 @@ describe("messenger", () => {
     const ipfsCid =
       "bafkreia2gxlqwpkvtx2bzetzuk4swfqf54j5g2tufasexoiqrrud3xakgu";
 
-    await registerExtensionMessenger({
-      admin,
-      payer,
-      ipfsCid,
-    });
+    await sendIx(
+      await registerExtensionMessenger({
+        admin: admin.publicKey,
+        payer: payer.publicKey,
+        ipfsCid,
+      }),
+      [payer, admin],
+    );
 
-    const extension = await UIP_PROGRAM.account.extension.fetch(
+    const extension = await fetchExtension(
+      connection,
       findExtension(MESSENGER_PROGRAM.programId),
     );
     expect(extension.program).toEqual(MESSENGER_PROGRAM.programId);
@@ -127,32 +174,33 @@ describe("messenger", () => {
 
   test("sendMessage", async () => {
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {
-      UIP_PROGRAM.addEventListener(
-        "messageProposed",
-        (event) => {
-          try {
-            expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
-            selector = event.selector;
-            payload = event.payload;
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        },
-      );
+      onMessageProposed((event) => {
+        try {
+          expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
+          selector = event.selector;
+          payload = event.payload;
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
 
       setTimeout(() => {
         reject(new Error("Event did not fire within timeout"));
       }, 12000);
     });
 
-    const { transactionSignature } = await sendMessageOneTx({
-      destination,
-      uipFee,
-      customGasLimit,
-      text,
-      sender,
-    });
+    const transactionSignature = await sendIx(
+      await sendMessageOneTx({
+        connection,
+        destination,
+        uipFee,
+        customGasLimit,
+        text,
+        sender: sender.publicKey,
+      }),
+      [sender],
+    );
     const txId = bs58.decode(transactionSignature);
     srcOpTxId[0] = Array.from(txId.subarray(0, 32));
     srcOpTxId[1] = Array.from(txId.subarray(32));
@@ -161,13 +209,17 @@ describe("messenger", () => {
 
     const testLongMessage = async (len: number) => {
       const text = "a".repeat(len);
-      await sendMessageOneTx({
-        destination,
-        uipFee,
-        customGasLimit,
-        text,
-        sender,
-      });
+      await sendIx(
+        await sendMessageOneTx({
+          connection,
+          destination,
+          uipFee,
+          customGasLimit,
+          text,
+          sender: sender.publicKey,
+        }),
+        [sender],
+      );
     };
     await testLongMessage(MAX_TEXT_LEN_ONE_TX);
     expect(testLongMessage(MAX_TEXT_LEN_ONE_TX + 1)).rejects.toThrow(
@@ -178,40 +230,40 @@ describe("messenger", () => {
   test("sendMessage (big)", async () => {
     const bigText = "a".repeat(5000);
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {
-      UIP_PROGRAM.addEventListener(
-        "messageProposed",
-        (event) => {
-          try {
-            expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
-            expect(event.payload).toEqual(
-              hexToBytes(
-                ethers.AbiCoder.defaultAbiCoder().encode(["bytes", "bytes"], [
-                  ethers.AbiCoder.defaultAbiCoder().encode(["string"], [
-                    bigText,
-                  ]),
-                  sender.publicKey.toBuffer(),
+      onMessageProposed((event) => {
+        try {
+          expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
+          expect(event.payload).toEqual(
+            hexToBytes(
+              ethers.AbiCoder.defaultAbiCoder().encode(["bytes", "bytes"], [
+                ethers.AbiCoder.defaultAbiCoder().encode(["string"], [
+                  bigText,
                 ]),
-              ),
-            );
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        },
-      );
+                sender.publicKey.toBuffer(),
+              ]),
+            ),
+          );
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
 
       setTimeout(() => {
         reject(new Error("Event did not fire within timeout"));
       }, 12000);
     });
 
-    await sendMessage({
+    const { preInstructions, instruction } = await sendMessage({
+      connection,
       destination,
       uipFee,
       customGasLimit,
       text: bigText,
-      sender,
+      sender: sender.publicKey,
     });
+    await Promise.all(preInstructions.map((ix) => sendIx(ix, [sender])));
+    await sendIx(instruction, [sender]);
 
     await eventPromise;
   });
@@ -221,38 +273,39 @@ describe("messenger", () => {
     const destAddr = MESSENGER_PROGRAM.programId.toBuffer();
     const uipFee = new BN(80085);
     const srcBlockNumber = new BN(randomInt(256));
-    const srcChainId = SOLANA_CHAIN_ID;
+    const srcChainId = solanaChainId;
     const srcOpTxId = new Array<Array<number>>();
     let selector = new Array<number>();
     let payload: Buffer = Buffer.alloc(0);
 
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {
-      UIP_PROGRAM.addEventListener(
-        "messageProposed",
-        (event) => {
-          try {
-            expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
-            selector = event.selector;
-            payload = event.payload;
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        },
-      );
+      onMessageProposed((event) => {
+        try {
+          expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
+          selector = event.selector;
+          payload = event.payload;
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
 
       setTimeout(() => {
         reject(new Error("Event did not fire within timeout"));
       }, 15000);
     });
 
-    const { transactionSignature } = await sendMessage({
-      uipFee,
-      customGasLimit,
-      destination,
-      text,
-      sender,
-    });
+    const transactionSignature = await sendIx(
+      await sendMessageOneTx({
+        connection,
+        uipFee,
+        customGasLimit,
+        destination,
+        text,
+        sender: sender.publicKey,
+      }),
+      [sender],
+    );
 
     const txId = bs58.decode(transactionSignature);
     srcOpTxId[0] = Array.from(txId.subarray(0, 32));
@@ -277,29 +330,20 @@ describe("messenger", () => {
       },
     };
 
-    const signatures = [signMsg(signer, msgData)];
-    const superSignatures = [signMsg(superSigner, msgData)];
+    const signatures = [signMsg({ signer, msgData, solanaChainId })];
+    const superSignatures = [
+      signMsg({ signer: superSigner, msgData, solanaChainId }),
+    ];
 
     const accounts = [
       { pubkey: MESSENGER, isSigner: false, isWritable: true },
       {
-        pubkey: findMessengerMessage(msgHashFull(msgData)),
+        pubkey: findMessengerMessage(msgHashFull(msgData, solanaChainId)),
         isSigner: false,
         isWritable: true,
       },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
     ];
-
-    const input = {
-      executor,
-      msgData,
-      signatures,
-      superSignatures,
-      accounts,
-      spendingLimit: new BN(100_000),
-    };
-
-    // expect(executeFull(input)).rejects.toThrow("SpendingLimitExceeded");
 
     const accountsSimulation = [
       { pubkey: MESSENGER, isSigner: false, isWritable: true },
@@ -311,7 +355,8 @@ describe("messenger", () => {
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
     ];
 
-    const liteSimulationLamports = await simulateExecuteLite({
+    const liteSimulationLamports = await sendSimulateExecuteLite({
+      connection,
       payer: admin.publicKey,
       accounts: accountsSimulation,
       destAddr: new PublicKey(destAddr),
@@ -322,15 +367,38 @@ describe("messenger", () => {
 
     const balanceBefore = await connection.getBalance(executor.publicKey);
 
-    input.spendingLimit = new BN(3_000_000);
-    await executeFull(input);
+    const message = findMessage(msgData, solanaChainId);
+    await sendTx([
+      await loadMessage({
+        executor: executor.publicKey,
+        msgData,
+        solanaChainId,
+      }),
+      await checkConsensus({
+        executor: executor.publicKey,
+        message,
+        signatures,
+        superSignatures,
+      }),
+      await execute({
+        executor: executor.publicKey,
+        accounts,
+        spendingLimit: new BN(2_000_000),
+        deadline: new BN(Math.floor(Date.now() / 1000) + 10),
+        destinationComputeUnits: 30_000,
+        dstProgram: msgData.initialProposal.destAddr,
+        message,
+      }),
+    ], [executor]);
 
-    await unloadMessage({ payer: executor, message: findMessage(msgData) });
+    await sendIx(await unloadMessage({ payer: executor.publicKey, message }), [
+      executor,
+    ]);
 
     const balanceAfter = await connection.getBalance(executor.publicKey);
 
     expect(balanceBefore - balanceAfter).toEqual(
-      Number(liteSimulationLamports) + 5000,
+      Number(liteSimulationLamports) + 2 * 5000,
     );
 
     const messagesBySender = await getMessagesBySender(
@@ -342,39 +410,43 @@ describe("messenger", () => {
   });
 
   test("setAllowedSenders", async () => {
-    await setAllowedSenders({
-      payer,
-      admin,
-      allowedSenders: [],
-    });
+    await sendIx(
+      await setAllowedSenders({
+        payer: payer.publicKey,
+        admin: admin.publicKey,
+        allowedSenders: [],
+      }),
+      [payer, admin],
+    );
 
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {
-      UIP_PROGRAM.addEventListener(
-        "messageProposed",
-        (event) => {
-          try {
-            expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
-            selector = event.selector;
-            payload = event.payload;
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        },
-      );
+      onMessageProposed((event) => {
+        try {
+          expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
+          selector = event.selector;
+          payload = event.payload;
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
 
       setTimeout(() => {
         reject(new Error("Event did not fire within timeout"));
       }, 12000);
     });
 
-    const { transactionSignature } = await sendMessage({
-      uipFee,
-      customGasLimit,
-      destination,
-      text,
-      sender,
-    });
+    const transactionSignature = await sendIx(
+      await sendMessageOneTx({
+        connection,
+        uipFee,
+        customGasLimit,
+        destination,
+        text,
+        sender: sender.publicKey,
+      }),
+      [sender],
+    );
     const txId = bs58.decode(transactionSignature);
     srcOpTxId[0] = Array.from(txId.subarray(0, 32));
     srcOpTxId[1] = Array.from(txId.subarray(32));
@@ -382,7 +454,7 @@ describe("messenger", () => {
     await eventPromise;
 
     const senderAddr = MESSENGER_PROGRAM.programId.toBuffer();
-    const srcChainId = SOLANA_CHAIN_ID;
+    const srcChainId = solanaChainId;
     const msgData = {
       initialProposal: {
         senderAddr,
@@ -400,64 +472,113 @@ describe("messenger", () => {
       },
     };
 
-    const signatures = [signMsg(signer, msgData)];
-    const superSignatures = [signMsg(superSigner, msgData)];
-    expect(executeFull({
-      executor,
-      msgData,
-      signatures,
-      superSignatures,
-      accounts: [
-        { pubkey: MESSENGER, isSigner: false, isWritable: true },
-        {
-          pubkey: findMessengerMessage(msgHashFull(msgData)),
-          isSigner: false,
-          isWritable: true,
-        },
-        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-      ],
-      spendingLimit: new BN(3_000_000),
-    })).rejects.toThrow("SenderNotAllowed");
+    const signatures = [signMsg({ signer, msgData, solanaChainId })];
+    const superSignatures = [
+      signMsg({ signer: superSigner, msgData, solanaChainId }),
+    ];
+    const message = findMessage(msgData, solanaChainId);
+    expect(
+      sendTx([
+        await loadMessage({
+          executor: executor.publicKey,
+          msgData,
+          solanaChainId,
+        }),
+        await checkConsensus({
+          executor: executor.publicKey,
+          message,
+          signatures,
+          superSignatures,
+        }),
+        await execute({
+          executor: executor.publicKey,
+          accounts: [
+            { pubkey: MESSENGER, isSigner: false, isWritable: true },
+            {
+              pubkey: findMessengerMessage(msgHashFull(msgData, solanaChainId)),
+              isSigner: false,
+              isWritable: true,
+            },
+            {
+              pubkey: SystemProgram.programId,
+              isSigner: false,
+              isWritable: false,
+            },
+          ],
+          spendingLimit: new BN(2_000_000),
+          deadline: new BN(Math.floor(Date.now() / 1000) + 10),
+          destinationComputeUnits: 30_000,
+          dstProgram: msgData.initialProposal.destAddr,
+          message,
+        }),
+      ], [executor]),
+    ).rejects.toThrow("SenderNotAllowed");
 
-    await setAllowedSenders({
-      payer,
-      admin,
-      allowedSenders: [sender.publicKey.toBuffer()],
-    });
+    await sendIx(
+      await setAllowedSenders({
+        payer: payer.publicKey,
+        admin: admin.publicKey,
+        allowedSenders: [sender.publicKey.toBuffer()],
+      }),
+      [payer, admin],
+    );
 
-    await executeFull({
-      executor,
-      msgData,
-      signatures,
-      superSignatures,
-      accounts: [
-        { pubkey: MESSENGER, isSigner: false, isWritable: true },
-        {
-          pubkey: findMessengerMessage(msgHashFull(msgData)),
-          isSigner: false,
-          isWritable: true,
-        },
-        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-      ],
-      spendingLimit: new BN(3_000_000),
-    });
+    await sendTx([
+      await loadMessage({
+        executor: executor.publicKey,
+        msgData,
+        solanaChainId,
+      }),
+      await checkConsensus({
+        executor: executor.publicKey,
+        message,
+        signatures,
+        superSignatures,
+      }),
+      await execute({
+        executor: executor.publicKey,
+        accounts: [
+          { pubkey: MESSENGER, isSigner: false, isWritable: true },
+          {
+            pubkey: findMessengerMessage(msgHashFull(msgData, solanaChainId)),
+            isSigner: false,
+            isWritable: true,
+          },
+          {
+            pubkey: SystemProgram.programId,
+            isSigner: false,
+            isWritable: false,
+          },
+        ],
+        spendingLimit: new BN(2_000_000),
+        deadline: new BN(Math.floor(Date.now() / 1000) + 10),
+        destinationComputeUnits: 30_000,
+        dstProgram: msgData.initialProposal.destAddr,
+        message,
+      }),
+    ], [executor]);
   });
 
   test("update admin", async () => {
-    await updateAdmin({
-      admin,
-      newAdmin: payer.publicKey,
-    });
+    await sendIx(
+      await updateAdmin({
+        admin: admin.publicKey,
+        newAdmin: payer.publicKey,
+      }),
+      [payer, admin],
+    );
 
     const messenger = await MESSENGER_PROGRAM.account.messenger.fetch(
       MESSENGER,
     );
     expect(messenger.admin).toEqual(payer.publicKey);
 
-    await updateAdmin({
-      admin: payer,
-      newAdmin: admin.publicKey,
-    });
+    await sendIx(
+      await updateAdmin({
+        admin: payer.publicKey,
+        newAdmin: admin.publicKey,
+      }),
+    );
 
     const messenger2 = await MESSENGER_PROGRAM.account.messenger.fetch(
       MESSENGER,

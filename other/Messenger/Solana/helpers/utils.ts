@@ -1,17 +1,20 @@
 import {
+  BlockhashWithExpiryBlockHeight,
   Connection,
   Keypair,
   PublicKey,
   RpcResponseAndContext,
   sendAndConfirmTransaction,
+  Signer,
   SimulatedTransactionResponse,
   SystemProgram,
   Transaction,
   TransactionMessage,
+  TransactionSignature,
   VersionedTransaction,
 } from "@solana/web3.js";
 import * as anchor from "@coral-xyz/anchor";
-import { BN } from "@coral-xyz/anchor";
+import { AnchorProvider, BN } from "@coral-xyz/anchor";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { readFileSync } from "fs";
 
@@ -37,14 +40,13 @@ const MANTA_PACIFIC_CHAIN_ID = new BN(169);
 //   anchor.AnchorProvider.env().connection.rpcEndpoint.includes("devnet")
 //     ? SOLANA_DEVNET_CHAIN_ID
 //     : SOLANA_MAINNET_CHAIN_ID;
-export const SOLANA_CHAIN_ID = SOLANA_DEVNET_CHAIN_ID;
+export const solanaChainId = SOLANA_DEVNET_CHAIN_ID;
 
-export function setupTests(): { connection: Connection; payer: Keypair } {
-  const provider = anchor.AnchorProvider.env();
-  const connection = provider.connection;
+export function setupTests(): { provider: AnchorProvider; payer: Keypair } {
+  const provider = AnchorProvider.env();
   anchor.setProvider(provider);
   const payer = (provider.wallet as NodeWallet).payer;
-  return { connection, payer };
+  return { provider, payer };
 }
 
 export async function disperse(
@@ -218,4 +220,56 @@ export async function simulateTransaction(
         sigVerify: false,
       },
     );
+}
+
+export async function sendAndConfirmVersionedTx(
+  connection: Connection,
+  tx: Transaction,
+  signers: Signer[],
+  payerKey: PublicKey,
+): Promise<TransactionSignature> {
+  const { verTx, latestBlockhash } = await toVersionedTx(
+    connection,
+    tx,
+    payerKey,
+  );
+  verTx.sign(signers);
+
+  const transactionSignature = await connection
+    .sendTransaction(verTx);
+
+  await connection.confirmTransaction({
+    blockhash: latestBlockhash.blockhash,
+    lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+    signature: transactionSignature,
+  });
+
+  return transactionSignature;
+}
+
+async function toVersionedTx(
+  connection: Connection,
+  tx: Transaction,
+  payerKey: PublicKey,
+): Promise<
+  {
+    verTx: VersionedTransaction;
+    latestBlockhash: BlockhashWithExpiryBlockHeight;
+  }
+> {
+  const latestBlockhash = await connection.getLatestBlockhash();
+  const messageV0 = new TransactionMessage({
+    payerKey,
+    recentBlockhash: latestBlockhash.blockhash,
+    instructions: tx.instructions,
+  }).compileToV0Message();
+
+  return {
+    verTx: new VersionedTransaction(messageV0),
+    latestBlockhash,
+  };
+}
+
+export function hexToBytes(hex: string): Buffer {
+  return Buffer.from(hex.startsWith("0x") ? hex.slice(2) : hex, "hex");
 }

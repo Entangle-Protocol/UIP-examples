@@ -1,7 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { getMessagesBySender } from "../helpers/messenger";
-import { hexToBytes } from "../helpers/endpoint";
-import { formatChainId } from "../helpers/utils";
+import { formatChainId, hexToBytes } from "../helpers/utils";
 import { PublicKey } from "@solana/web3.js";
 
 async function main(): Promise<void> {

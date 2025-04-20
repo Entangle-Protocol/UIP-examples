@@ -12,6 +12,7 @@ messenger = "MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1"
 
 [test.validator]
 url = "https://api.devnet.solana.com"
+warp_slot = 32
 [[test.validator.clone]]
 # UIP program
 address = "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX"

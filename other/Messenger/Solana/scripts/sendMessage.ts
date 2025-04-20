@@ -3,6 +3,8 @@ import * as anchor from "@coral-xyz/anchor";
 import { Destination, sendMessage } from "../helpers/messenger";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { BN } from "bn.js";
+import { sendAndConfirmVersionedTx } from "../helpers/utils";
+import { toTransaction } from "@lincot/uip-solana-sdk";
 
 async function main(): Promise<void> {
   const argv = yargs(process.argv.slice(2))
@@ -120,13 +122,30 @@ async function main(): Promise<void> {
 
     while (true) {
       try {
-        const { transactionSignature } = await sendMessage({
+        const { preInstructions, instruction } = await sendMessage({
+          connection: provider.connection,
           uipFee,
           customGasLimit,
           destination,
-          sender: payer,
+          sender: payer.publicKey,
           text,
         });
+        const latestBlockhash = await provider.connection.getLatestBlockhash()
+          .then((b) => b.blockhash);
+        await Promise.all(preInstructions.map((ix) =>
+          sendAndConfirmVersionedTx(
+            provider.connection,
+            toTransaction([ix], latestBlockhash, payer),
+            [payer],
+            payer.publicKey,
+          )
+        ));
+        const transactionSignature = sendAndConfirmVersionedTx(
+          provider.connection,
+          toTransaction([instruction], latestBlockhash, payer),
+          [payer],
+          payer.publicKey,
+        );
         console.log(`${i + 1} signature:`, transactionSignature);
         break;
       } catch (err) {
