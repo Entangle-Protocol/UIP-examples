@@ -35,7 +35,7 @@ async function main(): Promise<void> {
       admin: payer.publicKey,
       allowedSenders,
     });
-    const transactionSignature = sendAndConfirmVersionedTx(
+    const transactionSignature = await sendAndConfirmVersionedTx(
       provider.connection,
       toTransaction(
         [ix],
@@ -53,7 +53,7 @@ async function main(): Promise<void> {
       admin: payer.publicKey,
       allowedSenders,
     });
-    const transactionSignature = sendAndConfirmVersionedTx(
+    const transactionSignature = await sendAndConfirmVersionedTx(
       provider.connection,
       toTransaction(
         [ix],
@@ -74,7 +74,7 @@ async function main(): Promise<void> {
     payer: payer.publicKey,
     ipfsCid,
   });
-  const transactionSignature = sendAndConfirmVersionedTx(
+  const transactionSignature = await sendAndConfirmVersionedTx(
     provider.connection,
     toTransaction(
       [ix],

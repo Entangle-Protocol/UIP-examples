@@ -144,7 +144,7 @@ async function main(): Promise<void> {
             payer.publicKey,
           )
         ));
-        const transactionSignature = sendAndConfirmVersionedTx(
+        const transactionSignature = await sendAndConfirmVersionedTx(
           provider.connection,
           toTransaction([instruction], latestBlockhash, payer),
           [payer],

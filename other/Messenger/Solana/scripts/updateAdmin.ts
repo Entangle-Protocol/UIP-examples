@@ -22,7 +22,7 @@ async function main(): Promise<void> {
     newAdmin,
   });
 
-  const transactionSignature = sendAndConfirmVersionedTx(
+  const transactionSignature = await sendAndConfirmVersionedTx(
     provider.connection,
     toTransaction(
       [ix],
