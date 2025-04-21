@@ -55,7 +55,7 @@ export const findMessage = (msgHash: number[] | Buffer) =>
     PROGRAM_ID,
   )[0];
 
-export type InitializeInput = {
+export type InitializeParams = {
   payer: PublicKey;
   admin: PublicKey;
   allowedSenders: Buffer[] | null;
@@ -66,7 +66,7 @@ export async function initialize(
     payer,
     admin,
     allowedSenders,
-  }: InitializeInput,
+  }: InitializeParams,
 ): Promise<InstructionWithCu> {
   const instruction = await getProgram().methods
     .initialize(allowedSenders, admin)
@@ -75,7 +75,7 @@ export async function initialize(
   return { instruction, cuLimit: 50_000 };
 }
 
-export type RegisterExtensionInput = {
+export type RegisterExtensionParams = {
   admin: PublicKey;
   payer: PublicKey;
   ipfsCid: string;
@@ -86,7 +86,7 @@ export async function registerExtension(
     admin,
     payer,
     ipfsCid,
-  }: RegisterExtensionInput,
+  }: RegisterExtensionParams,
 ): Promise<InstructionWithCu> {
   const instruction = await getProgram().methods
     .registerExtension(Array.from(CID.parse(ipfsCid).toV1().bytes))
@@ -118,7 +118,7 @@ export async function updateAdmin(
   return { instruction, cuLimit: 20_000 };
 }
 
-export type SetAllowedSendersInput = {
+export type SetAllowedSendersParams = {
   payer: PublicKey;
   admin: PublicKey;
   allowedSenders: Buffer[] | null;
@@ -129,7 +129,7 @@ export async function setAllowedSenders(
     payer,
     admin,
     allowedSenders,
-  }: SetAllowedSendersInput,
+  }: SetAllowedSendersParams,
 ): Promise<InstructionWithCu> {
   const instruction = await getProgram().methods
     .setAllowedSenders(allowedSenders)
@@ -143,7 +143,7 @@ export async function setAllowedSenders(
   return { instruction, cuLimit: 30_000 };
 }
 
-export type SendMessageInput = {
+export type SendMessageParams = {
   connection: Connection;
   destination: Destination;
   uipFee: BN | bigint;
@@ -153,14 +153,14 @@ export type SendMessageInput = {
 };
 
 export async function sendMessage(
-  input: SendMessageInput,
+  params: SendMessageParams,
 ): Promise<
   { preInstructions: InstructionWithCu[]; instruction: InstructionWithCu }
 > {
-  if (input.text.length <= MAX_TEXT_LEN_ONE_TX) {
-    return { preInstructions: [], instruction: await sendMessageOneTx(input) };
+  if (params.text.length <= MAX_TEXT_LEN_ONE_TX) {
+    return { preInstructions: [], instruction: await sendMessageOneTx(params) };
   } else {
-    return await sendMessageManyTx(input);
+    return await sendMessageManyTx(params);
   }
 }
 
@@ -172,7 +172,7 @@ export async function sendMessageOneTx(
     destination,
     text,
     sender,
-  }: SendMessageInput,
+  }: SendMessageParams,
 ): Promise<InstructionWithCu> {
   const instruction = await getProgram().methods
     .sendMessage(destination, toBN(uipFee), toBN(customGasLimit), text)
@@ -193,7 +193,7 @@ async function sendMessageManyTx(
     destination,
     text,
     sender,
-  }: SendMessageInput,
+  }: SendMessageParams,
 ): Promise<
   { preInstructions: InstructionWithCu[]; instruction: InstructionWithCu }
 > {
@@ -327,7 +327,7 @@ export async function getMessagesBySender(
 
 const SEND_MESSAGE_DISCRIMINATOR = [57, 40, 34, 178, 189, 10, 65, 26];
 
-type SendMessgeParams = {
+export type EncodeSendMessgeParams = {
   destination: Destination;
   uipFee: BN | bigint;
   customGasLimit: BN | bigint;
@@ -339,7 +339,7 @@ export function encodeSendMessageParams({
   uipFee,
   customGasLimit,
   text,
-}: SendMessgeParams): Buffer {
+}: EncodeSendMessgeParams): Buffer {
   const res = Buffer.alloc(8 + 1 + 8 + 16 + 4 + text.length);
   let offset = 0;
 
