@@ -121,6 +121,11 @@ export const toTransaction = (
   return tx;
 };
 
+export const toBigint = (value: BN | bigint): bigint =>
+  typeof value === "bigint"
+    ? value
+    : BigInt("0x" + (value as BN).toString("hex"));
+
 export const toBN = (value: BN | bigint): BN =>
   BN.isBN(value) ? value : new BN((value as bigint).toString(16), 16);
 

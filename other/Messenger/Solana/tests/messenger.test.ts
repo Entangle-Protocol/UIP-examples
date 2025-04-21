@@ -192,7 +192,7 @@ describe("messenger", () => {
     const transactionSignature = await sendIx(
       await sendMessageOneTx({
         connection,
-        destination,
+        destination: solanaChainId,
         uipFee,
         customGasLimit,
         text,

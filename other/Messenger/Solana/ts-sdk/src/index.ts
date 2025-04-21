@@ -22,6 +22,7 @@ import {
   fetchAccount,
   getMockProvider,
   InstructionWithCu,
+  toBigint,
   toBN,
   toTransaction,
 } from "./utils";
@@ -145,7 +146,7 @@ export async function setAllowedSenders(
 
 export type SendMessageParams = {
   connection: Connection;
-  destination: Destination;
+  destination: Destination | bigint | BN;
   uipFee: BN | bigint;
   customGasLimit: BN | bigint;
   text: string;
@@ -175,7 +176,12 @@ export async function sendMessageOneTx(
   }: SendMessageParams,
 ): Promise<InstructionWithCu> {
   const instruction = await getProgram().methods
-    .sendMessage(destination, toBN(uipFee), toBN(customGasLimit), text)
+    .sendMessage(
+      toDestination(destination),
+      toBN(uipFee),
+      toBN(customGasLimit),
+      text,
+    )
     .accounts({
       endpointConfig: ENDPOINT_CONFIG,
       utsConnector: await fetchUtsConnector(connection),
@@ -327,19 +333,21 @@ export async function getMessagesBySender(
 
 const SEND_MESSAGE_DISCRIMINATOR = [57, 40, 34, 178, 189, 10, 65, 26];
 
-export type EncodeSendMessgeParams = {
-  destination: Destination;
+type EncodeSendMessgeParams = {
+  destination: Destination | bigint | BN;
   uipFee: BN | bigint;
   customGasLimit: BN | bigint;
   text: string;
 };
 
-export function encodeSendMessageParams({
-  destination,
+function encodeSendMessageParams({
+  destination: _destination,
   uipFee,
   customGasLimit,
   text,
 }: EncodeSendMessgeParams): Buffer {
+  const destination = toDestination(_destination);
+
   const res = Buffer.alloc(8 + 1 + 8 + 16 + 4 + text.length);
   let offset = 0;
 
@@ -407,3 +415,81 @@ export function encodeSendMessageParams({
 
   return res;
 }
+
+const SOLANA_MAINNET_CHAIN_ID = 11100000000000000501n;
+const SOLANA_DEVNET_CHAIN_ID = 100000000000000000000n;
+const ETHEREUM_CHAIN_ID = 1n;
+const ETHEREUM_SEPOLIA_CHAIN_ID = 11155111n;
+const POLYGON_CHAIN_ID = 137n;
+const POLYGON_AMOY_CHAIN_ID = 80002n;
+const MANTLE_CHAIN_ID = 5000n;
+const MANTLE_SEPOLIA_CHAIN_ID = 5003n;
+const EIB_CHAIN_ID = 33033n;
+const TEIB_CHAIN_ID = 33133n;
+const BASE_SEPOLIA_CHAIN_ID = 84532n;
+const SONIC_MAINNET_CHAIN_ID = 146n;
+const SONIC_BLAZE_TESTNET_CHAIN_ID = 57054n;
+const AVALANCHE_C_CHAIN_CHAIN_ID = 43114n;
+const AVALANCHE_FUJI_CHAIN_ID = 43113n;
+const MANTA_PACIFIC_CHAIN_ID = 169n;
+const ABSTRACT_CHAIN_ID = 2741n;
+const BSC_CHAIN_ID = 56n;
+const BERACHAIN_CHAIN_ID = 80094n;
+const IMMUTABLE_CHAIN_ID = 13371n;
+
+const toDestination = (
+  _destination: Destination | bigint | BN,
+): Destination => {
+  let destination: Destination | bigint;
+  if (BN.isBN(_destination)) {
+    destination = toBigint(_destination);
+  } else if (typeof _destination != "bigint") {
+    return _destination;
+  } else {
+    destination = _destination;
+  }
+
+  if (destination == SOLANA_MAINNET_CHAIN_ID) {
+    return { solanaMainnet: {} };
+  } else if (destination == SOLANA_DEVNET_CHAIN_ID) {
+    return { solanaDevnet: {} };
+  } else if (destination == ETHEREUM_CHAIN_ID) {
+    return { ethereum: {} };
+  } else if (destination == ETHEREUM_SEPOLIA_CHAIN_ID) {
+    return { ethereumSepolia: {} };
+  } else if (destination == POLYGON_CHAIN_ID) {
+    return { polygon: {} };
+  } else if (destination == POLYGON_AMOY_CHAIN_ID) {
+    return { polygonAmoy: {} };
+  } else if (destination == MANTLE_CHAIN_ID) {
+    return { mantle: {} };
+  } else if (destination == MANTLE_SEPOLIA_CHAIN_ID) {
+    return { mantleSepolia: {} };
+  } else if (destination == EIB_CHAIN_ID) {
+    return { eib: {} };
+  } else if (destination == TEIB_CHAIN_ID) {
+    return { teib: {} };
+  } else if (destination == BASE_SEPOLIA_CHAIN_ID) {
+    return { baseSepolia: {} };
+  } else if (destination == SONIC_MAINNET_CHAIN_ID) {
+    return { sonic: {} };
+  } else if (destination == SONIC_BLAZE_TESTNET_CHAIN_ID) {
+    return { sonicBlazeTestnet: {} };
+  } else if (destination == AVALANCHE_C_CHAIN_CHAIN_ID) {
+    return { avalanche: {} };
+  } else if (destination == AVALANCHE_FUJI_CHAIN_ID) {
+    return { avalancheFuji: {} };
+  } else if (destination == MANTA_PACIFIC_CHAIN_ID) {
+    return { mantaPacific: {} };
+  } else if (destination == ABSTRACT_CHAIN_ID) {
+    return { abstract: {} };
+  } else if (destination == BSC_CHAIN_ID) {
+    return { bsc: {} };
+  } else if (destination == BERACHAIN_CHAIN_ID) {
+    return { berachain: {} };
+  } else if (destination == IMMUTABLE_CHAIN_ID) {
+    return { immutable: {} };
+  } else {
+    throw new Error("Illegal destination chain ID");
+  }
+};

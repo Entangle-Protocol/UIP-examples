@@ -5,23 +5,23 @@
  * IDL can be found at `target/idl/messenger.json`.
  */
 export type Messenger = {
-  "address": "MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1",
+  "address": "MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1";
   "metadata": {
-    "name": "messenger",
-    "version": "0.1.0",
-    "spec": "0.1.0",
-    "description": "Created with Anchor"
-  },
+    "name": "messenger";
+    "version": "0.1.0";
+    "spec": "0.1.0";
+    "description": "Created with Anchor";
+  };
   "docs": [
-    "The messenger program module."
-  ],
+    "The messenger program module.",
+  ];
   "instructions": [
     {
-      "name": "execute",
+      "name": "execute";
       "docs": [
         "Executes an incoming cross-chain message, saving the received message in",
-        "a `CrossChainMessage` account."
-      ],
+        "a `CrossChainMessage` account.",
+      ];
       "discriminator": [
         101,
         120,
@@ -30,21 +30,21 @@ export type Messenger = {
         117,
         116,
         101,
-        0
-      ],
+        0,
+      ];
       "accounts": [
         {
-          "name": "uipMsg"
-        }
-      ],
-      "args": []
+          "name": "uipMsg";
+        },
+      ];
+      "args": [];
     },
     {
-      "name": "initialize",
+      "name": "initialize";
       "docs": [
         "Initializes the messenger with an admin and optionally a list of allowed",
-        "senders."
-      ],
+        "senders.",
+      ];
       "discriminator": [
         175,
         175,
@@ -53,16 +53,16 @@ export type Messenger = {
         13,
         152,
         155,
-        237
-      ],
+        237,
+      ];
       "accounts": [
         {
-          "name": "messenger",
-          "writable": true,
+          "name": "messenger";
+          "writable": true;
           "pda": {
             "seeds": [
               {
-                "kind": "const",
+                "kind": "const";
                 "value": [
                   77,
                   69,
@@ -72,44 +72,44 @@ export type Messenger = {
                   78,
                   71,
                   69,
-                  82
-                ]
-              }
-            ]
-          }
+                  82,
+                ];
+              },
+            ];
+          };
         },
         {
-          "name": "payer",
-          "writable": true,
-          "signer": true
+          "name": "payer";
+          "writable": true;
+          "signer": true;
         },
         {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
+          "name": "systemProgram";
+          "address": "11111111111111111111111111111111";
+        },
+      ];
       "args": [
         {
-          "name": "allowedSenders",
+          "name": "allowedSenders";
           "type": {
             "option": {
-              "vec": "bytes"
-            }
-          }
+              "vec": "bytes";
+            };
+          };
         },
         {
-          "name": "admin",
-          "type": "pubkey"
-        }
-      ]
+          "name": "admin";
+          "type": "pubkey";
+        },
+      ];
     },
     {
-      "name": "noop",
+      "name": "noop";
       "docs": [
         "A dirty fix to make anchor add `CrossChainMessage` to IDL. It does't seem",
         "to register it when there are no public instructions that use the account",
-        "in their context."
-      ],
+        "in their context.",
+      ];
       "discriminator": [
         9,
         178,
@@ -118,20 +118,20 @@ export type Messenger = {
         129,
         35,
         237,
-        102
-      ],
+        102,
+      ];
       "accounts": [
         {
-          "name": "message"
-        }
-      ],
-      "args": []
+          "name": "message";
+        },
+      ];
+      "args": [];
     },
     {
-      "name": "registerExtension",
+      "name": "registerExtension";
       "docs": [
-        "Registers the UIP messenger extension with the specified IPFS CID."
-      ],
+        "Registers the UIP messenger extension with the specified IPFS CID.",
+      ];
       "discriminator": [
         158,
         205,
@@ -140,22 +140,22 @@ export type Messenger = {
         6,
         106,
         172,
-        148
-      ],
+        148,
+      ];
       "accounts": [
         {
-          "name": "messenger"
+          "name": "messenger";
         },
         {
-          "name": "extension",
-          "writable": true
+          "name": "extension";
+          "writable": true;
         },
         {
-          "name": "programSigner",
+          "name": "programSigner";
           "pda": {
             "seeds": [
               {
-                "kind": "const",
+                "kind": "const";
                 "value": [
                   85,
                   73,
@@ -166,48 +166,48 @@ export type Messenger = {
                   71,
                   78,
                   69,
-                  82
-                ]
-              }
-            ]
-          }
+                  82,
+                ];
+              },
+            ];
+          };
         },
         {
-          "name": "admin",
-          "signer": true
+          "name": "admin";
+          "signer": true;
         },
         {
-          "name": "payer",
-          "writable": true,
-          "signer": true
+          "name": "payer";
+          "writable": true;
+          "signer": true;
         },
         {
-          "name": "uipProgram",
-          "address": "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX"
+          "name": "uipProgram";
+          "address": "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX";
         },
         {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
+          "name": "systemProgram";
+          "address": "11111111111111111111111111111111";
+        },
+      ];
       "args": [
         {
-          "name": "ipfsCid",
+          "name": "ipfsCid";
           "type": {
             "array": [
               "u8",
-              36
-            ]
-          }
-        }
-      ]
+              36,
+            ];
+          };
+        },
+      ];
     },
     {
-      "name": "sendMessage",
+      "name": "sendMessage";
       "docs": [
         "Sends a cross-chain message to a specified destination, paying the",
-        "specified `uip_fee`."
-      ],
+        "specified `uip_fee`.",
+      ];
       "discriminator": [
         57,
         40,
@@ -216,27 +216,27 @@ export type Messenger = {
         189,
         10,
         65,
-        26
-      ],
+        26,
+      ];
       "accounts": [
         {
-          "name": "sender",
-          "writable": true,
-          "signer": true
+          "name": "sender";
+          "writable": true;
+          "signer": true;
         },
         {
-          "name": "endpointConfig"
+          "name": "endpointConfig";
         },
         {
-          "name": "utsConnector",
-          "writable": true
+          "name": "utsConnector";
+          "writable": true;
         },
         {
-          "name": "programSigner",
+          "name": "programSigner";
           "pda": {
             "seeds": [
               {
-                "kind": "const",
+                "kind": "const";
                 "value": [
                   85,
                   73,
@@ -247,49 +247,49 @@ export type Messenger = {
                   71,
                   78,
                   69,
-                  82
-                ]
-              }
-            ]
-          }
+                  82,
+                ];
+              },
+            ];
+          };
         },
         {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
+          "name": "systemProgram";
+          "address": "11111111111111111111111111111111";
         },
         {
-          "name": "uipProgram",
-          "address": "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX"
-        }
-      ],
+          "name": "uipProgram";
+          "address": "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX";
+        },
+      ];
       "args": [
         {
-          "name": "destination",
+          "name": "destination";
           "type": {
             "defined": {
-              "name": "destination"
-            }
-          }
+              "name": "destination";
+            };
+          };
         },
         {
-          "name": "uipFee",
-          "type": "u64"
+          "name": "uipFee";
+          "type": "u64";
         },
         {
-          "name": "customGasLimit",
-          "type": "u128"
+          "name": "customGasLimit";
+          "type": "u128";
         },
         {
-          "name": "text",
-          "type": "string"
-        }
-      ]
+          "name": "text";
+          "type": "string";
+        },
+      ];
     },
     {
-      "name": "setAllowedSenders",
+      "name": "setAllowedSenders";
       "docs": [
-        "Set the list of senders whose messages can be received."
-      ],
+        "Set the list of senders whose messages can be received.",
+      ];
       "discriminator": [
         246,
         71,
@@ -298,16 +298,16 @@ export type Messenger = {
         2,
         46,
         69,
-        126
-      ],
+        126,
+      ];
       "accounts": [
         {
-          "name": "messenger",
-          "writable": true,
+          "name": "messenger";
+          "writable": true;
           "pda": {
             "seeds": [
               {
-                "kind": "const",
+                "kind": "const";
                 "value": [
                   77,
                   69,
@@ -317,45 +317,45 @@ export type Messenger = {
                   78,
                   71,
                   69,
-                  82
-                ]
-              }
-            ]
-          }
+                  82,
+                ];
+              },
+            ];
+          };
         },
         {
-          "name": "payer",
-          "writable": true,
-          "signer": true
+          "name": "payer";
+          "writable": true;
+          "signer": true;
         },
         {
-          "name": "admin",
-          "signer": true,
+          "name": "admin";
+          "signer": true;
           "relations": [
-            "messenger"
-          ]
+            "messenger",
+          ];
         },
         {
-          "name": "systemProgram",
-          "address": "11111111111111111111111111111111"
-        }
-      ],
+          "name": "systemProgram";
+          "address": "11111111111111111111111111111111";
+        },
+      ];
       "args": [
         {
-          "name": "allowedSenders",
+          "name": "allowedSenders";
           "type": {
             "option": {
-              "vec": "bytes"
-            }
-          }
-        }
-      ]
+              "vec": "bytes";
+            };
+          };
+        },
+      ];
     },
     {
-      "name": "updateAdmin",
+      "name": "updateAdmin";
       "docs": [
-        "Update the messenger admin."
-      ],
+        "Update the messenger admin.",
+      ];
       "discriminator": [
         117,
         112,
@@ -364,32 +364,32 @@ export type Messenger = {
         97,
         100,
         109,
-        110
-      ],
+        110,
+      ];
       "accounts": [
         {
-          "name": "messenger",
-          "writable": true
+          "name": "messenger";
+          "writable": true;
         },
         {
-          "name": "admin",
-          "signer": true,
+          "name": "admin";
+          "signer": true;
           "relations": [
-            "messenger"
-          ]
-        }
-      ],
+            "messenger",
+          ];
+        },
+      ];
       "args": [
         {
-          "name": "newAdmin",
-          "type": "pubkey"
-        }
-      ]
-    }
-  ],
+          "name": "newAdmin";
+          "type": "pubkey";
+        },
+      ];
+    },
+  ];
   "accounts": [
     {
-      "name": "crossChainMessage",
+      "name": "crossChainMessage";
       "discriminator": [
         13,
         175,
@@ -398,11 +398,11 @@ export type Messenger = {
         30,
         82,
         224,
-        162
-      ]
+        162,
+      ];
     },
     {
-      "name": "messenger",
+      "name": "messenger";
       "discriminator": [
         205,
         224,
@@ -411,187 +411,187 @@ export type Messenger = {
         70,
         64,
         188,
-        58
-      ]
-    }
-  ],
+        58,
+      ];
+    },
+  ];
   "errors": [
     {
-      "code": 6000,
-      "name": "invalidSignature",
-      "msg": "Provided signature is invalid"
+      "code": 6000;
+      "name": "invalidSignature";
+      "msg": "Provided signature is invalid";
     },
     {
-      "code": 6001,
-      "name": "senderNotAllowed",
-      "msg": "Sender is not allowed"
+      "code": 6001;
+      "name": "senderNotAllowed";
+      "msg": "Sender is not allowed";
     },
     {
-      "code": 6002,
-      "name": "senderSmartContractNotAllowed",
-      "msg": "Sender smart contract is not allowed"
+      "code": 6002;
+      "name": "senderSmartContractNotAllowed";
+      "msg": "Sender smart contract is not allowed";
     },
     {
-      "code": 6003,
-      "name": "destinationSmartContractNotAllowed",
-      "msg": "Destination smart contract is not allowed"
-    }
-  ],
+      "code": 6003;
+      "name": "destinationSmartContractNotAllowed";
+      "msg": "Destination smart contract is not allowed";
+    },
+  ];
   "types": [
     {
-      "name": "crossChainMessage",
+      "name": "crossChainMessage";
       "docs": [
-        "A received message."
-      ],
+        "A received message.",
+      ];
       "type": {
-        "kind": "struct",
+        "kind": "struct";
         "fields": [
           {
-            "name": "messageId",
+            "name": "messageId";
             "docs": [
               "Identifier of the message (corresponds to the total number of messages",
-              "received before the message)."
-            ],
-            "type": "u64"
+              "received before the message).",
+            ];
+            "type": "u64";
           },
           {
-            "name": "messageTimestamp",
+            "name": "messageTimestamp";
             "docs": [
-              "Unix timestamp for when the message was received."
-            ],
-            "type": "i64"
+              "Unix timestamp for when the message was received.",
+            ];
+            "type": "i64";
           },
           {
-            "name": "sourceChain",
+            "name": "sourceChain";
             "docs": [
-              "Identifier for the chain from where the message was sent."
-            ],
-            "type": "u128"
+              "Identifier for the chain from where the message was sent.",
+            ];
+            "type": "u128";
           },
           {
-            "name": "senderAddr",
+            "name": "senderAddr";
             "docs": [
-              "Sender wallet address."
-            ],
-            "type": "bytes"
+              "Sender wallet address.",
+            ];
+            "type": "bytes";
           },
           {
-            "name": "text",
+            "name": "text";
             "docs": [
-              "The text of the message."
-            ],
-            "type": "string"
-          }
-        ]
-      }
+              "The text of the message.",
+            ];
+            "type": "string";
+          },
+        ];
+      };
     },
     {
-      "name": "destination",
+      "name": "destination";
       "docs": [
-        "Different destination chains for sending messages."
-      ],
+        "Different destination chains for sending messages.",
+      ];
       "type": {
-        "kind": "enum",
+        "kind": "enum";
         "variants": [
           {
-            "name": "solanaMainnet"
+            "name": "solanaMainnet";
           },
           {
-            "name": "solanaDevnet"
+            "name": "solanaDevnet";
           },
           {
-            "name": "ethereumSepolia"
+            "name": "ethereumSepolia";
           },
           {
-            "name": "polygonAmoy"
+            "name": "polygonAmoy";
           },
           {
-            "name": "mantleSepolia"
+            "name": "mantleSepolia";
           },
           {
-            "name": "teib"
+            "name": "teib";
           },
           {
-            "name": "baseSepolia"
+            "name": "baseSepolia";
           },
           {
-            "name": "sonicBlazeTestnet"
+            "name": "sonicBlazeTestnet";
           },
           {
-            "name": "avalancheFuji"
+            "name": "avalancheFuji";
           },
           {
-            "name": "ethereum"
+            "name": "ethereum";
           },
           {
-            "name": "sonic"
+            "name": "sonic";
           },
           {
-            "name": "avalanche"
+            "name": "avalanche";
           },
           {
-            "name": "eib"
+            "name": "eib";
           },
           {
-            "name": "polygon"
+            "name": "polygon";
           },
           {
-            "name": "mantaPacific"
+            "name": "mantaPacific";
           },
           {
-            "name": "abstract"
+            "name": "abstract";
           },
           {
-            "name": "berachain"
+            "name": "berachain";
           },
           {
-            "name": "mantle"
+            "name": "mantle";
           },
           {
-            "name": "bsc"
+            "name": "bsc";
           },
           {
-            "name": "immutable"
-          }
-        ]
-      }
+            "name": "immutable";
+          },
+        ];
+      };
     },
     {
-      "name": "messenger",
+      "name": "messenger";
       "docs": [
-        "The base structure for message configuration and statistics."
-      ],
+        "The base structure for message configuration and statistics.",
+      ];
       "type": {
-        "kind": "struct",
+        "kind": "struct";
         "fields": [
           {
-            "name": "admin",
+            "name": "admin";
             "docs": [
-              "Messenger administrator, allowed to update `allowed_senders`."
-            ],
-            "type": "pubkey"
+              "Messenger administrator, allowed to update `allowed_senders`.",
+            ];
+            "type": "pubkey";
           },
           {
-            "name": "receivedMessageCount",
+            "name": "receivedMessageCount";
             "docs": [
-              "Total number of messages received."
-            ],
-            "type": "u64"
+              "Total number of messages received.",
+            ];
+            "type": "u64";
           },
           {
-            "name": "allowedSenders",
+            "name": "allowedSenders";
             "docs": [
               "The addresses of sender wallets, whose messages can be received.",
-              "If `None`, any sender is allowed."
-            ],
+              "If `None`, any sender is allowed.",
+            ];
             "type": {
               "option": {
-                "vec": "bytes"
-              }
-            }
-          }
-        ]
-      }
-    }
-  ]
+                "vec": "bytes";
+              };
+            };
+          },
+        ];
+      };
+    },
+  ];
 };

@@ -35,6 +35,10 @@ const SONIC_BLAZE_TESTNET_CHAIN_ID = new BN("57054");
 const AVALANCHE_C_CHAIN_CHAIN_ID = new BN("43114");
 const AVALANCHE_FUJI_CHAIN_ID = new BN("43113");
 const MANTA_PACIFIC_CHAIN_ID = new BN(169);
+const ABSTRACT_CHAIN_ID = new BN(2741);
+const BSC_CHAIN_ID = new BN(56);
+const BERACHAIN_CHAIN_ID = new BN(80094);
+const IMMUTABLE_CHAIN_ID = new BN(13371);
 
 // export const SOLANA_CHAIN_ID =
 //   anchor.AnchorProvider.env().connection.rpcEndpoint.includes("devnet")
@@ -163,6 +167,14 @@ export function formatChainId(chainId: BN): string {
     return "Avalanche Fuji";
   } else if (chainId.eq(MANTA_PACIFIC_CHAIN_ID)) {
     return "Manta Pacific";
+  } else if (chainId.eq(BSC_CHAIN_ID)) {
+    return "BSC";
+  } else if (chainId.eq(IMMUTABLE_CHAIN_ID)) {
+    return "Immutable";
+  } else if (chainId.eq(ABSTRACT_CHAIN_ID)) {
+    return "Abstract";
+  } else if (chainId.eq(BERACHAIN_CHAIN_ID)) {
+    return "Berachain";
   } else {
     return "chain id " + chainId.toString();
   }

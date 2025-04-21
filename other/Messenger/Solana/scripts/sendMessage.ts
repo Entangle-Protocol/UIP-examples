@@ -17,7 +17,7 @@ async function main(): Promise<void> {
     .option("dst-chain", {
       type: "string",
       demandOption: true,
-      description: "Destination chain identifier",
+      description: "Destination chain name or identifier",
     })
     .option("fee", {
       type: "string",
@@ -46,7 +46,7 @@ async function main(): Promise<void> {
   anchor.setProvider(provider);
   const payer = (provider.wallet as NodeWallet).payer;
 
-  let destination: Destination;
+  let destination: Destination | bigint;
   switch (dstChain) {
     case "solana-mainnet":
       destination = { solanaMainnet: {} };
@@ -109,9 +109,13 @@ async function main(): Promise<void> {
       destination = { immutable: {} };
       break;
     default:
-      throw new Error(
-        "Invalid chain name, must be one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon, polygon-amoy, mantle, mantle-sepolia, eib, teib, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic, manta-pacific, abstract, berachain, bsc, immutable",
-      );
+      try {
+        destination = BigInt(dstChain);
+      } catch {
+        throw new Error(
+          "Invalid destination, must be chain ID or one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon, polygon-amoy, mantle, mantle-sepolia, eib, teib, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic, manta-pacific, abstract, berachain, bsc, immutable",
+        );
+      }
   }
 
   const promises = Array.from({ length: times }, async (_, i) => {
