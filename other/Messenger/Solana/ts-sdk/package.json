@@ -1,0 +1,43 @@
+{
+  "name": "@lincot/uip-solana-messenger-example",
+  "version": "0.1.0",
+  "description": "Universal Interoperability Protocol Messenger protocol example",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.node.mjs",
+  "browser": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "browser": "./dist/index.mjs",
+      "node": "./dist/index.node.mjs",
+      "bun": "./dist/index.node.mjs",
+      "import": "./dist/index.node.mjs",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.node.mjs"
+    }
+  },
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "peerDependencies": {
+    "@coral-xyz/anchor": "^0.31.0",
+    "@solana/web3.js": "^1.69.0",
+    "@lincot/uip-solana-sdk": "^0.3.0",
+    "@lincot/solana-chunk-loader": "^0.4.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.4"
+  },
+  "scripts": {
+    "build:browser-esm": "bun build src/index.ts --format esm --target browser --minify --sourcemap --external:@coral-xyz/anchor,@solana/web3.js,@lincot/uip-solana-sdk,@lincot/solana-chunk-loader --outdir dist --entry-naming '[name].mjs'",
+    "build:node-esm": "bun build src/index.ts --format esm --target node    --minify --sourcemap --external:@coral-xyz/anchor,@solana/web3.js,@lincot/uip-solana-sdk,@lincot/solana-chunk-loader --outdir dist --entry-naming '[name].node.mjs'",
+    "build:cjs": "bun build src/index.ts --format cjs --target node    --minify --sourcemap --external:@coral-xyz/anchor,@solana/web3.js,@lincot/uip-solana-sdk,@lincot/solana-chunk-loader --outdir dist --entry-naming '[name].cjs'",
+    "build:dts": "tsc --emitDeclarationOnly --declaration",
+    "build": "bun run build:browser-esm && bun run build:node-esm && bun run build:cjs && bun run build:dts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "license": "MIT",
+  "keywords": ["solana", "blockchain"]
+}

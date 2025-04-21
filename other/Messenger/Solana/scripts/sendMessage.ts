@@ -1,6 +1,6 @@
 import yargs from "yargs";
 import * as anchor from "@coral-xyz/anchor";
-import { Destination, sendMessage } from "../helpers/messenger";
+import { Destination, sendMessage } from "@lincot/uip-solana-messenger-example";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { BN } from "bn.js";
 import { sendAndConfirmVersionedTx } from "../helpers/utils";

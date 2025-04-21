@@ -6,8 +6,9 @@ import {
   initialize,
   registerExtension,
   setAllowedSenders,
-} from "../helpers/messenger";
-import { hexToBytes } from "../helpers/endpoint";
+  toTransaction,
+} from "@lincot/uip-solana-messenger-example";
+import { hexToBytes, sendAndConfirmVersionedTx } from "../helpers/utils";
 
 async function main(): Promise<void> {
   const argv = yargs(process.argv.slice(2))
@@ -29,30 +30,60 @@ async function main(): Promise<void> {
   const payer = (provider.wallet as NodeWallet).payer;
 
   try {
-    const { transactionSignature } = await initialize({
-      payer,
+    const ix = await initialize({
+      payer: payer.publicKey,
       admin: payer.publicKey,
       allowedSenders,
     });
+    const transactionSignature = sendAndConfirmVersionedTx(
+      provider.connection,
+      toTransaction(
+        [ix],
+        await provider.connection.getLatestBlockhash().then((b) => b.blockhash),
+        payer,
+      ),
+      [payer],
+      payer.publicKey,
+    );
     console.log("Initialize transaction signature:", transactionSignature);
   } catch (e) {
     expect(e.toString()).toInclude("already in use");
-    const { transactionSignature } = await setAllowedSenders({
-      payer,
-      admin: payer,
+    const ix = await setAllowedSenders({
+      payer: payer.publicKey,
+      admin: payer.publicKey,
       allowedSenders,
     });
+    const transactionSignature = sendAndConfirmVersionedTx(
+      provider.connection,
+      toTransaction(
+        [ix],
+        await provider.connection.getLatestBlockhash().then((b) => b.blockhash),
+        payer,
+      ),
+      [payer],
+      payer.publicKey,
+    );
     console.log(
       "SetAllowedSenders transaction signature:",
       transactionSignature,
     );
   }
 
-  const { transactionSignature } = await registerExtension({
-    admin: payer,
-    payer,
+  const ix = await registerExtension({
+    admin: payer.publicKey,
+    payer: payer.publicKey,
     ipfsCid,
   });
+  const transactionSignature = sendAndConfirmVersionedTx(
+    provider.connection,
+    toTransaction(
+      [ix],
+      await provider.connection.getLatestBlockhash().then((b) => b.blockhash),
+      payer,
+    ),
+    [payer],
+    payer.publicKey,
+  );
   console.log("RegisterExtension transaction signature:", transactionSignature);
 }
 

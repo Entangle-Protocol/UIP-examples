@@ -1,5 +1,5 @@
 import * as anchor from "@coral-xyz/anchor";
-import { getMessagesBySender } from "../helpers/messenger";
+import { getMessagesBySender } from "@lincot/uip-solana-messenger-example";
 import { formatChainId, hexToBytes } from "../helpers/utils";
 import { PublicKey } from "@solana/web3.js";
 

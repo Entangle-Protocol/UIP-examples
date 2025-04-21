@@ -37,7 +37,11 @@ cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "bun test --timeout 0 tests"
+test = """
+cp target/idl/messenger.json target/types/messenger.ts ts-sdk/src/idl/ && \
+bun run build:sdk && \
+bun test --timeout 0 tests
+"""
 
 get-messages-by-sender = "bun run scripts/getMessagesBySender.ts"
 initialize = "bun run scripts/initialize.ts"

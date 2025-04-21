@@ -15,18 +15,19 @@ import {
 } from "@lincot/uip-solana-sdk";
 import {
   Destination,
+  fetchMessenger,
   findMessage as findMessengerMessage,
   getMessagesBySender,
   initialize as initializeMessenger,
   MAX_TEXT_LEN_ONE_TX,
   MESSENGER,
-  MESSENGER_PROGRAM,
+  PROGRAM_ID,
   registerExtension as registerExtensionMessenger,
   sendMessage,
   sendMessageOneTx,
   setAllowedSenders,
   updateAdmin,
-} from "../helpers/messenger";
+} from "@lincot/uip-solana-messenger-example";
 import {
   Keypair,
   PublicKey,
@@ -130,9 +131,7 @@ describe("messenger", () => {
       );
     }
 
-    const messenger = await MESSENGER_PROGRAM.account.messenger.fetch(
-      MESSENGER,
-    );
+    const messenger = await fetchMessenger(connection);
     expect(messenger.admin).toEqual(admin.publicKey);
     expect(messenger.allowedSenders).toEqual(null);
   });
@@ -152,15 +151,15 @@ describe("messenger", () => {
 
     const extension = await fetchExtension(
       connection,
-      findExtension(MESSENGER_PROGRAM.programId),
+      findExtension(PROGRAM_ID),
     );
-    expect(extension.program).toEqual(MESSENGER_PROGRAM.programId);
+    expect(extension.program).toEqual(PROGRAM_ID);
     expect(extension.ipfsCid).toEqual(
       Array.from(CID.parse(ipfsCid).toV1().bytes),
     );
   });
 
-  const destAddr = MESSENGER_PROGRAM.programId.toBuffer();
+  const destAddr = PROGRAM_ID.toBuffer();
   const uipFee = new BN(80085);
   const customGasLimit = new BN(1_000_000);
   const srcBlockNumber = new BN(randomInt(256));
@@ -176,7 +175,7 @@ describe("messenger", () => {
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {
       onMessageProposed((event) => {
         try {
-          expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
+          expect(event.sender).toEqual(PROGRAM_ID);
           selector = event.selector;
           payload = event.payload;
           resolve();
@@ -232,7 +231,7 @@ describe("messenger", () => {
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {
       onMessageProposed((event) => {
         try {
-          expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
+          expect(event.sender).toEqual(PROGRAM_ID);
           expect(event.payload).toEqual(
             hexToBytes(
               ethers.AbiCoder.defaultAbiCoder().encode(["bytes", "bytes"], [
@@ -270,7 +269,7 @@ describe("messenger", () => {
 
   test("receiveMessage", async () => {
     const text = "hello everyone!";
-    const destAddr = MESSENGER_PROGRAM.programId.toBuffer();
+    const destAddr = PROGRAM_ID;
     const uipFee = new BN(80085);
     const srcBlockNumber = new BN(randomInt(256));
     const srcChainId = solanaChainId;
@@ -281,7 +280,7 @@ describe("messenger", () => {
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {
       onMessageProposed((event) => {
         try {
-          expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
+          expect(event.sender).toEqual(PROGRAM_ID);
           selector = event.selector;
           payload = event.payload;
           resolve();
@@ -315,7 +314,7 @@ describe("messenger", () => {
 
     const msgData = {
       initialProposal: {
-        senderAddr: MESSENGER_PROGRAM.programId.toBuffer(),
+        senderAddr: PROGRAM_ID.toBuffer(),
         destAddr: new PublicKey(destAddr),
         totalFee: uipFee,
         payload,
@@ -361,7 +360,7 @@ describe("messenger", () => {
       accounts: accountsSimulation,
       destAddr: new PublicKey(destAddr),
       payload,
-      senderAddr: MESSENGER_PROGRAM.programId.toBuffer(),
+      senderAddr: PROGRAM_ID.toBuffer(),
       srcChainId,
     });
 
@@ -391,9 +390,12 @@ describe("messenger", () => {
       }),
     ], [executor]);
 
-    await sendIx(await unloadMessage({ payer: executor.publicKey, message }), [
-      executor,
-    ]);
+    await sendIx(
+      await unloadMessage({ executor: executor.publicKey, message }),
+      [
+        executor,
+      ],
+    );
 
     const balanceAfter = await connection.getBalance(executor.publicKey);
 
@@ -422,7 +424,7 @@ describe("messenger", () => {
     const eventPromise: Promise<void> = new Promise((resolve, reject) => {
       onMessageProposed((event) => {
         try {
-          expect(event.sender).toEqual(MESSENGER_PROGRAM.programId);
+          expect(event.sender).toEqual(PROGRAM_ID);
           selector = event.selector;
           payload = event.payload;
           resolve();
@@ -453,7 +455,7 @@ describe("messenger", () => {
 
     await eventPromise;
 
-    const senderAddr = MESSENGER_PROGRAM.programId.toBuffer();
+    const senderAddr = PROGRAM_ID.toBuffer();
     const srcChainId = solanaChainId;
     const msgData = {
       initialProposal: {
@@ -568,9 +570,7 @@ describe("messenger", () => {
       [payer, admin],
     );
 
-    const messenger = await MESSENGER_PROGRAM.account.messenger.fetch(
-      MESSENGER,
-    );
+    const messenger = await fetchMessenger(connection);
     expect(messenger.admin).toEqual(payer.publicKey);
 
     await sendIx(
@@ -580,9 +580,7 @@ describe("messenger", () => {
       }),
     );
 
-    const messenger2 = await MESSENGER_PROGRAM.account.messenger.fetch(
-      MESSENGER,
-    );
+    const messenger2 = await fetchMessenger(connection);
     expect(messenger2.admin).toEqual(admin.publicKey);
   });
 });

@@ -1,34 +1,49 @@
 import { IdlTypes, Program } from "@coral-xyz/anchor";
-import * as anchor from "@coral-xyz/anchor";
-import { Connection, PublicKey, SystemProgram } from "@solana/web3.js";
-import { Messenger } from "../target/types/messenger";
+import {
+  Commitment,
+  Connection,
+  GetAccountInfoConfig,
+  PublicKey,
+  SystemProgram,
+} from "@solana/web3.js";
+import { Messenger } from "./idl/messenger";
+import messengerIdl from "./idl/messenger.json";
 import BN from "bn.js";
 import {
   ENDPOINT_CONFIG,
-  fetchUtsConfig,
+  fetchUtsConnector,
   findExtension,
   PROGRAM_ID as ENDPOINT_PROGRAM_ID,
 } from "@lincot/uip-solana-sdk";
 import { CID } from "multiformats";
-import { encodeU32Le } from "./utils";
 import {
+  cuLimitInstruction,
+  encodeU32Le,
+  fetchAccount,
+  getMockProvider,
   InstructionWithCu,
-  loadByChunks,
-  passToCpi,
-} from "@lincot/solana-chunk-loader";
-import { randomInt } from "crypto";
+  toBN,
+  toTransaction,
+} from "./utils";
+import { loadByChunks, passToCpi } from "@lincot/solana-chunk-loader";
 
-anchor.setProvider(anchor.AnchorProvider.env());
-export const MESSENGER_PROGRAM: Program<Messenger> = anchor.workspace.Messenger;
+export { cuLimitInstruction, InstructionWithCu, toTransaction };
+
+let _program: Program<Messenger> | undefined;
+const getProgram =
+  () => (_program ??= new Program(messengerIdl, getMockProvider()));
+
+export const PROGRAM_ID = new PublicKey(messengerIdl.address);
 
 export type Message = IdlTypes<Messenger>["crossChainMessage"];
+export type MessengerAccount = IdlTypes<Messenger>["messenger"];
 export type Destination = IdlTypes<Messenger>["destination"];
 
 export const MAX_TEXT_LEN_ONE_TX = 817;
 
 export const MESSENGER = PublicKey.findProgramAddressSync(
   [Buffer.from("MESSENGER")],
-  MESSENGER_PROGRAM.programId,
+  PROGRAM_ID,
 )[0];
 
 export const findMessage = (msgHash: number[] | Buffer) =>
@@ -37,7 +52,7 @@ export const findMessage = (msgHash: number[] | Buffer) =>
       Buffer.from("MESSAGE"),
       Buffer.from(msgHash),
     ],
-    MESSENGER_PROGRAM.programId,
+    PROGRAM_ID,
   )[0];
 
 export type InitializeInput = {
@@ -53,7 +68,7 @@ export async function initialize(
     allowedSenders,
   }: InitializeInput,
 ): Promise<InstructionWithCu> {
-  const instruction = await MESSENGER_PROGRAM.methods
+  const instruction = await getProgram().methods
     .initialize(allowedSenders, admin)
     .accounts({ payer })
     .instruction();
@@ -73,11 +88,11 @@ export async function registerExtension(
     ipfsCid,
   }: RegisterExtensionInput,
 ): Promise<InstructionWithCu> {
-  const instruction = await MESSENGER_PROGRAM.methods
+  const instruction = await getProgram().methods
     .registerExtension(Array.from(CID.parse(ipfsCid).toV1().bytes))
     .accounts({
       payer,
-      extension: findExtension(MESSENGER_PROGRAM.programId),
+      extension: findExtension(PROGRAM_ID),
       admin,
       messenger: MESSENGER,
     })
@@ -93,7 +108,7 @@ export type UpdateAdmin = {
 export async function updateAdmin(
   { admin, newAdmin }: UpdateAdmin,
 ): Promise<InstructionWithCu> {
-  const instruction = await MESSENGER_PROGRAM.methods
+  const instruction = await getProgram().methods
     .updateAdmin(newAdmin)
     .accountsStrict({
       messenger: MESSENGER,
@@ -116,7 +131,7 @@ export async function setAllowedSenders(
     allowedSenders,
   }: SetAllowedSendersInput,
 ): Promise<InstructionWithCu> {
-  const instruction = await MESSENGER_PROGRAM.methods
+  const instruction = await getProgram().methods
     .setAllowedSenders(allowedSenders)
     .accountsStrict({
       payer,
@@ -131,8 +146,8 @@ export async function setAllowedSenders(
 export type SendMessageInput = {
   connection: Connection;
   destination: Destination;
-  uipFee: BN;
-  customGasLimit: BN;
+  uipFee: BN | bigint;
+  customGasLimit: BN | bigint;
   text: string;
   sender: PublicKey;
 };
@@ -159,13 +174,11 @@ export async function sendMessageOneTx(
     sender,
   }: SendMessageInput,
 ): Promise<InstructionWithCu> {
-  const instruction = await MESSENGER_PROGRAM.methods
-    .sendMessage(destination, uipFee, customGasLimit, text)
+  const instruction = await getProgram().methods
+    .sendMessage(destination, toBN(uipFee), toBN(customGasLimit), text)
     .accounts({
       endpointConfig: ENDPOINT_CONFIG,
-      utsConnector: await fetchUtsConfig(connection).then((x) =>
-        x.utsConnector
-      ),
+      utsConnector: await fetchUtsConnector(connection),
       sender,
     })
     .instruction();
@@ -190,7 +203,7 @@ async function sendMessageManyTx(
     destination,
     text,
   });
-  const chunkHolderId = randomInt(1 << 19);
+  const chunkHolderId = Math.floor(Math.random() * (1 << 19));
   const preInstructions = await loadByChunks({
     owner: sender,
     data,
@@ -199,20 +212,20 @@ async function sendMessageManyTx(
 
   const instruction = await passToCpi({
     owner: sender,
-    program: MESSENGER_PROGRAM.programId,
+    program: PROGRAM_ID,
     chunkHolderId,
     accounts: [
       { pubkey: sender, isSigner: true, isWritable: true },
       { pubkey: ENDPOINT_CONFIG, isSigner: false, isWritable: false },
       {
-        pubkey: await fetchUtsConfig(connection).then((x) => x.utsConnector),
+        pubkey: await fetchUtsConnector(connection),
         isSigner: false,
         isWritable: true,
       },
       {
         pubkey: PublicKey.findProgramAddressSync(
           [Buffer.from("UIP_SIGNER")],
-          MESSENGER_PROGRAM.programId,
+          PROGRAM_ID,
         )[0],
         isSigner: false,
         isWritable: false,
@@ -234,12 +247,37 @@ async function sendMessageManyTx(
   return { preInstructions, instruction };
 }
 
+export const fetchMessenger = async (
+  connection: Connection,
+  commitmentOrConfig?: Commitment | GetAccountInfoConfig,
+): Promise<MessengerAccount | null> =>
+  await fetchAccount(
+    connection,
+    getProgram().coder,
+    MESSENGER,
+    "messenger",
+    commitmentOrConfig,
+  );
+
+export const fetchMessage = async (
+  connection: Connection,
+  publicKey: PublicKey,
+  commitmentOrConfig?: Commitment | GetAccountInfoConfig,
+): Promise<Message | null> =>
+  await fetchAccount(
+    connection,
+    getProgram().coder,
+    publicKey,
+    "message",
+    commitmentOrConfig,
+  );
+
 export async function getMessagesBySender(
   connection: Connection,
   senderAddr: Buffer,
 ): Promise<Message[]> {
   const messages = await connection.getProgramAccounts(
-    MESSENGER_PROGRAM.programId,
+    PROGRAM_ID,
     {
       filters: [
         {
@@ -280,7 +318,7 @@ export async function getMessagesBySender(
   );
 
   return messages.map((message) =>
-    MESSENGER_PROGRAM.account.crossChainMessage.coder.accounts.decode(
+    getProgram().account.crossChainMessage.coder.accounts.decode(
       "crossChainMessage",
       message.account.data,
     )
@@ -291,8 +329,8 @@ const SEND_MESSAGE_DISCRIMINATOR = [57, 40, 34, 178, 189, 10, 65, 26];
 
 type SendMessgeParams = {
   destination: Destination;
-  uipFee: BN;
-  customGasLimit: BN;
+  uipFee: BN | bigint;
+  customGasLimit: BN | bigint;
   text: string;
 };
 
@@ -323,6 +361,32 @@ export function encodeSendMessageParams({
     destinationNum = 5;
   } else if (destination.baseSepolia) {
     destinationNum = 6;
+  } else if (destination.sonicBlazeTestnet) {
+    destinationNum = 7;
+  } else if (destination.avalancheFuji) {
+    destinationNum = 8;
+  } else if (destination.ethereum) {
+    destinationNum = 9;
+  } else if (destination.sonic) {
+    destinationNum = 10;
+  } else if (destination.avalanche) {
+    destinationNum = 11;
+  } else if (destination.eib) {
+    destinationNum = 12;
+  } else if (destination.polygon) {
+    destinationNum = 13;
+  } else if (destination.mantaPacific) {
+    destinationNum = 14;
+  } else if (destination.abstract) {
+    destinationNum = 15;
+  } else if (destination.berachain) {
+    destinationNum = 16;
+  } else if (destination.mantle) {
+    destinationNum = 17;
+  } else if (destination.bsc) {
+    destinationNum = 18;
+  } else if (destination.immutable) {
+    destinationNum = 19;
   } else {
     throw new Error("invalid destination");
   }
@@ -330,10 +394,10 @@ export function encodeSendMessageParams({
   res.set([destinationNum], offset);
   offset += 1;
 
-  res.set(uipFee.toArrayLike(Buffer, "le", 8), offset);
+  res.set(toBN(uipFee).toArrayLike(Buffer, "le", 8), offset);
   offset += 8;
 
-  res.set(customGasLimit.toArrayLike(Buffer, "le", 16), offset);
+  res.set(toBN(customGasLimit).toArrayLike(Buffer, "le", 16), offset);
   offset += 16;
 
   res.writeUint32LE(text.length, offset);

@@ -1,5 +1,5 @@
 import * as anchor from "@coral-xyz/anchor";
-import { updateAdmin } from "../helpers/messenger";
+import { updateAdmin } from "@lincot/uip-solana-messenger-example";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { PublicKey } from "@solana/web3.js";
 import { toTransaction } from "@lincot/uip-solana-sdk";
