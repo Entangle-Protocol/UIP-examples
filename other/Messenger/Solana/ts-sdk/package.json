@@ -1,19 +1,17 @@
 {
   "name": "@lincot/uip-solana-messenger-example",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Universal Interoperability Protocol Messenger protocol example",
   "type": "module",
   "main": "./dist/index.cjs",
-  "module": "./dist/index.node.mjs",
   "browser": "./dist/index.mjs",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "browser": "./dist/index.mjs",
-      "node": "./dist/index.node.mjs",
-      "bun": "./dist/index.node.mjs",
       "import": "./dist/index.node.mjs",
       "require": "./dist/index.cjs",
-      "default": "./dist/index.node.mjs"
+      "default": "./dist/index.cjs"
     }
   },
   "types": "dist/index.d.ts",
@@ -21,8 +19,8 @@
   "peerDependencies": {
     "@coral-xyz/anchor": "^0.31.0",
     "@solana/web3.js": "^1.69.0",
-    "@lincot/uip-solana-sdk": "^0.3.0",
-    "@lincot/solana-chunk-loader": "^0.4.3"
+    "@lincot/uip-solana-sdk": "^0.5.2",
+    "@lincot/solana-chunk-loader": "^0.4.4"
   },
   "devDependencies": {
     "typescript": "^5.4.4"

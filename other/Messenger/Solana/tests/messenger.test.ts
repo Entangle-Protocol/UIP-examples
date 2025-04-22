@@ -359,6 +359,7 @@ describe("messenger", () => {
       payer: admin.publicKey,
       accounts: accountsSimulation,
       destAddr: new PublicKey(destAddr),
+      destChain: solanaChainId,
       payload,
       senderAddr: PROGRAM_ID.toBuffer(),
       srcChainId,
