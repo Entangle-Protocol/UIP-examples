@@ -125,7 +125,28 @@ const config: HardhatUserConfig = {
                 mnemonic: process.env.MAINNET_MNEMONIC || ""
             },
             chainId: 33033
-        }
+        },
+        optimism_mainnet: {
+            url: "https://optimism-rpc.publicnode.com",
+            accounts: {
+                mnemonic: process.env.MAINNET_MNEMONIC || ""
+            },
+            chainId: 10
+        },
+        base_mainnet: {
+            url: "https://base-rpc.publicnode.com",
+            accounts: {
+                mnemonic: process.env.MAINNET_MNEMONIC || ""
+            },
+            chainId: 8453
+        },
+        arbitrum_mainnet: {
+            url: "https://arbitrum-one-rpc.publicnode.com",
+            accounts: {
+                mnemonic: process.env.MAINNET_MNEMONIC || ""
+            },
+            chainId: 42161
+        },
     }
 };
 

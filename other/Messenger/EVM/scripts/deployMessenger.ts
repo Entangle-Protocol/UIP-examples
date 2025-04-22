@@ -4,9 +4,7 @@ import { networks } from "./utils";
 
 async function deployMessenger() {
     let netname = hre.network.name
-    if (netname.includes("mainnet")) {
-        netname = netname.split("_")[0]
-    }
+    
     console.log(`Using network: ${netname}\n`)
     console.log(`ChainID ${netname}: ${hre.network.config.chainId}`)
 
