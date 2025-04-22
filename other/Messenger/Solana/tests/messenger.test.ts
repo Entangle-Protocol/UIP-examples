@@ -47,19 +47,20 @@ import {
 } from "../helpers/utils";
 import BN from "bn.js";
 import bs58 from "bs58";
-import { ethers, Wallet } from "ethers";
 import { randomInt } from "crypto";
 import { CID } from "multiformats";
 import { InstructionWithCu, toTransaction } from "@lincot/solana-chunk-loader";
+import { privateKeyToAccount } from "viem/accounts";
+import { bytesToHex, encodeAbiParameters } from "viem";
 
 const admin = readKeypairFromFile("keys/admin.json");
 const executor = readKeypairFromFile("keys/executor.json");
 const proposer = new Keypair();
 const sender = new Keypair();
-const signer = new Wallet(
+const signer = privateKeyToAccount(
   "0x74e3ffad2b87174dc1d806edf1a01e3b017cf1be05d1894d329826f10fa1d72f",
 );
-const superSigner = new Wallet(
+const superSigner = privateKeyToAccount(
   "0xf496bcca0a4896011dbdbe2ec80417ed759a6a9cc72477b3a65b8d99b066b150",
 );
 const transmitterParams = {
@@ -234,11 +235,9 @@ describe("messenger", () => {
           expect(event.sender).toEqual(PROGRAM_ID);
           expect(event.payload).toEqual(
             hexToBytes(
-              ethers.AbiCoder.defaultAbiCoder().encode(["bytes", "bytes"], [
-                ethers.AbiCoder.defaultAbiCoder().encode(["string"], [
-                  bigText,
-                ]),
-                sender.publicKey.toBuffer(),
+              encodeAbiParameters([{ type: "bytes" }, { type: "bytes" }], [
+                encodeAbiParameters([{ type: "string" }], [bigText]),
+                bytesToHex(sender.publicKey.toBuffer()),
               ]),
             ),
           );
@@ -329,9 +328,9 @@ describe("messenger", () => {
       },
     };
 
-    const signatures = [signMsg({ signer, msgData, solanaChainId })];
+    const signatures = [await signMsg({ signer, msgData, solanaChainId })];
     const superSignatures = [
-      signMsg({ signer: superSigner, msgData, solanaChainId }),
+      await signMsg({ signer: superSigner, msgData, solanaChainId }),
     ];
 
     const accounts = [
@@ -475,9 +474,9 @@ describe("messenger", () => {
       },
     };
 
-    const signatures = [signMsg({ signer, msgData, solanaChainId })];
+    const signatures = [await signMsg({ signer, msgData, solanaChainId })];
     const superSignatures = [
-      signMsg({ signer: superSigner, msgData, solanaChainId }),
+      await signMsg({ signer: superSigner, msgData, solanaChainId }),
     ];
     const message = findMessage(msgData, solanaChainId);
     expect(
