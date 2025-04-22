@@ -426,6 +426,7 @@ const MANTLE_CHAIN_ID = 5000n;
 const MANTLE_SEPOLIA_CHAIN_ID = 5003n;
 const EIB_CHAIN_ID = 33033n;
 const TEIB_CHAIN_ID = 33133n;
+const BASE_CHAIN_ID = 8453n;
 const BASE_SEPOLIA_CHAIN_ID = 84532n;
 const SONIC_MAINNET_CHAIN_ID = 146n;
 const SONIC_BLAZE_TESTNET_CHAIN_ID = 57054n;
@@ -436,6 +437,8 @@ const ABSTRACT_CHAIN_ID = 2741n;
 const BSC_CHAIN_ID = 56n;
 const BERACHAIN_CHAIN_ID = 80094n;
 const IMMUTABLE_CHAIN_ID = 13371n;
+const OPTIMISM_CHAIN_ID = 10n;
+const ARBITRUM_ONE_CHAIN_ID = 42161n;
 
 const toDestination = (
   _destination: Destination | bigint | BN,
@@ -489,6 +492,12 @@ const toDestination = (
     return { berachain: {} };
   } else if (destination == IMMUTABLE_CHAIN_ID) {
     return { immutable: {} };
+  } else if (destination == OPTIMISM_CHAIN_ID) {
+    return { optimism: {} };
+  } else if (destination == BASE_CHAIN_ID) {
+    return { base: {} };
+  } else if (destination == ARBITRUM_ONE_CHAIN_ID) {
+    return { arbitrum: {} };
   } else {
     throw new Error("Illegal destination chain ID");
   }

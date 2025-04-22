@@ -78,6 +78,9 @@ async function main(): Promise<void> {
     case "teib":
       destination = { teib: {} };
       break;
+    case "base":
+      destination = { base: {} };
+      break;
     case "base-sepolia":
       destination = { baseSepolia: {} };
       break;
@@ -108,12 +111,18 @@ async function main(): Promise<void> {
     case "immutable":
       destination = { immutable: {} };
       break;
+    case "optimism":
+      destination = { optimism: {} };
+      break;
+    case "arbitrum":
+      destination = { arbitrum: {} };
+      break;
     default:
       try {
         destination = BigInt(dstChain);
       } catch {
         throw new Error(
-          "Invalid destination, must be chain ID or one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon, polygon-amoy, mantle, mantle-sepolia, eib, teib, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic, manta-pacific, abstract, berachain, bsc, immutable",
+          "Invalid destination, must be chain ID or one of solana-mainnet, solana-devnet, ethereum-sepolia, polygon, polygon-amoy, mantle, mantle-sepolia, eib, teib, base, base-sepolia, sonic-blaze-testnet, avalanche, avalanche-fuji, ethereum, sonic, manta-pacific, abstract, berachain, bsc, immutable, optimism, arbitrum",
         );
       }
   }

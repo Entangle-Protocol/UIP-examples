@@ -546,6 +546,15 @@
           },
           {
             "name": "Immutable"
+          },
+          {
+            "name": "Optimism"
+          },
+          {
+            "name": "Base"
+          },
+          {
+            "name": "Arbitrum"
           }
         ]
       }

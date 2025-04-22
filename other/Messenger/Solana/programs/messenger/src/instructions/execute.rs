@@ -43,6 +43,9 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         (&MANTLE_CHAIN_ID, &MANTLE_ADDRESS),
         (&BSC_CHAIN_ID, &BSC_ADDRESS),
         (&IMMUTABLE_CHAIN_ID, &IMMUTABLE_ADDRESS),
+        (&OPTIMISM_CHAIN_ID, &OPTIMISM_ADDRESS),
+        (&BASE_CHAIN_ID, &BASE_ADDRESS),
+        (&ARBITRUM_ONE_CHAIN_ID, &ARBITRUM_ADDRESS),
     ];
 
     require!(

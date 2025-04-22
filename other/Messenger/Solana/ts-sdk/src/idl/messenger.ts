@@ -553,6 +553,15 @@ export type Messenger = {
           {
             "name": "immutable";
           },
+          {
+            "name": "optimism";
+          },
+          {
+            "name": "base";
+          },
+          {
+            "name": "arbitrum";
+          },
         ];
       };
     },

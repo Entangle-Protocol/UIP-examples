@@ -21,4 +21,4 @@ mainnet = []
 alloy-sol-types = "0.7"
 anchor-lang = "0.31.0"
 hex-literal = "0.4"
-uip-solana-sdk = { version = "0.5", features = ["anchor-lang"] }
+uip-solana-sdk = { version = "0.6", features = ["anchor-lang"] }

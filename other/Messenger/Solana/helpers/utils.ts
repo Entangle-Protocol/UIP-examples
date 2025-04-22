@@ -39,6 +39,8 @@ const ABSTRACT_CHAIN_ID = new BN(2741);
 const BSC_CHAIN_ID = new BN(56);
 const BERACHAIN_CHAIN_ID = new BN(80094);
 const IMMUTABLE_CHAIN_ID = new BN(13371);
+const OPTIMISM_CHAIN_ID = new BN(10);
+const ARBITRUM_ONE_CHAIN_ID = new BN(42161);
 
 // export const SOLANA_CHAIN_ID =
 //   anchor.AnchorProvider.env().connection.rpcEndpoint.includes("devnet")
@@ -175,6 +177,10 @@ export function formatChainId(chainId: BN): string {
     return "Abstract";
   } else if (chainId.eq(BERACHAIN_CHAIN_ID)) {
     return "Berachain";
+  } else if (chainId.eq(OPTIMISM_CHAIN_ID)) {
+    return "Optimism";
+  } else if (chainId.eq(ARBITRUM_ONE_CHAIN_ID)) {
+    return "Arbitrum";
   } else {
     return "chain id " + chainId.toString();
   }

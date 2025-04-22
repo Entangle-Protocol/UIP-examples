@@ -2762,9 +2762,9 @@ dependencies = [
 
 [[package]]
 name = "uip-solana-sdk"
-version = "0.5.0"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c45aacc71cb226f63e0047141e53c9dd61093abfe993a26e7ded960880bd6373"
+checksum = "8408e2b05d378f702d57b5097ac1bec7a71a6f41dee6f52949d9490e7046b630"
 dependencies = [
  "anchor-lang",
  "bon",

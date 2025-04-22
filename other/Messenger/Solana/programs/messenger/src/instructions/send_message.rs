@@ -45,6 +45,9 @@ pub enum Destination {
     Mantle,
     Bsc,
     Immutable,
+    Optimism,
+    Base,
+    Arbitrum,
 }
 
 pub fn send_message(
@@ -69,7 +72,10 @@ pub fn send_message(
         | Destination::Berachain
         | Destination::Mantle
         | Destination::Bsc
-        | Destination::Immutable => {
+        | Destination::Immutable
+        | Destination::Optimism
+        | Destination::Arbitrum
+        | Destination::Base => {
             #[cfg(not(feature = "mainnet"))]
             return err!(MessengerError::DestinationSmartContractNotAllowed);
         }
@@ -97,6 +103,7 @@ pub fn send_message(
         Destination::MantleSepolia => (MANTLE_SEPOLIA_CHAIN_ID, MANTLE_SEPOLIA_ADDRESS),
         Destination::Eib => (EIB_CHAIN_ID, EIB_ADDRESS),
         Destination::Teib => (TEIB_CHAIN_ID, TEIB_ADDRESS),
+        Destination::Base => (BASE_CHAIN_ID, BASE_ADDRESS),
         Destination::BaseSepolia => (BASE_SEPOLIA_CHAIN_ID, BASE_SEPOLIA_ADDRESS),
         Destination::Sonic => (SONIC_MAINNET_CHAIN_ID, SONIC_ADDRESS),
         Destination::SonicBlazeTestnet => {
@@ -109,6 +116,8 @@ pub fn send_message(
         Destination::Berachain => (BERACHAIN_CHAIN_ID, BERACHAIN_ADDRESS),
         Destination::Bsc => (BSC_CHAIN_ID, BSC_ADDRESS),
         Destination::Immutable => (IMMUTABLE_CHAIN_ID, IMMUTABLE_ADDRESS),
+        Destination::Optimism => (OPTIMISM_CHAIN_ID, OPTIMISM_ADDRESS),
+        Destination::Arbitrum => (ARBITRUM_ONE_CHAIN_ID, ARBITRUM_ADDRESS),
     };
 
     UipEndpoint::propose()
