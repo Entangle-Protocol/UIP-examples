@@ -11,6 +11,14 @@ pub mod state;
 
 declare_id!("MeskEHG9jyVQGrZsNSYTLzxH9waE6UjrWEsviCQn2E1");
 
+#[cfg(not(feature = "no-entrypoint"))]
+solana_security_txt::security_txt! {
+    name: "Messenger",
+    project_url: "https://github.com/Entangle-Protocol/UIP-examples",
+    contacts: "email:lincot@disroot.org,discord:lincot",
+    policy: "Please contact us if you have discovered a bug"
+}
+
 /// The messenger program module.
 #[program]
 pub mod messenger {

@@ -12,6 +12,14 @@ mod utils;
 
 declare_id!("eTokpPEQPZ9Xdt7ZzSoC4pk4bwufdZ6rAEQb3GKchcH");
 
+#[cfg(not(feature = "no-entrypoint"))]
+solana_security_txt::security_txt! {
+    name: "Token Example",
+    project_url: "https://github.com/Entangle-Protocol/UIP-examples",
+    contacts: "email:lincot@disroot.org,discord:lincot",
+    policy: "Please contact us if you have discovered a bug"
+}
+
 /// The example token program module.
 #[program]
 pub mod example_token {

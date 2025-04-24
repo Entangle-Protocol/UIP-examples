@@ -24,6 +24,7 @@ hex = "0.4"
 hex-literal = "0.4"
 ruint = "1.12"
 solana-invoke = "0.2"
+solana-security-txt = "1.1.1"
 spl-associated-token-account = { version = "6", features = ["no-entrypoint"] }
 spl-token = { version = "7", features = ["no-entrypoint"] }
 uip-solana-sdk = { version = "0.1", features = ["anchor-lang"] }

@@ -1237,6 +1237,7 @@ dependencies = [
  "hex-literal",
  "ruint",
  "solana-invoke",
+ "solana-security-txt",
  "spl-associated-token-account",
  "spl-token",
  "uip-solana-sdk",
