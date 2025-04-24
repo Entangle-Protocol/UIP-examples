@@ -55,7 +55,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         bridge_mint,
         ctx.remaining_accounts,
         (),
-        BridgeMintInput { to, amount },
+        BridgeMintParams { to, amount },
     )?;
 
     msg!(
@@ -91,12 +91,12 @@ struct BridgeMint<'info> {
     system_program: Program<'info, System>,
 }
 
-struct BridgeMintInput {
+struct BridgeMintParams {
     to: Pubkey,
     amount: u64,
 }
 
-fn bridge_mint(ctx: Context<BridgeMint>, input: BridgeMintInput) -> Result<()> {
+fn bridge_mint(ctx: Context<BridgeMint>, params: BridgeMintParams) -> Result<()> {
     let payer = &ctx.accounts.payer;
     let config = &ctx.accounts.config;
     let exa_mint = &ctx.accounts.exa_mint;
@@ -104,7 +104,7 @@ fn bridge_mint(ctx: Context<BridgeMint>, input: BridgeMintInput) -> Result<()> {
     let to = &ctx.accounts.to;
 
     require!(
-        token_account.key() == find_ata(&input.to, exa_mint.key),
+        token_account.key() == find_ata(&params.to, exa_mint.key),
         ErrorCode::ConstraintAddress
     );
 
@@ -127,7 +127,7 @@ fn bridge_mint(ctx: Context<BridgeMint>, input: BridgeMintInput) -> Result<()> {
         token_account.key,
         &config.key(),
         &[],
-        input.amount,
+        params.amount,
     )?;
     invoke_signed(
         &ix,

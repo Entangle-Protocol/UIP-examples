@@ -62,7 +62,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         text_len: text.len() as _,
         sender_len: sender.len() as _,
     };
-    let input = ReceiveMessageInput {
+    let params = ReceiveMessageParams {
         text,
         sender,
         src_chain_id,
@@ -73,7 +73,7 @@ pub fn execute<'info>(ctx: Context<'_, '_, 'info, 'info, Execute>) -> Result<()>
         receive_message,
         ctx.remaining_accounts,
         ix_data,
-        input,
+        params,
     )?;
 
     Ok(())
@@ -100,7 +100,7 @@ struct ReceiveMessage<'info> {
     system_program: Program<'info, System>,
 }
 
-/// Data passed for use in the anchor `instruction` attribute.
+/// Data for use in the anchor `instruction` attribute.
 #[derive(AnchorSerialize, AnchorDeserialize)]
 struct ReceiveMessageIxData {
     msg_hash: [u8; 32],
@@ -108,14 +108,14 @@ struct ReceiveMessageIxData {
     sender_len: u64,
 }
 
-/// Input data for the `receive_message` function.
-struct ReceiveMessageInput {
+/// Input for the `receive_message` function.
+struct ReceiveMessageParams {
     text: String,
     sender: Vec<u8>,
     src_chain_id: u128,
 }
 
-fn receive_message(ctx: Context<ReceiveMessage>, message: ReceiveMessageInput) -> Result<()> {
+fn receive_message(ctx: Context<ReceiveMessage>, message: ReceiveMessageParams) -> Result<()> {
     let messenger = &mut ctx.accounts.messenger;
     let message_account = &mut ctx.accounts.message;
 
