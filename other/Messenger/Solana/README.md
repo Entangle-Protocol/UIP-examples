@@ -8,6 +8,16 @@ associated with a sender. It also allows to whitelist allowed sender addresses.
 The contract is built using the
 [Anchor framework](https://www.anchor-lang.com/).
 
+## Building
+
+To build the program and the TypeScript SDK, run
+
+```sh
+anchor build # or anchor build --features mainnet
+cp target/idl/messenger.json target/types/messenger.ts ts-sdk/src/idl/
+bun run build:sdk
+```
+
 ## Testing
 
 Before testing, make sure to generate the admin keypair:
