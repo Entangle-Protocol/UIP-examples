@@ -12,6 +12,8 @@ example-token = "eTokpPEQPZ9Xdt7ZzSoC4pk4bwufdZ6rAEQb3GKchcH"
 
 [test.validator]
 url = "https://api.devnet.solana.com"
+warp_slot = 32
+ticks_per_slot = 16
 [[test.validator.clone]]
 # UIP program
 address = "uipby67GWuDDt1jZTWFdXNrsSu83kcxt9r5CLPTKGhX"
