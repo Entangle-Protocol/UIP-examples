@@ -18,11 +18,11 @@
       },
     },
     "ts-sdk": {
-      "name": "@lincot/uip-solana-messenger-example",
-      "version": "0.1.1",
+      "name": "@entangle-labs/uip-solana-messenger-example",
+      "version": "0.1.3",
       "dependencies": {
+        "@entangle-labs/uip-solana-sdk": "^0.6.0",
         "@lincot/solana-chunk-loader": "^0.4.4",
-        "@lincot/uip-solana-sdk": "^0.6.0",
       },
       "devDependencies": {
         "typescript": "^5.4.4",
@@ -44,9 +44,11 @@
 
     "@coral-xyz/borsh": ["@coral-xyz/borsh@0.31.0", "", { "dependencies": { "bn.js": "^5.1.2", "buffer-layout": "^1.2.0" }, "peerDependencies": { "@solana/web3.js": "^1.69.0" } }, "sha512-DwdQ5fuj+rGQCTKRnxnW1W2lvcpBaFc9m9M1TcGGlm+bwCcggmDgbLKLgF+LjIrKnc7Nd+bCACx5RA9YTK2I4Q=="],
 
-    "@lincot/solana-chunk-loader": ["@lincot/solana-chunk-loader@0.4.4", "", { "peerDependencies": { "@coral-xyz/anchor": "^0.31.0", "@solana/web3.js": "^1.69.0" } }, "sha512-WTPt4wSVoyFXzomGM53E5efbIOjFY3NzaEWRWe5psdnMBH2opVqO/1Xe1BEOhAPWMQqHV+bwL+rIBczGp7T4Eg=="],
+    "@entangle-labs/uip-solana-messenger-example": ["@entangle-labs/uip-solana-messenger-example@workspace:ts-sdk"],
 
-    "@lincot/uip-solana-messenger-example": ["@lincot/uip-solana-messenger-example@workspace:ts-sdk"],
+    "@entangle-labs/uip-solana-sdk": ["@entangle-labs/uip-solana-sdk@0.6.1", "", { "peerDependencies": { "@coral-xyz/anchor": "^0.31.0", "@solana/web3.js": "^1.69.0", "viem": "^2.28.0" } }, "sha512-Gpj5EfxrxkDUKfbjEGzqLij8kb/wBLpEHlIQ+6s2lYG8kKqs+EUuCMOHSSEvXWTqpttr6KZz5uA4s/BQZtNl2g=="],
+
+    "@lincot/solana-chunk-loader": ["@lincot/solana-chunk-loader@0.4.4", "", { "peerDependencies": { "@coral-xyz/anchor": "^0.31.0", "@solana/web3.js": "^1.69.0" } }, "sha512-WTPt4wSVoyFXzomGM53E5efbIOjFY3NzaEWRWe5psdnMBH2opVqO/1Xe1BEOhAPWMQqHV+bwL+rIBczGp7T4Eg=="],
 
     "@lincot/uip-solana-sdk": ["@lincot/uip-solana-sdk@0.6.0", "", { "peerDependencies": { "@coral-xyz/anchor": "^0.31.0", "@solana/web3.js": "^1.69.0", "viem": "^2.28.0" } }, "sha512-nBNmrWqRosY5k0yfM+7JemPPySZSJmGRDLPx7kZoOHIRQ+UM4vs9vR8vqvn30/B8TNkOfIQYNWw6ejtloHpnew=="],
 

@@ -14,7 +14,7 @@ import {
   fetchUtsConnector,
   findExtension,
   PROGRAM_ID as ENDPOINT_PROGRAM_ID,
-} from "@lincot/uip-solana-sdk";
+} from "@entangle-labs/uip-solana-sdk";
 import { CID } from "multiformats";
 import {
   cuLimitInstruction,
